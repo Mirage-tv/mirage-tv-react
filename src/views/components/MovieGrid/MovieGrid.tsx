@@ -1,11 +1,6 @@
-import { type Movie } from "../../core/domain/Movie";
-import { MovieCard } from "./MovieCard";
-import "./MovieGrid.css";
-
-interface MovieGridProps {
-  movies: Movie[];
-  onMovieClick: (movie: Movie) => void;
-}
+import { MovieGridProps } from './MovieGrid.model';
+import { MovieCard } from '../MovieCard';
+import './MovieGrid.css';
 
 export const MovieGrid = ({ movies, onMovieClick }: MovieGridProps) => {
   if (movies.length === 0) {
@@ -19,7 +14,11 @@ export const MovieGrid = ({ movies, onMovieClick }: MovieGridProps) => {
   return (
     <div className="movie-grid">
       {movies.map((movie) => (
-        <MovieCard key={movie.id} movie={movie} onClick={() => onMovieClick(movie)} />
+        <MovieCard
+          key={movie.id}
+          movie={movie}
+          onClick={() => onMovieClick(movie)}
+        />
       ))}
     </div>
   );

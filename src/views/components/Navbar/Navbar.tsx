@@ -1,9 +1,14 @@
+/**
+ * Navbar Component
+ */
+
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "../../infrastructure/store";
+import { useUser } from "../../../infrastructure/store";
 import "./Navbar.css";
+import type { NavbarProps } from "./Navbar.model";
 
-export const Navbar = () => {
+export const Navbar = ({ className }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
   const { user, authenticated } = useUser();
   const navigate = useNavigate();
@@ -17,7 +22,7 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
+    <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""} ${className || ""}`}>
       <div className="container">
         <div className="navbar__container">
           <Link to="/" className="navbar__logo">
