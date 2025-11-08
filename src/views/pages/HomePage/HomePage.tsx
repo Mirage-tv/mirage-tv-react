@@ -1,81 +1,309 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { getCategoriesUseCase, getMoviesUseCase } from "../../../infrastructure/config/dependencies";
-import { useStore } from "../../../infrastructure/store";
-import { Hero } from "../../components/Hero";
-import { Loader } from "../../components/Loader";
-import { MovieGrid } from "../../components/MovieGrid";
-import { Navbar } from "../../components/Navbar";
-import "./HomePage.css";
+import './HomePage.css';
+// Home Page Component
+// Example implementation using the Mirage-TV API integration
 
-export const HomePage = () => {
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../core/hooks';
+import { useFavoritesStore } from '../../../infrastructure/store/favoritesStore';
+import { useFeaturedStore } from '../../../infrastructure/store/featuredStore';
+import { useViewingHistoryStore } from '../../../infrastructure/store/viewingHistoryStore';
+
+export const HomePage = () =>() {
   const navigate = useNavigate();
-  const { movies, loading, error, setMovies, setLoading, setError } = useStore();
-  const { setCategories } = useStore();
+  const { isAuthenticated, user, isSubscriber } = useAuth();
 
+  // Featured content
+  const {
+    heroBanner,
+    trendingMedia,
+    fetchHeroBanner,
+    fetchTrendingNow,
+    isLoadingHero,
+    isLoadingTrending,
+  } = useFeaturedStore();
+
+  // Continue watching
+  const {
+    continueWatching,
+    fetchContinueWatching,
+    isLoading: isLoadingHistory,
+  } = useViewingHistoryStore();
+
+  // Favorites
+  const {
+    favorites,
+    fetchFavorites,
+    toggleFavorite,
+    isLoading: isLoadingFavorites,
+  } = useFavoritesStore();
+
+  // Load featured content on mount
   useEffect(() => {
-    loadMovies();
-    loadCategories();
-  }, []);
+    fetchHeroBanner().catch(console.error);
+    fetchTrendingNow().catch(console.error);
+  }, [fetchHeroBanner, fetchTrendingNow]);
 
-  const loadMovies = async () => {
-    try {
-      setLoading(true);
-      const moviesData = await getMoviesUseCase.execute();
-      setMovies(moviesData);
-    } catch (err: any) {
-      setError(err.message || "Erreur lors du chargement des films");
-    } finally {
-      setLoading(false);
+  // Load user-specific content if authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchContinueWatching().catch(console.error);
+      fetchFavorites().catch(console.error);
     }
+  }, [isAuthenticated, fetchContinueWatching, fetchFavorites]);
+
+  const handlePlayMedia = (mediaId: string) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
+    if (!isSubscriber) {
+      navigate('/subscribe');
+      return;
+    }
+
+    navigate(`/watch/${mediaId}`);
   };
 
-  const loadCategories = async () => {
-    try {
-      const categoriesData = await getCategoriesUseCase.execute();
-      setCategories(categoriesData);
-    } catch (err) {
-      console.error("Erreur lors du chargement des catégories", err);
+  const handleToggleFavorite = async (mediaId: string) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
     }
-  };
 
-  const handleMovieClick = (movie: any) => {
-    navigate("/movie/" + movie.id);
+    try {
+      await toggleFavorite(mediaId);
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+    }
   };
 
   return (
-    <div className="home">
-      <Navbar />
+    <div className="home-page__home-page">
+      {/* Hero Banner Section */}
+      <section className="home-page__hero-section">
+        {isLoadingHero ? (
+          <div className="home-page__hero-loading">Loading hero banner...</div>
+        ) : heroBanner ? (
+          <div className="home-page__hero-banner">
+            <div className="home-page__hero-content">
+              {heroBanner.label && (
+                <span className="home-page__hero-label">{heroBanner.label}</span>
+              )}
+              <h1 className="home-page__hero-title">{heroBanner.previewMedia.name}</h1>
+              <p className="home-page__hero-synopsis">{heroBanner.previewMedia.synopsis}</p>
 
-      {movies.length > 0 && (
-        <div className="home__hero">
-          <Hero
-            movie={movies[0]}
-            onPlayClick={() => navigate("/watch/" + movies[0].id)}
-            onInfoClick={() => navigate("/movie/" + movies[0].id)}
-          />
-        </div>
-      )}
+              <div className="home-page__hero-meta">
+                <span className="home-page__age-rating">{heroBanner.previewMedia.ageRange}</span>
+                <span className="home-page__quality">{heroBanner.previewMedia.quality}</span>
+                <span className="home-page__duration">{heroBanner.previewMedia.duration}</span>
+              </div>
 
-      <div className="container">
-        <div className="home__content">
-          <section className="home__section">
-            <div className="home__section-header">
-              <h2 className="home__section-title">Films Populaires</h2>
+              <div className="home-page__hero-actions">
+                <button
+                  className="home-page__btn-play"
+                  onClick={() => handlePlayMedia(heroBanner.previewMedia.id!)}
+                >
+                  ▶️ Play
+                </button>
+                {heroBanner.previewMedia.videoURLs?.trailerURL && (
+                  <button
+                    className="home-page__btn-trailer"
+                    onClick={() => navigate(`/trailer/${heroBanner.previewMedia.id}`)}
+                  >
+                    🎬 Trailer
+                  </button>
+                )}
+                <button
+                  className="home-page__btn-info"
+                  onClick={() => navigate(`/media/${heroBanner.previewMedia.id}`)}
+                >
+                  ℹ️ More Info
+                </button>
+              </div>
             </div>
 
-            {loading && <Loader />}
-
-            {error && (
-              <div className="home__error">
-                <p className="home__error-text">{error}</p>
+            {heroBanner.previewMedia.posterURL && (
+              <div className="home-page__hero-poster">
+                <img
+                  src={heroBanner.previewMedia.posterURL}
+                  alt={heroBanner.previewMedia.name}
+                />
               </div>
             )}
+          </div>
+        ) : null}
+      </section>
 
-            {!loading && !error && <MovieGrid movies={movies} onMovieClick={handleMovieClick} />}
-          </section>
-        </div>
-      </div>
+      {/* Continue Watching Section */}
+      {isAuthenticated && continueWatching.length > 0 && (
+        <section className="home-page__content-rail">
+          <h2>Continue Watching</h2>
+          {isLoadingHistory ? (
+            <div className="home-page__rail-loading">Loading...</div>
+          ) : (
+            <div className="home-page__media-carousel">
+              {continueWatching.map((media) => (
+                <div key={media.id} className="home-page__media-card">
+                  <div className="home-page__media-thumbnail">
+                    <img src={media.thumbnailUrl} alt={media.name} />
+                    {media.progress && (
+                      <div className="home-page__progress-bar">
+                        <div
+                          className="home-page__progress-fill"
+                          style={{ width: `${media.progress * 100}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="home-page__media-info">
+                    <h3>{media.name}</h3>
+                    <button
+                      className="home-page__btn-favorite"
+                      onClick={() => handleToggleFavorite(media.id!)}
+                    >
+                      {media.isFavorite ? '❤️' : '🤍'}
+                    </button>
+                  </div>
+                  <button
+                    className="home-page__btn-play-overlay"
+                    onClick={() => handlePlayMedia(media.id!)}
+                  >
+                    ▶️
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Trending Now Section */}
+      <section className="home-page__content-rail">
+        <h2>Trending Now</h2>
+        {isLoadingTrending ? (
+          <div className="home-page__rail-loading">Loading trending...</div>
+        ) : (
+          <div className="home-page__media-carousel">
+            {trendingMedia.map((media) => (
+              <div key={media.id} className="home-page__media-card">
+                <div className="home-page__media-thumbnail">
+                  <img src={media.thumbnailUrl} alt={media.name} />
+                  {media.progress && (
+                    <div className="home-page__progress-bar">
+                      <div
+                        className="home-page__progress-fill"
+                        style={{ width: `${media.progress * 100}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+                <div className="home-page__media-info">
+                  <h3>{media.name}</h3>
+                  <button
+                    className="home-page__btn-favorite"
+                    onClick={() => handleToggleFavorite(media.id!)}
+                  >
+                    {media.isFavorite ? '❤️' : '🤍'}
+                  </button>
+                </div>
+                <button
+                  className="home-page__btn-play-overlay"
+                  onClick={() => handlePlayMedia(media.id!)}
+                >
+                  ▶️
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* My List Section */}
+      {isAuthenticated && favorites.length > 0 && (
+        <section className="home-page__content-rail">
+          <h2>My List</h2>
+          {isLoadingFavorites ? (
+            <div className="home-page__rail-loading">Loading favorites...</div>
+          ) : (
+            <div className="home-page__media-carousel">
+              {favorites.map((media) => (
+                <div key={media.id} className="home-page__media-card">
+                  <div className="home-page__media-thumbnail">
+                    <img src={media.thumbnailUrl} alt={media.name} />
+                    {media.progress && (
+                      <div className="home-page__progress-bar">
+                        <div
+                          className="home-page__progress-fill"
+                          style={{ width: `${media.progress * 100}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="home-page__media-info">
+                    <h3>{media.name}</h3>
+                    <button
+                      className="home-page__btn-favorite"
+                      onClick={() => handleToggleFavorite(media.id!)}
+                    >
+                      ❤️
+                    </button>
+                  </div>
+                  <button
+                    className="home-page__btn-play-overlay"
+                    onClick={() => handlePlayMedia(media.id!)}
+                  >
+                    ▶️
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* User Status Banner */}
+      {isAuthenticated && !isSubscriber && (
+        <section className="home-page__subscription-banner">
+          <div className="home-page__banner-content">
+            <h3>Subscribe to watch unlimited content</h3>
+            <p>Get access to thousands of movies and TV shows</p>
+            <button
+              className="home-page__btn-subscribe"
+              onClick={() => navigate('/subscribe')}
+            >
+              Subscribe Now
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* Welcome Message for Non-Authenticated Users */}
+      {!isAuthenticated && (
+        <section className="home-page__welcome-banner">
+          <div className="home-page__banner-content">
+            <h3>Welcome to Mirage-TV</h3>
+            <p>Sign up to start watching amazing content</p>
+            <div className="home-page__banner-actions">
+              <button
+                className="home-page__btn-signup"
+                onClick={() => navigate('/signup')}
+              >
+                Sign Up
+              </button>
+              <button
+                className="home-page__btn-login"
+                onClick={() => navigate('/login')}
+              >
+                Login
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
-};
+}
+
+
