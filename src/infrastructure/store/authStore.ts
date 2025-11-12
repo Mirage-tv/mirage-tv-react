@@ -1,10 +1,10 @@
 // Authentication Store
 // Manages authentication state and user session using Zustand
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { CreateUserReq, LoginReq, UserDTO } from '../../core/domain/types';
-import { authService, userService } from '../adapters/api';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { CreateUserReq, LoginReq, UserDTO } from "../../core/domain/types";
+import { authService, userService } from "../adapters/api";
 
 interface AuthState {
   user: UserDTO | null;
@@ -40,7 +40,7 @@ export const useAuthStore = create<AuthState>()(
           set({ isAuthenticated: true, isLoading: false });
         } catch (error: any) {
           set({
-            error: error.message || 'Sign up failed',
+            error: error.message || "Sign up failed",
             isLoading: false,
             isAuthenticated: false,
           });
@@ -58,7 +58,7 @@ export const useAuthStore = create<AuthState>()(
           set({ isAuthenticated: true, isLoading: false });
         } catch (error: any) {
           set({
-            error: error.message || 'Login failed',
+            error: error.message || "Login failed",
             isLoading: false,
             isAuthenticated: false,
           });
@@ -79,7 +79,7 @@ export const useAuthStore = create<AuthState>()(
           });
         } catch (error: any) {
           set({
-            error: error.message || 'Logout failed',
+            error: error.message || "Logout failed",
             isLoading: false,
           });
           // Clear state anyway even if API call fails
@@ -102,7 +102,7 @@ export const useAuthStore = create<AuthState>()(
           });
         } catch (error: any) {
           set({
-            error: error.message || 'Failed to fetch user profile',
+            error: error.message || "Failed to fetch user profile",
             isLoading: false,
             user: null,
             isAuthenticated: false,
@@ -122,11 +122,11 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
-    }
-  )
+    },
+  ),
 );

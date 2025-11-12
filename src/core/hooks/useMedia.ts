@@ -1,9 +1,13 @@
-// Custom Media Hook
-// Provides media browsing operations and state management
+import { useCallback } from "react";
+import type { PaginationParams } from "../../infrastructure/adapters/api";
+import { useMediaStore } from "../../infrastructure/store";
 
-import { useCallback } from 'react';
-import { PaginationParams } from '../../infrastructure/adapters/api';
-import { useMediaStore } from '../../infrastructure/store';
+// Helper pour extraire le message d'erreur
+const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  return "An unknown error occurred";
+};
 
 export const useMedia = () => {
   const {
@@ -33,113 +37,112 @@ export const useMedia = () => {
     clearError,
   } = useMediaStore();
 
-  // Fetch movies with error handling
   const loadMovies = useCallback(
     async (params?: PaginationParams) => {
       try {
         await fetchMovies(params);
-        return { success: true };
-      } catch (error: any) {
-        return { success: false, error: error.message };
+        return { success: true as const };
+      } catch (error) {
+        return {
+          success: false as const,
+          error: getErrorMessage(error),
+        };
       }
     },
-    [fetchMovies]
+    [fetchMovies],
   );
 
-  // Fetch shows with error handling
   const loadShows = useCallback(
     async (params?: PaginationParams) => {
       try {
         await fetchShows(params);
-        return { success: true };
-      } catch (error: any) {
-        return { success: false, error: error.message };
+        return { success: true as const };
+      } catch (error) {
+        return {
+          success: false as const,
+          error: getErrorMessage(error),
+        };
       }
     },
-    [fetchShows]
+    [fetchShows],
   );
 
-  // Fetch media details with error handling
   const loadMediaById = useCallback(
     async (id: string) => {
       try {
         await fetchMediaById(id);
-        return { success: true };
-      } catch (error: any) {
-        return { success: false, error: error.message };
+        return { success: true as const };
+      } catch (error) {
+        return {
+          success: false as const,
+          error: getErrorMessage(error),
+        };
       }
     },
-    [fetchMediaById]
+    [fetchMediaById],
   );
 
-  // Fetch show details with error handling
   const loadShowById = useCallback(
     async (id: string) => {
       try {
         await fetchShowById(id);
-        return { success: true };
-      } catch (error: any) {
-        return { success: false, error: error.message };
+        return { success: true as const };
+      } catch (error) {
+        return {
+          success: false as const,
+          error: getErrorMessage(error),
+        };
       }
     },
-    [fetchShowById]
+    [fetchShowById],
   );
 
-  // Fetch media by category with error handling
   const loadMediaByCategory = useCallback(
     async (category: string, params?: PaginationParams) => {
       try {
         await fetchMediaByCategory(category, params);
-        return { success: true };
-      } catch (error: any) {
-        return { success: false, error: error.message };
+        return { success: true as const };
+      } catch (error) {
+        return {
+          success: false as const,
+          error: getErrorMessage(error),
+        };
       }
     },
-    [fetchMediaByCategory]
+    [fetchMediaByCategory],
   );
 
-  // Up-vote media with error handling
   const voteMedia = useCallback(
     async (id: string) => {
       try {
         await upVoteMedia(id);
-        return { success: true };
-      } catch (error: any) {
-        return { success: false, error: error.message };
+        return { success: true as const };
+      } catch (error) {
+        return {
+          success: false as const,
+          error: getErrorMessage(error),
+        };
       }
     },
-    [upVoteMedia]
+    [upVoteMedia],
   );
 
   return {
-    // Movies state
     movies,
     moviesMetadata,
     isLoadingMovies,
-
-    // Shows state
     shows,
     showsMetadata,
     isLoadingShows,
-
-    // Current media state
     currentMedia,
     isLoadingCurrentMedia,
-
-    // Current show state
     currentShow,
     isLoadingCurrentShow,
-
-    // Category state
     categoryMedia,
     categoryMetadata,
     currentCategory,
     isLoadingCategory,
-
-    // Error state
     error,
-
-    // Actions
     loadMovies,
     loadShows,
     loadMediaById,
@@ -149,13 +152,11 @@ export const useMedia = () => {
     clearCurrentMedia,
     clearCurrentShow,
     clearError,
-
-    // Computed
     hasMovies: movies.length > 0,
     hasShows: shows.length > 0,
     hasCategoryMedia: categoryMedia.length > 0,
-    totalMovies: moviesMetadata?.total || 0,
-    totalShows: showsMetadata?.total || 0,
-    totalCategoryMedia: categoryMetadata?.total || 0,
+    totalMovies: moviesMetadata?.total ?? 0,
+    totalShows: showsMetadata?.total ?? 0,
+    totalCategoryMedia: categoryMetadata?.total ?? 0,
   };
 };

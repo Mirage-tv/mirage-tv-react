@@ -1,13 +1,9 @@
 // Authentication Service
 // Handles all authentication-related API operations
 
-import {
-    CreateUserReq,
-    HTTPResponseStatus,
-    LoginReq,
-} from '../../../core/domain/types';
-import { API_ENDPOINTS } from '../../config/api.config';
-import { httpClient } from '../http/HttpClient';
+import type { CreateUserReq, HTTPResponseStatus, LoginReq } from "../../../core/domain/types";
+import { API_ENDPOINTS } from "../../config/api.config";
+import { httpClient } from "../http/HttpClient";
 
 export class AuthService {
   /**
@@ -15,10 +11,7 @@ export class AuthService {
    * POST /api/v1/auth/sign-up
    */
   async signUp(userData: CreateUserReq): Promise<HTTPResponseStatus> {
-    return httpClient.post<HTTPResponseStatus>(
-      API_ENDPOINTS.AUTH.SIGN_UP,
-      userData
-    );
+    return httpClient.post<HTTPResponseStatus>(API_ENDPOINTS.AUTH.SIGN_UP, userData);
   }
 
   /**
@@ -26,10 +19,7 @@ export class AuthService {
    * POST /api/v1/auth/login
    */
   async login(credentials: LoginReq): Promise<HTTPResponseStatus> {
-    return httpClient.post<HTTPResponseStatus>(
-      API_ENDPOINTS.AUTH.LOGIN,
-      credentials
-    );
+    return httpClient.post<HTTPResponseStatus>(API_ENDPOINTS.AUTH.LOGIN, credentials);
   }
 
   /**
@@ -46,10 +36,7 @@ export class AuthService {
    * Note: Always returns 200 OK regardless of email existence (security)
    */
   async forgotPassword(email: string): Promise<HTTPResponseStatus> {
-    return httpClient.post<HTTPResponseStatus>(
-      API_ENDPOINTS.AUTH.FORGOT_PASSWORD,
-      { mail: email }
-    );
+    return httpClient.post<HTTPResponseStatus>(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, { mail: email });
   }
 }
 

@@ -1,22 +1,22 @@
-import './WatchPage.css';
+import "./WatchPage.css";
 // Watch Page Component
 // Video player with playback progress tracking and viewing history integration
 
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { VideoURLsDTO } from '../../../core/domain/types';
-import { useAuth } from '../../../core/hooks';
-import { videoService } from '../../../infrastructure/adapters/api';
-import { useMediaStore } from '../../../infrastructure/store/mediaStore';
-import { useViewingHistoryStore } from '../../../infrastructure/store/viewingHistoryStore';
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { type VideoURLsDTO } from "../../../core/domain/types";
+import { useAuth } from "../../../core/hooks";
+import { videoService } from "../../../infrastructure/adapters/api";
+import { useMediaStore } from "../../../infrastructure/store/mediaStore";
+import { useViewingHistoryStore } from "../../../infrastructure/store/viewingHistoryStore";
 
-export const WatchPage = () =>() {
+export const WatchPage = () => {
   const { mediaId } = useParams<{ mediaId: string }>();
   const navigate = useNavigate();
   const { isAuthenticated, isSubscriber } = useAuth();
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const progressIntervalRef = useRef<number | null>(null);
 
   const [videoUrls, setVideoUrls] = useState<VideoURLsDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,12 +29,12 @@ export const WatchPage = () =>() {
   // Check authentication and subscription
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     if (!isSubscriber) {
-      navigate('/subscribe');
+      navigate("/subscribe");
       return;
     }
   }, [isAuthenticated, isSubscriber, navigate]);
@@ -58,9 +58,10 @@ export const WatchPage = () =>() {
         // Create viewing history entry
         await createHistoryEntry(mediaId, 0.0);
         setHistoryEntryId(mediaId);
-      } catch (err: any) {
-        console.error('Failed to load video:', err);
-        setError(err.message || 'Failed to load video. Please try again.');
+      } catch (err) {
+        console.error("Failed to load video:", err);
+        const errorMessage = err instanceof Error ? err.message : "Failed to load video. Please try again.";
+        setError(errorMessage);
       } finally {
         setIsLoading(false);
       }
@@ -102,17 +103,17 @@ export const WatchPage = () =>() {
       handleVideoEnd();
     };
 
-    video.addEventListener('ended', handleVideoEnd);
-    video.addEventListener('pause', handleVideoEnd);
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    video.addEventListener("ended", handleVideoEnd);
+    video.addEventListener("pause", handleVideoEnd);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
       if (progressIntervalRef.current) {
         clearInterval(progressIntervalRef.current);
       }
-      video.removeEventListener('ended', handleVideoEnd);
-      video.removeEventListener('pause', handleVideoEnd);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      video.removeEventListener("ended", handleVideoEnd);
+      video.removeEventListener("pause", handleVideoEnd);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
       handleVideoEnd();
     };
   }, [videoUrls, historyEntryId, updateProgress, currentMedia?.progress]);
@@ -162,15 +163,8 @@ export const WatchPage = () =>() {
       </button>
 
       <div className="watch-page__video-container">
-        <video
-          ref={videoRef}
-          className="watch-page__video-player"
-          controls
-          autoPlay
-          controlsList="nodownload"
-        >
+        <video ref={videoRef} className="watch-page__video-player" controls autoPlay controlsList="nodownload">
           <source src={videoUrls.source} type="video/mp4" />
-
           {/* Subtitles */}
           {videoUrls.subtitles.map((subtitle, index) => (
             <track
@@ -182,7 +176,6 @@ export const WatchPage = () =>() {
               default={index === 0}
             />
           ))}
-
           Your browser does not support the video tag.
         </video>
       </div>
@@ -200,11 +193,7 @@ export const WatchPage = () =>() {
           {videoUrls.trailerURL && (
             <div className="watch-page__trailer-section">
               <h3>Trailer</h3>
-              <video
-                className="watch-page__trailer-player"
-                controls
-                controlsList="nodownload"
-              >
+              <video className="watch-page__trailer-player" controls controlsList="nodownload">
                 <source src={videoUrls.trailerURL} type="video/mp4" />
               </video>
             </div>
@@ -213,6 +202,4 @@ export const WatchPage = () =>() {
       )}
     </div>
   );
-}
-
-
+};

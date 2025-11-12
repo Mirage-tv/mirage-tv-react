@@ -1,12 +1,9 @@
 // Favorites Service
 // Handles favorite media management API operations
 
-import {
-    MediaThumbnail,
-    ToggleFavoriteReq
-} from '../../../core/domain/types';
-import { API_ENDPOINTS } from '../../config/api.config';
-import { httpClient } from '../http/HttpClient';
+import type { MediaThumbnail, ToggleFavoriteReq } from "../../../core/domain/types";
+import { API_ENDPOINTS } from "../../config/api.config";
+import { httpClient } from "../http/HttpClient";
 
 export class FavoritesService {
   /**

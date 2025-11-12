@@ -1,9 +1,9 @@
 // Category Service
 // Handles category-related API operations for browse filters
 
-import { AvailableCategories } from '../../../core/domain/types';
-import { API_ENDPOINTS } from '../../config/api.config';
-import { httpClient } from '../http/HttpClient';
+import { type AvailableCategories } from "../../../core/domain/types";
+import { API_ENDPOINTS } from "../../config/api.config";
+import { httpClient } from "../http/HttpClient";
 
 export class CategoryService {
   /**

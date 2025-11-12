@@ -1,12 +1,9 @@
 // Featured Media Service
 // Handles featured content API operations (hero banner, trending)
 
-import {
-    FeaturedMediaDTO,
-    MediaThumbnail,
-} from '../../../core/domain/types';
-import { API_ENDPOINTS } from '../../config/api.config';
-import { httpClient } from '../http/HttpClient';
+import type { FeaturedMediaDTO, MediaThumbnail } from "../../../core/domain/types";
+import { API_ENDPOINTS } from "../../config/api.config";
+import { httpClient } from "../http/HttpClient";
 
 export class FeaturedMediaService {
   /**

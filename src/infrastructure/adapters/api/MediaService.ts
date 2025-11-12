@@ -1,15 +1,9 @@
 // Media Service
 // Handles all media-related API operations (movies, shows, categories, voting)
 
-import {
-    HTTPResponseStatus,
-    MediaDTO,
-    PageMediaThumbnail,
-    PageSeriePreview,
-    SerieDTO
-} from '../../../core/domain/types';
-import { API_ENDPOINTS, PAGINATION } from '../../config/api.config';
-import { httpClient } from '../http/HttpClient';
+import type { HTTPResponseStatus, MediaDTO, PageMediaThumbnail, PageSeriePreview, SerieDTO } from "../../../core/domain/types";
+import { API_ENDPOINTS, PAGINATION } from "../../config/api.config";
+import { httpClient } from "../http/HttpClient";
 
 export interface PaginationParams {
   page?: number;
@@ -63,19 +57,13 @@ export class MediaService {
    * Browse media by category with pagination
    * GET /api/v1/media/category/{category}
    */
-  async getMediaByCategory(
-    category: string,
-    params: PaginationParams = {}
-  ): Promise<PageMediaThumbnail> {
+  async getMediaByCategory(category: string, params: PaginationParams = {}): Promise<PageMediaThumbnail> {
     const { page = PAGINATION.DEFAULT_PAGE, per = PAGINATION.DEFAULT_PER_PAGE } = params;
 
-    return httpClient.get<PageMediaThumbnail>(
-      API_ENDPOINTS.MEDIA.CATEGORY(category),
-      {
-        page,
-        per: Math.min(per, PAGINATION.MAX_PER_PAGE),
-      }
-    );
+    return httpClient.get<PageMediaThumbnail>(API_ENDPOINTS.MEDIA.CATEGORY(category), {
+      page,
+      per: Math.min(per, PAGINATION.MAX_PER_PAGE),
+    });
   }
 
   /**
@@ -84,9 +72,7 @@ export class MediaService {
    * Requires active subscription
    */
   async upVoteMedia(id: string): Promise<HTTPResponseStatus> {
-    return httpClient.post<HTTPResponseStatus>(
-      API_ENDPOINTS.MEDIA.UP_VOTE(id)
-    );
+    return httpClient.post<HTTPResponseStatus>(API_ENDPOINTS.MEDIA.UP_VOTE(id));
   }
 }
 

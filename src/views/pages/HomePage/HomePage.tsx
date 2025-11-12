@@ -1,42 +1,26 @@
-import './HomePage.css';
+import "./HomePage.css";
 // Home Page Component
 // Example implementation using the Mirage-TV API integration
 
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../core/hooks';
-import { useFavoritesStore } from '../../../infrastructure/store/favoritesStore';
-import { useFeaturedStore } from '../../../infrastructure/store/featuredStore';
-import { useViewingHistoryStore } from '../../../infrastructure/store/viewingHistoryStore';
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../core/hooks";
+import { useFavoritesStore } from "../../../infrastructure/store/favoritesStore";
+import { useFeaturedStore } from "../../../infrastructure/store/featuredStore";
+import { useViewingHistoryStore } from "../../../infrastructure/store/viewingHistoryStore";
 
-export const HomePage = () =>() {
+export const HomePage = () => {
   const navigate = useNavigate();
   const { isAuthenticated, user, isSubscriber } = useAuth();
 
   // Featured content
-  const {
-    heroBanner,
-    trendingMedia,
-    fetchHeroBanner,
-    fetchTrendingNow,
-    isLoadingHero,
-    isLoadingTrending,
-  } = useFeaturedStore();
+  const { heroBanner, trendingMedia, fetchHeroBanner, fetchTrendingNow, isLoadingHero, isLoadingTrending } = useFeaturedStore();
 
   // Continue watching
-  const {
-    continueWatching,
-    fetchContinueWatching,
-    isLoading: isLoadingHistory,
-  } = useViewingHistoryStore();
+  const { continueWatching, fetchContinueWatching, isLoading: isLoadingHistory } = useViewingHistoryStore();
 
   // Favorites
-  const {
-    favorites,
-    fetchFavorites,
-    toggleFavorite,
-    isLoading: isLoadingFavorites,
-  } = useFavoritesStore();
+  const { favorites, fetchFavorites, toggleFavorite, isLoading: isLoadingFavorites } = useFavoritesStore();
 
   // Load featured content on mount
   useEffect(() => {
@@ -54,12 +38,12 @@ export const HomePage = () =>() {
 
   const handlePlayMedia = (mediaId: string) => {
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     if (!isSubscriber) {
-      navigate('/subscribe');
+      navigate("/subscribe");
       return;
     }
 
@@ -68,14 +52,14 @@ export const HomePage = () =>() {
 
   const handleToggleFavorite = async (mediaId: string) => {
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     try {
       await toggleFavorite(mediaId);
     } catch (error) {
-      console.error('Failed to toggle favorite:', error);
+      console.error("Failed to toggle favorite:", error);
     }
   };
 
@@ -88,9 +72,7 @@ export const HomePage = () =>() {
         ) : heroBanner ? (
           <div className="home-page__hero-banner">
             <div className="home-page__hero-content">
-              {heroBanner.label && (
-                <span className="home-page__hero-label">{heroBanner.label}</span>
-              )}
+              {heroBanner.label && <span className="home-page__hero-label">{heroBanner.label}</span>}
               <h1 className="home-page__hero-title">{heroBanner.previewMedia.name}</h1>
               <p className="home-page__hero-synopsis">{heroBanner.previewMedia.synopsis}</p>
 
@@ -101,24 +83,15 @@ export const HomePage = () =>() {
               </div>
 
               <div className="home-page__hero-actions">
-                <button
-                  className="home-page__btn-play"
-                  onClick={() => handlePlayMedia(heroBanner.previewMedia.id!)}
-                >
+                <button className="home-page__btn-play" onClick={() => handlePlayMedia(heroBanner.previewMedia.id!)}>
                   ▶️ Play
                 </button>
                 {heroBanner.previewMedia.videoURLs?.trailerURL && (
-                  <button
-                    className="home-page__btn-trailer"
-                    onClick={() => navigate(`/trailer/${heroBanner.previewMedia.id}`)}
-                  >
+                  <button className="home-page__btn-trailer" onClick={() => navigate(`/trailer/${heroBanner.previewMedia.id}`)}>
                     🎬 Trailer
                   </button>
                 )}
-                <button
-                  className="home-page__btn-info"
-                  onClick={() => navigate(`/media/${heroBanner.previewMedia.id}`)}
-                >
+                <button className="home-page__btn-info" onClick={() => navigate(`/media/${heroBanner.previewMedia.id}`)}>
                   ℹ️ More Info
                 </button>
               </div>
@@ -126,10 +99,7 @@ export const HomePage = () =>() {
 
             {heroBanner.previewMedia.posterURL && (
               <div className="home-page__hero-poster">
-                <img
-                  src={heroBanner.previewMedia.posterURL}
-                  alt={heroBanner.previewMedia.name}
-                />
+                <img src={heroBanner.previewMedia.posterURL} alt={heroBanner.previewMedia.name} />
               </div>
             )}
           </div>
@@ -150,26 +120,17 @@ export const HomePage = () =>() {
                     <img src={media.thumbnailUrl} alt={media.name} />
                     {media.progress && (
                       <div className="home-page__progress-bar">
-                        <div
-                          className="home-page__progress-fill"
-                          style={{ width: `${media.progress * 100}%` }}
-                        />
+                        <div className="home-page__progress-fill" style={{ width: `${media.progress * 100}%` }} />
                       </div>
                     )}
                   </div>
                   <div className="home-page__media-info">
                     <h3>{media.name}</h3>
-                    <button
-                      className="home-page__btn-favorite"
-                      onClick={() => handleToggleFavorite(media.id!)}
-                    >
-                      {media.isFavorite ? '❤️' : '🤍'}
+                    <button className="home-page__btn-favorite" onClick={() => handleToggleFavorite(media.id!)}>
+                      {media.isFavorite ? "❤️" : "🤍"}
                     </button>
                   </div>
-                  <button
-                    className="home-page__btn-play-overlay"
-                    onClick={() => handlePlayMedia(media.id!)}
-                  >
+                  <button className="home-page__btn-play-overlay" onClick={() => handlePlayMedia(media.id!)}>
                     ▶️
                   </button>
                 </div>
@@ -192,26 +153,17 @@ export const HomePage = () =>() {
                   <img src={media.thumbnailUrl} alt={media.name} />
                   {media.progress && (
                     <div className="home-page__progress-bar">
-                      <div
-                        className="home-page__progress-fill"
-                        style={{ width: `${media.progress * 100}%` }}
-                      />
+                      <div className="home-page__progress-fill" style={{ width: `${media.progress * 100}%` }} />
                     </div>
                   )}
                 </div>
                 <div className="home-page__media-info">
                   <h3>{media.name}</h3>
-                  <button
-                    className="home-page__btn-favorite"
-                    onClick={() => handleToggleFavorite(media.id!)}
-                  >
-                    {media.isFavorite ? '❤️' : '🤍'}
+                  <button className="home-page__btn-favorite" onClick={() => handleToggleFavorite(media.id!)}>
+                    {media.isFavorite ? "❤️" : "🤍"}
                   </button>
                 </div>
-                <button
-                  className="home-page__btn-play-overlay"
-                  onClick={() => handlePlayMedia(media.id!)}
-                >
+                <button className="home-page__btn-play-overlay" onClick={() => handlePlayMedia(media.id!)}>
                   ▶️
                 </button>
               </div>
@@ -234,26 +186,17 @@ export const HomePage = () =>() {
                     <img src={media.thumbnailUrl} alt={media.name} />
                     {media.progress && (
                       <div className="home-page__progress-bar">
-                        <div
-                          className="home-page__progress-fill"
-                          style={{ width: `${media.progress * 100}%` }}
-                        />
+                        <div className="home-page__progress-fill" style={{ width: `${media.progress * 100}%` }} />
                       </div>
                     )}
                   </div>
                   <div className="home-page__media-info">
                     <h3>{media.name}</h3>
-                    <button
-                      className="home-page__btn-favorite"
-                      onClick={() => handleToggleFavorite(media.id!)}
-                    >
+                    <button className="home-page__btn-favorite" onClick={() => handleToggleFavorite(media.id!)}>
                       ❤️
                     </button>
                   </div>
-                  <button
-                    className="home-page__btn-play-overlay"
-                    onClick={() => handlePlayMedia(media.id!)}
-                  >
+                  <button className="home-page__btn-play-overlay" onClick={() => handlePlayMedia(media.id!)}>
                     ▶️
                   </button>
                 </div>
@@ -269,10 +212,7 @@ export const HomePage = () =>() {
           <div className="home-page__banner-content">
             <h3>Subscribe to watch unlimited content</h3>
             <p>Get access to thousands of movies and TV shows</p>
-            <button
-              className="home-page__btn-subscribe"
-              onClick={() => navigate('/subscribe')}
-            >
+            <button className="home-page__btn-subscribe" onClick={() => navigate("/subscribe")}>
               Subscribe Now
             </button>
           </div>
@@ -286,16 +226,10 @@ export const HomePage = () =>() {
             <h3>Welcome to Mirage-TV</h3>
             <p>Sign up to start watching amazing content</p>
             <div className="home-page__banner-actions">
-              <button
-                className="home-page__btn-signup"
-                onClick={() => navigate('/signup')}
-              >
+              <button className="home-page__btn-signup" onClick={() => navigate("/signup")}>
                 Sign Up
               </button>
-              <button
-                className="home-page__btn-login"
-                onClick={() => navigate('/login')}
-              >
+              <button className="home-page__btn-login" onClick={() => navigate("/login")}>
                 Login
               </button>
             </div>
@@ -304,6 +238,4 @@ export const HomePage = () =>() {
       )}
     </div>
   );
-}
-
-
+};

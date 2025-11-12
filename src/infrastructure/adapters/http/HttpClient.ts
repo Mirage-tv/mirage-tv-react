@@ -1,10 +1,10 @@
 // Centralized HTTP client for Mirage-TV API
 // Handles authentication via HTTP-only cookies, error handling, and request configuration
 
-import { APIError } from '../../../core/domain/types';
+import { type APIError } from "../../../core/domain/types";
 
 export interface RequestConfig {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   headers?: Record<string, string>;
   body?: any;
   params?: Record<string, string | number | boolean>;
@@ -14,10 +14,10 @@ export class HttpClient {
   private baseURL: string;
   private defaultHeaders: Record<string, string>;
 
-  constructor(baseURL: string = '') {
+  constructor(baseURL: string = "") {
     this.baseURL = baseURL;
     this.defaultHeaders = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
   }
 
@@ -64,8 +64,8 @@ export class HttpClient {
     }
 
     // Handle empty responses
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
       return null as T;
     }
 
@@ -80,12 +80,7 @@ export class HttpClient {
    * Generic request method
    */
   async request<T>(endpoint: string, config: RequestConfig = {}): Promise<T> {
-    const {
-      method = 'GET',
-      headers = {},
-      body,
-      params,
-    } = config;
+    const { method = "GET", headers = {}, body, params } = config;
 
     const url = this.buildURL(endpoint, params);
 
@@ -97,10 +92,10 @@ export class HttpClient {
     const requestConfig: RequestInit = {
       method,
       headers: requestHeaders,
-      credentials: 'include', // Important: includes cookies in requests
+      credentials: "include", // Important: includes cookies in requests
     };
 
-    if (body && method !== 'GET') {
+    if (body && method !== "GET") {
       requestConfig.body = JSON.stringify(body);
     }
 
@@ -114,7 +109,7 @@ export class HttpClient {
 
       // Network or other errors
       const apiError: APIError = {
-        message: error instanceof Error ? error.message : 'An unexpected error occurred',
+        message: error instanceof Error ? error.message : "An unexpected error occurred",
         statusCode: 0,
       };
       throw apiError;
@@ -125,35 +120,35 @@ export class HttpClient {
    * GET request
    */
   async get<T>(endpoint: string, params?: Record<string, string | number | boolean>): Promise<T> {
-    return this.request<T>(endpoint, { method: 'GET', params });
+    return this.request<T>(endpoint, { method: "GET", params });
   }
 
   /**
    * POST request
    */
   async post<T>(endpoint: string, body?: any): Promise<T> {
-    return this.request<T>(endpoint, { method: 'POST', body });
+    return this.request<T>(endpoint, { method: "POST", body });
   }
 
   /**
    * PUT request
    */
   async put<T>(endpoint: string, body?: any): Promise<T> {
-    return this.request<T>(endpoint, { method: 'PUT', body });
+    return this.request<T>(endpoint, { method: "PUT", body });
   }
 
   /**
    * DELETE request
    */
   async delete<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: 'DELETE' });
+    return this.request<T>(endpoint, { method: "DELETE" });
   }
 
   /**
    * PATCH request
    */
   async patch<T>(endpoint: string, body?: any): Promise<T> {
-    return this.request<T>(endpoint, { method: 'PATCH', body });
+    return this.request<T>(endpoint, { method: "PATCH", body });
   }
 
   /**
@@ -179,4 +174,4 @@ export class HttpClient {
 }
 
 // Export singleton instance
-export const httpClient = new HttpClient('/');
+export const httpClient = new HttpClient("/");

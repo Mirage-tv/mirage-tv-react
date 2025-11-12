@@ -1,22 +1,12 @@
 // Custom Auth Hook
 // Provides authentication operations and state management
 
-import { useCallback } from 'react';
-import { useAuthStore } from '../../infrastructure/store';
-import { CreateUserReq, LoginReq } from '../domain/types';
+import { useCallback } from "react";
+import { useAuthStore } from "../../infrastructure/store";
+import type { CreateUserReq, LoginReq } from "../domain/types";
 
 export const useAuth = () => {
-  const {
-    user,
-    isAuthenticated,
-    isLoading,
-    error,
-    signUp,
-    login,
-    logout,
-    fetchUserProfile,
-    clearError,
-  } = useAuthStore();
+  const { user, isAuthenticated, isLoading, error, signUp, login, logout, fetchUserProfile, clearError } = useAuthStore();
 
   // Sign up with error handling
   const handleSignUp = useCallback(
@@ -28,7 +18,7 @@ export const useAuth = () => {
         return { success: false, error: error.message };
       }
     },
-    [signUp]
+    [signUp],
   );
 
   // Login with error handling
@@ -41,7 +31,7 @@ export const useAuth = () => {
         return { success: false, error: error.message };
       }
     },
-    [login]
+    [login],
   );
 
   // Logout with error handling
@@ -80,7 +70,7 @@ export const useAuth = () => {
 
     // Computed
     isSubscriber: user?.planName !== null && user?.planName !== undefined,
-    userName: user?.name || '',
-    userEmail: user?.mail || '',
+    userName: user?.name || "",
+    userEmail: user?.mail || "",
   };
 };

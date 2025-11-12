@@ -1,39 +1,33 @@
-// Featured Content Store
-// Manages featured media state (hero banner, trending) using Zustand
+import { create } from "zustand";
+import type { FeaturedMediaDTO, MediaThumbnail } from "../../core/domain/types";
+import { featuredMediaService } from "../adapters/api";
 
-import { create } from 'zustand';
-import { FeaturedMediaDTO, MediaThumbnail } from '../../core/domain/types';
-import { featuredMediaService } from '../adapters/api';
+// Helper pour extraire le message d'erreur
+const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  return "An unknown error occurred";
+};
 
 interface FeaturedState {
-  // Hero banner state
-  heroBanner: FeaturedMediaDTO | null;
-  isLoadingHero: boolean;
+  readonly heroBanner: FeaturedMediaDTO | null;
+  readonly isLoadingHero: boolean;
+  readonly trendingMedia: readonly MediaThumbnail[];
+  readonly isLoadingTrending: boolean;
+  readonly error: string | null;
 
-  // Trending now state
-  trendingMedia: MediaThumbnail[];
-  isLoadingTrending: boolean;
-
-  // Errors
-  error: string | null;
-
-  // Actions
   fetchHeroBanner: () => Promise<void>;
   fetchTrendingNow: () => Promise<void>;
   clearError: () => void;
 }
 
 export const useFeaturedStore = create<FeaturedState>((set) => ({
-  // Initial state
   heroBanner: null,
   isLoadingHero: false,
-
   trendingMedia: [],
   isLoadingTrending: false,
-
   error: null,
 
-  // Fetch hero banner
   fetchHeroBanner: async () => {
     set({ isLoadingHero: true, error: null });
     try {
@@ -42,16 +36,16 @@ export const useFeaturedStore = create<FeaturedState>((set) => ({
         heroBanner,
         isLoadingHero: false,
       });
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
       set({
-        error: error.message || 'Failed to fetch hero banner',
+        error: errorMessage || "Failed to fetch hero banner",
         isLoadingHero: false,
       });
       throw error;
     }
   },
 
-  // Fetch trending now
   fetchTrendingNow: async () => {
     set({ isLoadingTrending: true, error: null });
     try {
@@ -60,16 +54,16 @@ export const useFeaturedStore = create<FeaturedState>((set) => ({
         trendingMedia,
         isLoadingTrending: false,
       });
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
       set({
-        error: error.message || 'Failed to fetch trending media',
+        error: errorMessage || "Failed to fetch trending media",
         isLoadingTrending: false,
       });
       throw error;
     }
   },
 
-  // Clear error
   clearError: () => {
     set({ error: null });
   },

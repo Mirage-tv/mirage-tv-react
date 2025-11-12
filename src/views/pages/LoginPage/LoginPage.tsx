@@ -1,18 +1,18 @@
-import './LoginPage.css';
+import "./LoginPage.css";
 // Login Page Component
 // Handles user authentication with the Mirage-TV API
 
-import { FormEvent, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../core/hooks';
+import { type FormEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../core/hooks";
 
-export const LoginPage = () =>() {
+export const LoginPage = () => {
   const navigate = useNavigate();
   const { login, isLoading, error, clearError } = useAuth();
 
   const [formData, setFormData] = useState({
-    mail: '',
-    password: '',
+    mail: "",
+    password: "",
   });
 
   const [formError, setFormError] = useState<string | null>(null);
@@ -34,12 +34,12 @@ export const LoginPage = () =>() {
 
     // Client-side validation
     if (!formData.mail || !formData.password) {
-      setFormError('Please fill in all fields');
+      setFormError("Please fill in all fields");
       return;
     }
 
-    if (!formData.mail.includes('@')) {
-      setFormError('Please enter a valid email address');
+    if (!formData.mail.includes("@")) {
+      setFormError("Please enter a valid email address");
       return;
     }
 
@@ -51,15 +51,15 @@ export const LoginPage = () =>() {
 
     if (result.success) {
       // Redirect to home page on successful login
-      navigate('/');
+      navigate("/");
     } else {
       // Display error message
-      setFormError(result.error || 'Login failed. Please try again.');
+      setFormError(result.error || "Login failed. Please try again.");
     }
   };
 
   const handleForgotPassword = () => {
-    navigate('/forgot-password');
+    navigate("/forgot-password");
   };
 
   return (
@@ -102,33 +102,20 @@ export const LoginPage = () =>() {
               />
             </div>
 
-            {(formError || error) && (
-              <div className="login-page__error-message">
-                {formError || error}
-              </div>
-            )}
+            {(formError || error) && <div className="login-page__error-message">{formError || error}</div>}
 
-            <button
-              type="submit"
-              className="login-page__btn-submit"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Signing in...' : 'Sign In'}
+            <button type="submit" className="login-page__btn-submit" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign In"}
             </button>
 
-            <button
-              type="button"
-              className="login-page__btn-forgot-password"
-              onClick={handleForgotPassword}
-              disabled={isLoading}
-            >
+            <button type="button" className="login-page__btn-forgot-password" onClick={handleForgotPassword} disabled={isLoading}>
               Forgot your password?
             </button>
           </form>
 
           <div className="login-page__login-footer">
             <p>
-              Don't have an account?{' '}
+              Don't have an account?{" "}
               <Link to="/signup" className="login-page__link-signup">
                 Sign up now
               </Link>
@@ -165,6 +152,4 @@ export const LoginPage = () =>() {
       </div>
     </div>
   );
-}
-
-
+};

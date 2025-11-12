@@ -1,64 +1,19 @@
 // Route Configuration for Mirage-TV
-// Defines all application routes with authentication protection
+import { lazy, Suspense } from "react";
+import { type RouteObject } from "react-router-dom";
+import { LoadingFallback } from "./views/components/Routing/Loading/LoadingFallback";
+import { ProtectedRoute } from "./views/components/Routing/Routes/ProctectedRoute";
+import { PublicRoute } from "./views/components/Routing/Routes/PublicRoute";
 
-import { Navigate, RouteObject } from 'react-router-dom';
-import { useAuth } from './core/hooks';
-
-// Lazy load components for code splitting
-import { lazy, Suspense } from 'react';
-
-const HomePage = lazy(() => import('./views/pages/HomePage/HomePage').then(m => ({ default: m.HomePage })));
-const LoginPage = lazy(() => import('./views/pages/LoginPage/LoginPage').then(m => ({ default: m.LoginPage })));
-const WatchPage = lazy(() => import('./views/pages/WatchPage/WatchPage').then(m => ({ default: m.WatchPage })));
-const SignUpPage = lazy(() => import('./views/pages/SignUpPage/SignUpPage').then(m => ({ default: m.SignUpPage })));
-
-// Loading fallback component
-const LoadingFallback = () => (
-  <div className="loading-page">
-    <div className="spinner"></div>
-    <p>Loading...</p>
-  </div>
-);
-
-// Protected Route wrapper
-interface ProtectedRouteProps {
-  children: React.ReactElement;
-  requireSubscription?: boolean;
-}
-
-function ProtectedRoute({ children, requireSubscription = false }: ProtectedRouteProps) {
-  const { isAuthenticated, isSubscriber } = useAuth();
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (requireSubscription && !isSubscriber) {
-    return <Navigate to="/subscribe" replace />;
-  }
-
-  return children;
-}
-
-// Public Route wrapper (redirect to home if already authenticated)
-interface PublicRouteProps {
-  children: React.ReactElement;
-}
-
-function PublicRoute({ children }: PublicRouteProps) {
-  const { isAuthenticated } = useAuth();
-
-  if (isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-}
+const HomePage = lazy(() => import("./views/pages/HomePage/HomePage").then((m) => ({ default: m.HomePage })));
+const LoginPage = lazy(() => import("./views/pages/LoginPage/LoginPage").then((m) => ({ default: m.LoginPage })));
+const WatchPage = lazy(() => import("./views/pages/WatchPage/WatchPage").then((m) => ({ default: m.WatchPage })));
+const SignUpPage = lazy(() => import("./views/pages/SignUpPage/SignUpPage").then((m) => ({ default: m.SignUpPage })));
 
 // Route definitions
 export const routes: RouteObject[] = [
   {
-    path: '/',
+    path: "/",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <HomePage />
@@ -66,7 +21,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '/login',
+    path: "/login",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <PublicRoute>
@@ -76,7 +31,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '/signup',
+    path: "/signup",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <PublicRoute>
@@ -86,7 +41,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '/forgot-password',
+    path: "/forgot-password",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <PublicRoute>
@@ -96,7 +51,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '/watch/:mediaId',
+    path: "/watch/:mediaId",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <ProtectedRoute requireSubscription>
@@ -106,7 +61,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '/media/:id',
+    path: "/media/:id",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <ProtectedRoute>
@@ -116,7 +71,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '/shows/:id',
+    path: "/shows/:id",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <ProtectedRoute>
@@ -126,7 +81,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '/browse/movies',
+    path: "/browse/movies",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <div>Browse Movies Page - To be implemented</div>
@@ -134,7 +89,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '/browse/shows',
+    path: "/browse/shows",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <div>Browse Shows Page - To be implemented</div>
@@ -142,7 +97,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '/browse/category/:category',
+    path: "/browse/category/:category",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <div>Category Browse Page - To be implemented</div>
@@ -150,7 +105,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '/my-list',
+    path: "/my-list",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <ProtectedRoute>
@@ -160,7 +115,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '/profile',
+    path: "/profile",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <ProtectedRoute>
@@ -170,7 +125,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '/subscribe',
+    path: "/subscribe",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <ProtectedRoute>
@@ -180,7 +135,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '/account',
+    path: "/account",
     element: (
       <Suspense fallback={<LoadingFallback />}>
         <ProtectedRoute>
@@ -190,7 +145,7 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: '*',
+    path: "*",
     element: (
       <div className="not-found">
         <h1>404 - Page Not Found</h1>

@@ -1,29 +1,28 @@
-// Subscription Store
-// Manages subscription and billing state using Zustand
+import { create } from "zustand";
+import type { SubscriptionDTO } from "../../core/domain/types";
+import { subscriptionService } from "../adapters/api";
 
-import { create } from 'zustand';
-import { SubscriptionDTO } from '../../core/domain/types';
-import { subscriptionService } from '../adapters/api';
+const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  return "An unknown error occurred";
+};
 
 interface SubscriptionState {
-  // Subscription state
-  subscription: SubscriptionDTO | null;
-  isLoading: boolean;
-  error: string | null;
+  readonly subscription: SubscriptionDTO | null;
+  readonly isLoading: boolean;
+  readonly error: string | null;
 
-  // Actions
   fetchSubscription: () => Promise<void>;
   cancelSubscription: (subscriptionId: string) => Promise<void>;
   clearError: () => void;
 }
 
 export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
-  // Initial state
   subscription: null,
   isLoading: false,
   error: null,
 
-  // Fetch current subscription
   fetchSubscription: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -32,35 +31,32 @@ export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
         subscription,
         isLoading: false,
       });
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
       set({
-        error: error.message || 'Failed to fetch subscription',
+        error: errorMessage || "Failed to fetch subscription",
         isLoading: false,
       });
       throw error;
     }
   },
 
-  // Cancel subscription
   cancelSubscription: async (subscriptionId: string) => {
     set({ isLoading: true, error: null });
     try {
       await subscriptionService.cancelSubscription({ id: subscriptionId });
-
-      // Refresh subscription to reflect cancellation status
       await get().fetchSubscription();
-
       set({ isLoading: false });
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
       set({
-        error: error.message || 'Failed to cancel subscription',
+        error: errorMessage || "Failed to cancel subscription",
         isLoading: false,
       });
       throw error;
     }
   },
 
-  // Clear error
   clearError: () => {
     set({ error: null });
   },

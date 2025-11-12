@@ -1,13 +1,9 @@
 // Subscription Service
 // Handles subscription and billing API operations
 
-import {
-    CancelSubReq,
-    HTTPResponseStatus,
-    SubscriptionDTO,
-} from '../../../core/domain/types';
-import { API_ENDPOINTS } from '../../config/api.config';
-import { httpClient } from '../http/HttpClient';
+import type { CancelSubReq, HTTPResponseStatus, SubscriptionDTO } from "../../../core/domain/types";
+import { API_ENDPOINTS } from "../../config/api.config";
+import { httpClient } from "../http/HttpClient";
 
 export class SubscriptionService {
   /**
@@ -30,10 +26,7 @@ export class SubscriptionService {
    * @returns 200 OK when cancellation is registered
    */
   async cancelSubscription(data: CancelSubReq): Promise<HTTPResponseStatus> {
-    return httpClient.post<HTTPResponseStatus>(
-      API_ENDPOINTS.SUBSCRIPTION.CANCEL,
-      data
-    );
+    return httpClient.post<HTTPResponseStatus>(API_ENDPOINTS.SUBSCRIPTION.CANCEL, data);
   }
 }
 

@@ -1,9 +1,9 @@
 // Category Store
 // Manages content categories state using Zustand
 
-import { create } from 'zustand';
-import { AvailableCategories } from '../../core/domain/types';
-import { categoryService } from '../adapters/api';
+import { create } from "zustand";
+import type { AvailableCategories } from "../../core/domain/types";
+import { categoryService } from "../adapters/api";
 
 interface CategoryState {
   // Categories state
@@ -33,7 +33,7 @@ export const useCategoryStore = create<CategoryState>((set) => ({
       });
     } catch (error: any) {
       set({
-        error: error.message || 'Failed to fetch categories',
+        error: error.message || "Failed to fetch categories",
         isLoading: false,
       });
       throw error;

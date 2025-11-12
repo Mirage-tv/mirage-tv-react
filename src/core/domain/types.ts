@@ -1,237 +1,239 @@
 // Core domain types for Mirage-TV based on OpenAPI specification v0.9.1
 
 // ============================================================================
-// Enums
+// Enums → Const Objects
 // ============================================================================
 
-export enum AgeRange {
-  AllAges = "0+",
-  SixPlus = "6+",
-  TwelvePlus = "12+",
-  SixteenPlus = "16+",
-  EighteenPlus = "18+"
-}
+export const AgeRange = {
+  AllAges: "0+",
+  SixPlus: "6+",
+  TwelvePlus: "12+",
+  SixteenPlus: "16+",
+  EighteenPlus: "18+",
+} as const;
+export type AgeRange = (typeof AgeRange)[keyof typeof AgeRange];
 
-export enum VideoQuality {
-  SD = "sd",
-  HD = "hd",
-  TwoK = "2K",
-  FourK = "4k"
-}
+export const VideoQuality = {
+  SD: "sd",
+  HD: "hd",
+  TwoK: "2K",
+  FourK: "4k",
+} as const;
+export type VideoQuality = (typeof VideoQuality)[keyof typeof VideoQuality];
 
-export enum SubscriptionStatus {
-  Active = "active",
-  Cancelled = "cancelled",
-  Expired = "expired",
-  GracePeriod = "gracePeriod"
-}
+export const SubscriptionStatus = {
+  Active: "active",
+  Cancelled: "cancelled",
+  Expired: "expired",
+  GracePeriod: "gracePeriod",
+} as const;
+export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus];
 
-export enum PaymentStatus {
-  Succeeded = "succeeded",
-  Failed = "failed",
-  Pending = "pending",
-  Refunded = "refunded"
-}
+export const PaymentStatus = {
+  Succeeded: "succeeded",
+  Failed: "failed",
+  Pending: "pending",
+  Refunded: "refunded",
+} as const;
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus];
 
 // ============================================================================
 // Basic Types
 // ============================================================================
 
-export interface Subtitle {
-  language: string;
-  url: string;
-}
+export type Subtitle = {
+  readonly language: string;
+  readonly url: string;
+};
 
-export interface VideoURLsDTO {
-  source: string;
-  subtitles: Subtitle[];
-  trailerURL?: string | null;
-}
+export type VideoURLsDTO = {
+  readonly source: string;
+  readonly subtitles: readonly Subtitle[];
+  readonly trailerURL?: string | null;
+};
 
-export interface EpisodeInfo {
-  // Placeholder for episode-specific info
-  [key: string]: any;
-}
+export type EpisodeInfo = {
+  readonly [key: string]: unknown;
+};
 
-export interface Media {
-  // Generic media type
-  [key: string]: any;
-}
+export type Media = {
+  readonly [key: string]: unknown;
+};
 
 // ============================================================================
 // Media Types
 // ============================================================================
 
-export interface MediaThumbnail {
-  id?: string | null;
-  name: string;
-  thumbnailUrl: string;
-  isFavorite: boolean;
-  progress?: number | null;
-  videoURLs?: VideoURLsDTO;
-}
+export type MediaThumbnail = {
+  readonly id?: string | null;
+  readonly name: string;
+  readonly thumbnailUrl: string;
+  readonly isFavorite: boolean;
+  readonly progress?: number | null;
+  readonly videoURLs?: VideoURLsDTO;
+};
 
-export interface MediaPreview {
-  id?: string | null;
-  name: string;
-  synopsis: string;
-  duration: string;
-  ageRange: AgeRange;
-  quality: VideoQuality;
-  posterURL?: string | null;
-  videoURLs?: VideoURLsDTO;
-}
+export type MediaPreview = {
+  readonly id?: string | null;
+  readonly name: string;
+  readonly synopsis: string;
+  readonly duration: string;
+  readonly ageRange: AgeRange;
+  readonly quality: VideoQuality;
+  readonly posterURL?: string | null;
+  readonly videoURLs?: VideoURLsDTO;
+};
 
-export interface MediaDTO {
-  id?: string | null;
-  name: string;
-  synopsis: string;
-  duration: string;
-  ageRange: AgeRange;
-  quality: VideoQuality;
-  thunbailURL: string;
-  isFavorite: boolean;
-  progress?: number | null;
-  episodeInfo?: EpisodeInfo;
-  videoURL?: VideoURLsDTO;
-}
+export type MediaDTO = {
+  readonly id?: string | null;
+  readonly name: string;
+  readonly synopsis: string;
+  readonly duration: string;
+  readonly ageRange: AgeRange;
+  readonly quality: VideoQuality;
+  readonly thunbailURL: string;
+  readonly isFavorite: boolean;
+  readonly progress?: number | null;
+  readonly episodeInfo?: EpisodeInfo;
+  readonly videoURL?: VideoURLsDTO;
+};
 
-export interface FeaturedMediaDTO {
-  id?: string | null;
-  previewMedia: MediaPreview;
-  label?: string | null;
-}
+export type FeaturedMediaDTO = {
+  readonly id?: string | null;
+  readonly previewMedia: MediaPreview;
+  readonly label?: string | null;
+};
 
 // ============================================================================
 // Series/Shows Types
 // ============================================================================
 
-export interface SeriePreview {
-  id?: string | null;
-  title: string;
-  description?: string | null;
-  posterURL?: string | null;
-  totalSeasons: number;
-  numberOfmedias: number;
-}
+export type SeriePreview = {
+  readonly id?: string | null;
+  readonly title: string;
+  readonly description?: string | null;
+  readonly posterURL?: string | null;
+  readonly totalSeasons: number;
+  readonly numberOfmedias: number;
+};
 
-export interface SerieDTO {
-  id?: string | null;
-  title: string;
-  description?: string | null;
-  posterURL?: string | null;
-  totalSeasons: number;
-  medias: Media[];
-}
+export type SerieDTO = {
+  readonly id?: string | null;
+  readonly title: string;
+  readonly description?: string | null;
+  readonly posterURL?: string | null;
+  readonly totalSeasons: number;
+  readonly medias: readonly Media[];
+};
 
 // ============================================================================
 // Pagination Types
 // ============================================================================
 
-export interface PageMetadata {
-  page: number;
-  per: number;
-  total: number;
-}
+export type PageMetadata = {
+  readonly page: number;
+  readonly per: number;
+  readonly total: number;
+};
 
-export interface PageMediaThumbnail {
-  items: MediaThumbnail[];
-  metadata: PageMetadata;
-}
+export type PageMediaThumbnail = {
+  readonly items: readonly MediaThumbnail[];
+  readonly metadata: PageMetadata;
+};
 
-export interface PageSeriePreview {
-  items: SeriePreview[];
-  metadata: PageMetadata;
-}
+export type PageSeriePreview = {
+  readonly items: readonly SeriePreview[];
+  readonly metadata: PageMetadata;
+};
 
 // ============================================================================
 // User & Auth Types
 // ============================================================================
 
-export interface UserDTO {
-  name: string;
-  mail: string;
-  planName?: string | null;
-}
+export type UserDTO = {
+  readonly name: string;
+  readonly mail: string;
+  readonly planName?: string | null;
+};
 
-export interface CreateUserReq {
-  name: string;
-  mail: string;
-  password: string;
-}
+export type CreateUserReq = {
+  readonly name: string;
+  readonly mail: string;
+  readonly password: string;
+};
 
-export interface LoginReq {
-  mail: string;
-  password: string;
-}
+export type LoginReq = {
+  readonly mail: string;
+  readonly password: string;
+};
 
-export interface UpdateUserNameReq {
-  name: string;
-}
+export type UpdateUserNameReq = {
+  readonly name: string;
+};
 
-export interface UpdateUserMailReq {
-  mail: string;
-}
+export type UpdateUserMailReq = {
+  readonly mail: string;
+};
 
-export interface UpdateUserPasswordReq {
-  password: string;
-}
+export type UpdateUserPasswordReq = {
+  readonly password: string;
+};
 
 // ============================================================================
 // Subscription & Payment Types
 // ============================================================================
 
-export interface InvoiceDTO {
-  id?: string | null;
-  amountCents: number;
-  status: PaymentStatus;
-  paidAt?: string | null;
-  stripeRef?: string | null;
-}
+export type InvoiceDTO = {
+  readonly id?: string | null;
+  readonly amountCents: number;
+  readonly status: PaymentStatus;
+  readonly paidAt?: string | null;
+  readonly stripeRef?: string | null;
+};
 
-export interface SubscriptionDTO {
-  id?: string | null;
-  planName: string;
-  price: number;
-  status: SubscriptionStatus;
-  startDate: string;
-  endDate?: string | null;
-  invoices: InvoiceDTO[];
-}
+export type SubscriptionDTO = {
+  readonly id?: string | null;
+  readonly planName: string;
+  readonly price: number;
+  readonly status: SubscriptionStatus;
+  readonly startDate: string;
+  readonly endDate?: string | null;
+  readonly invoices: readonly InvoiceDTO[];
+};
 
-export interface CancelSubReq {
-  id: string;
-}
+export type CancelSubReq = {
+  readonly id: string;
+};
 
 // ============================================================================
 // Viewing History Types
 // ============================================================================
 
-export interface CreateViewingHistoryRequest {
-  mediaId: string;
-  progress: number;
-}
+export type CreateViewingHistoryRequest = {
+  readonly mediaId: string;
+  readonly progress: number;
+};
 
-export interface UpdateViewingHistoryRequest {
-  id: string;
-  progress: number;
-}
+export type UpdateViewingHistoryRequest = {
+  readonly id: string;
+  readonly progress: number;
+};
 
 // ============================================================================
 // Favorites Types
 // ============================================================================
 
-export interface ToggleFavoriteReq {
-  mediaId: string;
-}
+export type ToggleFavoriteReq = {
+  readonly mediaId: string;
+};
 
 // ============================================================================
 // Categories Types
 // ============================================================================
 
-export interface AvailableCategories {
-  list: string[];
-}
+export type AvailableCategories = {
+  readonly list: readonly string[];
+};
 
 // ============================================================================
 // API Response Types
@@ -239,7 +241,7 @@ export interface AvailableCategories {
 
 export type HTTPResponseStatus = number;
 
-export interface APIError {
-  message: string;
-  statusCode: number;
-}
+export type APIError = {
+  readonly message: string;
+  readonly statusCode: number;
+};

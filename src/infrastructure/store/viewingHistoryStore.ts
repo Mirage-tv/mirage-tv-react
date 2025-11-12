@@ -1,17 +1,18 @@
-// Viewing History Store
-// Manages viewing history and continue-watching functionality using Zustand
+import { create } from "zustand";
+import type { MediaThumbnail } from "../../core/domain/types";
+import { viewingHistoryService } from "../adapters/api";
 
-import { create } from 'zustand';
-import { MediaThumbnail } from '../../core/domain/types';
-import { viewingHistoryService } from '../adapters/api';
+const getErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  return "An unknown error occurred";
+};
 
 interface ViewingHistoryState {
-  // Continue watching state
-  continueWatching: MediaThumbnail[];
-  isLoading: boolean;
-  error: string | null;
+  readonly continueWatching: readonly MediaThumbnail[];
+  readonly isLoading: boolean;
+  readonly error: string | null;
 
-  // Actions
   fetchContinueWatching: () => Promise<void>;
   createHistoryEntry: (mediaId: string, progress: number) => Promise<void>;
   updateProgress: (id: string, progress: number) => Promise<void>;
@@ -19,12 +20,10 @@ interface ViewingHistoryState {
 }
 
 export const useViewingHistoryStore = create<ViewingHistoryState>((set, get) => ({
-  // Initial state
   continueWatching: [],
   isLoading: false,
   error: null,
 
-  // Fetch continue-watching list
   fetchContinueWatching: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -33,34 +32,32 @@ export const useViewingHistoryStore = create<ViewingHistoryState>((set, get) => 
         continueWatching,
         isLoading: false,
       });
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
       set({
-        error: error.message || 'Failed to fetch continue-watching',
+        error: errorMessage || "Failed to fetch continue-watching",
         isLoading: false,
       });
       throw error;
     }
   },
 
-  // Create a new viewing history entry
   createHistoryEntry: async (mediaId: string, progress: number) => {
     try {
       await viewingHistoryService.createHistoryEntry({
         mediaId,
         progress,
       });
-
-      // Refresh the continue-watching list
       await get().fetchContinueWatching();
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
       set({
-        error: error.message || 'Failed to create history entry',
+        error: errorMessage || "Failed to create history entry",
       });
       throw error;
     }
   },
 
-  // Update viewing progress
   updateProgress: async (id: string, progress: number) => {
     try {
       await viewingHistoryService.updateProgress({
@@ -68,24 +65,20 @@ export const useViewingHistoryStore = create<ViewingHistoryState>((set, get) => 
         progress,
       });
 
-      // Update local state optimistically
       const currentList = get().continueWatching;
       set({
-        continueWatching: currentList.map(item =>
-          item.id === id ? { ...item, progress } : item
-        ),
+        continueWatching: currentList.map((item) => (item.id === id ? { ...item, progress } : item)),
       });
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
       set({
-        error: error.message || 'Failed to update progress',
+        error: errorMessage || "Failed to update progress",
       });
-      // Refresh to get correct state from server
       await get().fetchContinueWatching();
       throw error;
     }
   },
 
-  // Clear error
   clearError: () => {
     set({ error: null });
   },

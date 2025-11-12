@@ -1,14 +1,14 @@
 // Viewing History Service
 // Handles viewing history and continue-watching API operations
 
-import {
-    CreateViewingHistoryRequest,
-    HTTPResponseStatus,
-    MediaThumbnail,
-    UpdateViewingHistoryRequest,
-} from '../../../core/domain/types';
-import { API_ENDPOINTS } from '../../config/api.config';
-import { httpClient } from '../http/HttpClient';
+import type {
+  CreateViewingHistoryRequest,
+  HTTPResponseStatus,
+  MediaThumbnail,
+  UpdateViewingHistoryRequest,
+} from "../../../core/domain/types";
+import { API_ENDPOINTS } from "../../config/api.config";
+import { httpClient } from "../http/HttpClient";
 
 export class ViewingHistoryService {
   /**
@@ -17,9 +17,7 @@ export class ViewingHistoryService {
    * Returns the last 25 partially watched items for authenticated user
    */
   async getContinueWatching(): Promise<MediaThumbnail[]> {
-    return httpClient.get<MediaThumbnail[]>(
-      API_ENDPOINTS.HISTORY.CONTINUE_WATCHING
-    );
+    return httpClient.get<MediaThumbnail[]>(API_ENDPOINTS.HISTORY.CONTINUE_WATCHING);
   }
 
   /**
@@ -30,13 +28,8 @@ export class ViewingHistoryService {
    * @param data - mediaId and initial progress
    * @returns 201 Created status
    */
-  async createHistoryEntry(
-    data: CreateViewingHistoryRequest
-  ): Promise<HTTPResponseStatus> {
-    return httpClient.post<HTTPResponseStatus>(
-      API_ENDPOINTS.HISTORY.CREATE,
-      data
-    );
+  async createHistoryEntry(data: CreateViewingHistoryRequest): Promise<HTTPResponseStatus> {
+    return httpClient.post<HTTPResponseStatus>(API_ENDPOINTS.HISTORY.CREATE, data);
   }
 
   /**
@@ -47,13 +40,8 @@ export class ViewingHistoryService {
    * @param data - entry id and updated progress
    * @returns 204 No Content status
    */
-  async updateProgress(
-    data: UpdateViewingHistoryRequest
-  ): Promise<HTTPResponseStatus> {
-    return httpClient.post<HTTPResponseStatus>(
-      API_ENDPOINTS.HISTORY.UPDATE,
-      data
-    );
+  async updateProgress(data: UpdateViewingHistoryRequest): Promise<HTTPResponseStatus> {
+    return httpClient.post<HTTPResponseStatus>(API_ENDPOINTS.HISTORY.UPDATE, data);
   }
 }
 

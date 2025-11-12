@@ -1,15 +1,9 @@
 // User Service
 // Handles all user profile management API operations
 
-import {
-    HTTPResponseStatus,
-    UpdateUserMailReq,
-    UpdateUserNameReq,
-    UpdateUserPasswordReq,
-    UserDTO,
-} from '../../../core/domain/types';
-import { API_ENDPOINTS } from '../../config/api.config';
-import { httpClient } from '../http/HttpClient';
+import type { HTTPResponseStatus, UpdateUserMailReq, UpdateUserNameReq, UpdateUserPasswordReq, UserDTO } from "../../../core/domain/types";
+import { API_ENDPOINTS } from "../../config/api.config";
+import { httpClient } from "../http/HttpClient";
 
 export class UserService {
   /**
@@ -25,10 +19,7 @@ export class UserService {
    * POST /api/v1/user/update-name
    */
   async updateName(data: UpdateUserNameReq): Promise<HTTPResponseStatus> {
-    return httpClient.post<HTTPResponseStatus>(
-      API_ENDPOINTS.USER.UPDATE_NAME,
-      data
-    );
+    return httpClient.post<HTTPResponseStatus>(API_ENDPOINTS.USER.UPDATE_NAME, data);
   }
 
   /**
@@ -36,10 +27,7 @@ export class UserService {
    * POST /api/v1/user/update-mail
    */
   async updateEmail(data: UpdateUserMailReq): Promise<HTTPResponseStatus> {
-    return httpClient.post<HTTPResponseStatus>(
-      API_ENDPOINTS.USER.UPDATE_EMAIL,
-      data
-    );
+    return httpClient.post<HTTPResponseStatus>(API_ENDPOINTS.USER.UPDATE_EMAIL, data);
   }
 
   /**
@@ -47,10 +35,7 @@ export class UserService {
    * POST /api/v1/user/update-password
    */
   async updatePassword(data: UpdateUserPasswordReq): Promise<HTTPResponseStatus> {
-    return httpClient.post<HTTPResponseStatus>(
-      API_ENDPOINTS.USER.UPDATE_PASSWORD,
-      data
-    );
+    return httpClient.post<HTTPResponseStatus>(API_ENDPOINTS.USER.UPDATE_PASSWORD, data);
   }
 
   /**
@@ -58,9 +43,7 @@ export class UserService {
    * DELETE /api/v1/user
    */
   async deleteAccount(): Promise<HTTPResponseStatus> {
-    return httpClient.delete<HTTPResponseStatus>(
-      API_ENDPOINTS.USER.DELETE_ACCOUNT
-    );
+    return httpClient.delete<HTTPResponseStatus>(API_ENDPOINTS.USER.DELETE_ACCOUNT);
   }
 }
 

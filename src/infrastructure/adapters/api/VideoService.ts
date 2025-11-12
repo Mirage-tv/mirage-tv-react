@@ -1,9 +1,9 @@
 // Video Service
 // Handles video playback URL retrieval with signed URLs and subtitles
 
-import { VideoURLsDTO } from '../../../core/domain/types';
-import { API_ENDPOINTS } from '../../config/api.config';
-import { httpClient } from '../http/HttpClient';
+import type { VideoURLsDTO } from "../../../core/domain/types";
+import { API_ENDPOINTS } from "../../config/api.config";
+import { httpClient } from "../http/HttpClient";
 
 export class VideoService {
   /**
