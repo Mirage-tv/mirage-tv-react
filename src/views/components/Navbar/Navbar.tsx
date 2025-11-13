@@ -58,12 +58,12 @@ export const Navbar = ({ className }: NavbarProps) => {
               </Link>
             </li>
             <li>
-              <Link to="/originals" className="navbar__link">
+              <Link to="/browse/shows" className="navbar__link">
                 Originaux
               </Link>
             </li>
             <li>
-              <Link to="/movies" className="navbar__link">
+              <Link to="/browse/movies" className="navbar__link">
                 Films
               </Link>
             </li>

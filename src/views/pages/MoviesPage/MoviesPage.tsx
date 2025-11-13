@@ -1,0 +1,115 @@
+import { useEffect, useState } from "react";
+import "./MoviesPage.css";
+
+interface MediaThumbnail {
+  id: string;
+  name: string;
+  thumbnailUrl: string;
+  isFavorite: boolean;
+  progress?: number;
+}
+
+interface PageMediaThumbnail {
+  items: MediaThumbnail[];
+  metadata: {
+    page: number;
+    per: number;
+    total: number;
+  };
+}
+
+export const MoviesPage = () => {
+  const [movies, setMovies] = useState<MediaThumbnail[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [per] = useState(20);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(`/api/v1/media/movies?page=${page}&per=${per}`);
+        if (!response.ok) {
+          throw new Error(`Erreur API: ${response.status}`);
+        }
+        const data: PageMediaThumbnail = await response.json();
+        setMovies(data.items);
+        setTotal(data.metadata.total);
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Erreur inconnue lors du chargement des films"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMovies();
+  }, [page, per]);
+
+  const totalPages = Math.ceil(total / per);
+
+  return (
+    <div className="movies-page">
+      <h1 className="movies-page__title">Tous les films</h1>
+      {loading ? (
+        <div className="movies-page__loading">Chargement des films...</div>
+      ) : error ? (
+        <div className="movies-page__error">{error}</div>
+      ) : movies.length === 0 ? (
+        <div className="movies-page__empty">Aucun film trouvé.</div>
+      ) : (
+        <>
+          <div className="movies-page__grid">
+            {movies.map((movie) => (
+              <div key={movie.id} className="movies-page__card">
+                <div className="movies-page__thumbnail">
+                  <img src={movie.thumbnailUrl} alt={movie.name} />
+                  {movie.progress !== undefined && (
+                    <div className="movies-page__progress-bar">
+                      <div
+                        className="movies-page__progress-fill"
+                        style={{ width: `${movie.progress * 100}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+                <div className="movies-page__info">
+                  <h2 className="movies-page__name">{movie.name}</h2>
+                  <span className="movies-page__favorite">
+                    {movie.isFavorite ? "❤️" : "🤍"}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+          {totalPages > 1 && (
+            <div className="movies-page__pagination">
+              <button
+                className="movies-page__pagination-btn"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+              >
+                Précédent
+              </button>
+              <span>
+                Page {page} / {totalPages}
+              </span>
+              <button
+                className="movies-page__pagination-btn"
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+              >
+                Suivant
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
