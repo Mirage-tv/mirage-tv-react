@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../core/hooks";
 import "./ShowsPage.css";
 
 interface SeriePreview {
@@ -27,6 +29,10 @@ export const ShowsPage = () => {
   const [per] = useState(20);
   const [total, setTotal] = useState(0);
 
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [likeLoading, setLikeLoading] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchShows = async () => {
       setLoading(true);
@@ -40,17 +46,38 @@ export const ShowsPage = () => {
         setShows(data.items);
         setTotal(data.metadata.total);
       } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Erreur inconnue lors du chargement des séries"
-        );
+        setError(err instanceof Error ? err.message : "Erreur inconnue lors du chargement des séries");
       } finally {
         setLoading(false);
       }
     };
     fetchShows();
   }, [page, per]);
+
+  // Gestion du like (favori) sur une série
+  const handleToggleFavorite = async (serieId: string) => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    setLikeLoading(serieId);
+    try {
+      const response = await fetch("/api/v1/favorites/toggle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mediaId: serieId }),
+      });
+      if (!response.ok) {
+        throw new Error("Erreur lors du like");
+      }
+      const isNowFavorite = await response.json();
+      setShows((prev) => prev.map((s) => (s.id === serieId ? { ...s, isFavorite: isNowFavorite } : s)));
+    } catch (err) {
+      // Optionnel : afficher une notification d'erreur
+    } finally {
+      setLikeLoading(null);
+    }
+  };
 
   const totalPages = Math.ceil(total / per);
 
@@ -78,23 +105,32 @@ export const ShowsPage = () => {
                 <div className="shows-page__info">
                   <h2 className="shows-page__name">{show.title}</h2>
                   <div className="shows-page__meta">
-                    <span>{show.totalSeasons} saison{show.totalSeasons > 1 ? "s" : ""}</span>
-                    <span>{show.numberOfmedias} épisode{show.numberOfmedias > 1 ? "s" : ""}</span>
+                    <span>
+                      {show.totalSeasons} saison{show.totalSeasons > 1 ? "s" : ""}
+                    </span>
+                    <span>
+                      {show.numberOfmedias} épisode{show.numberOfmedias > 1 ? "s" : ""}
+                    </span>
                   </div>
-                  {show.description && (
-                    <p className="shows-page__desc">{show.description}</p>
-                  )}
+                  {show.description && <p className="shows-page__desc">{show.description}</p>}
+                  {/* Bouton coeur pour like/unlike */}
+                  {"isFavorite" in show ? (
+                    <button
+                      className="shows-page__favorite"
+                      onClick={() => handleToggleFavorite(show.id)}
+                      disabled={likeLoading === show.id}
+                      aria-label={show.isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                    >
+                      {likeLoading === show.id ? "..." : show.isFavorite ? "❤️" : "🤍"}
+                    </button>
+                  ) : null}
                 </div>
               </div>
             ))}
           </div>
           {totalPages > 1 && (
             <div className="shows-page__pagination">
-              <button
-                className="shows-page__pagination-btn"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-              >
+              <button className="shows-page__pagination-btn" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>
                 Précédent
               </button>
               <span>

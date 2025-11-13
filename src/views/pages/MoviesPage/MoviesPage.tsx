@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../core/hooks";
 import "./MoviesPage.css";
 
 interface MediaThumbnail {
@@ -26,6 +28,10 @@ export const MoviesPage = () => {
   const [per] = useState(20);
   const [total, setTotal] = useState(0);
 
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [likeLoading, setLikeLoading] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchMovies = async () => {
       setLoading(true);
@@ -39,17 +45,37 @@ export const MoviesPage = () => {
         setMovies(data.items);
         setTotal(data.metadata.total);
       } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Erreur inconnue lors du chargement des films"
-        );
+        setError(err instanceof Error ? err.message : "Erreur inconnue lors du chargement des films");
       } finally {
         setLoading(false);
       }
     };
     fetchMovies();
   }, [page, per]);
+
+  const handleToggleFavorite = async (mediaId: string) => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    setLikeLoading(mediaId);
+    try {
+      const response = await fetch("/api/v1/favorites/toggle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mediaId }),
+      });
+      if (!response.ok) {
+        throw new Error("Erreur lors du like");
+      }
+      const isNowFavorite = await response.json();
+      setMovies((prev) => prev.map((m) => (m.id === mediaId ? { ...m, isFavorite: isNowFavorite } : m)));
+    } catch (err) {
+      // Optionnel : afficher une notification d'erreur
+    } finally {
+      setLikeLoading(null);
+    }
+  };
 
   const totalPages = Math.ceil(total / per);
 
@@ -71,29 +97,27 @@ export const MoviesPage = () => {
                   <img src={movie.thumbnailUrl} alt={movie.name} />
                   {movie.progress !== undefined && (
                     <div className="movies-page__progress-bar">
-                      <div
-                        className="movies-page__progress-fill"
-                        style={{ width: `${movie.progress * 100}%` }}
-                      />
+                      <div className="movies-page__progress-fill" style={{ width: `${movie.progress * 100}%` }} />
                     </div>
                   )}
                 </div>
                 <div className="movies-page__info">
                   <h2 className="movies-page__name">{movie.name}</h2>
-                  <span className="movies-page__favorite">
-                    {movie.isFavorite ? "❤️" : "🤍"}
-                  </span>
+                  <button
+                    className="movies-page__favorite"
+                    onClick={() => handleToggleFavorite(movie.id)}
+                    disabled={likeLoading === movie.id}
+                    aria-label={movie.isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                  >
+                    {likeLoading === movie.id ? "..." : movie.isFavorite ? "❤️" : "🤍"}
+                  </button>
                 </div>
               </div>
             ))}
           </div>
           {totalPages > 1 && (
             <div className="movies-page__pagination">
-              <button
-                className="movies-page__pagination-btn"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-              >
+              <button className="movies-page__pagination-btn" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>
                 Précédent
               </button>
               <span>

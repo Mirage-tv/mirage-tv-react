@@ -3,7 +3,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../core/hooks";
 import "./Navbar.css";
 import type { NavbarProps } from "./Navbar.model";
@@ -13,6 +13,7 @@ export const Navbar = ({ className }: NavbarProps) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,17 +54,23 @@ export const Navbar = ({ className }: NavbarProps) => {
 
           <ul className="navbar__menu">
             <li>
-              <Link to="/" className="navbar__link navbar__link--active">
+              <Link to="/" className={`navbar__link${location.pathname === "/" ? " navbar__link--active" : ""}`}>
                 Accueil
               </Link>
             </li>
             <li>
-              <Link to="/browse/shows" className="navbar__link">
+              <Link
+                to="/browse/shows"
+                className={`navbar__link${location.pathname.startsWith("/browse/shows") ? " navbar__link--active" : ""}`}
+              >
                 Originaux
               </Link>
             </li>
             <li>
-              <Link to="/browse/movies" className="navbar__link">
+              <Link
+                to="/browse/movies"
+                className={`navbar__link${location.pathname.startsWith("/browse/movies") ? " navbar__link--active" : ""}`}
+              >
                 Films
               </Link>
             </li>
