@@ -14,8 +14,9 @@ export const useAuth = () => {
       try {
         await signUp(userData);
         return { success: true };
-      } catch (error: any) {
-        return { success: false, error: error.message };
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Sign up failed";
+        return { success: false, error: message };
       }
     },
     [signUp],
@@ -27,8 +28,9 @@ export const useAuth = () => {
       try {
         await login(credentials);
         return { success: true };
-      } catch (error: any) {
-        return { success: false, error: error.message };
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Login failed";
+        return { success: false, error: message };
       }
     },
     [login],
@@ -39,8 +41,9 @@ export const useAuth = () => {
     try {
       await logout();
       return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.message };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Logout failed";
+      return { success: false, error: message };
     }
   }, [logout]);
 
@@ -49,8 +52,9 @@ export const useAuth = () => {
     try {
       await fetchUserProfile();
       return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.message };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to fetch profile";
+      return { success: false, error: message };
     }
   }, [fetchUserProfile]);
 

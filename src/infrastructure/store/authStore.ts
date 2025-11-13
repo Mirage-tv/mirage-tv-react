@@ -21,6 +21,17 @@ interface AuthState {
   setUser: (user: UserDTO | null) => void;
 }
 
+// Helper pour extraire le message d'erreur
+const getErrorMessage = (error: unknown): string => {
+  if (error && typeof error === "object" && "message" in error) {
+    return String(error.message);
+  }
+  if (typeof error === "string") {
+    return error;
+  }
+  return "An unknown error occurred";
+};
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
@@ -38,9 +49,10 @@ export const useAuthStore = create<AuthState>()(
           // After successful signup, fetch the user profile
           await get().fetchUserProfile();
           set({ isAuthenticated: true, isLoading: false });
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const errorMessage = getErrorMessage(error);
           set({
-            error: error.message || "Sign up failed",
+            error: errorMessage || "Sign up failed",
             isLoading: false,
             isAuthenticated: false,
           });
@@ -56,9 +68,10 @@ export const useAuthStore = create<AuthState>()(
           // After successful login, fetch the user profile
           await get().fetchUserProfile();
           set({ isAuthenticated: true, isLoading: false });
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const errorMessage = getErrorMessage(error);
           set({
-            error: error.message || "Login failed",
+            error: errorMessage || "Login failed",
             isLoading: false,
             isAuthenticated: false,
           });
@@ -77,9 +90,10 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
             error: null,
           });
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const errorMessage = getErrorMessage(error);
           set({
-            error: error.message || "Logout failed",
+            error: errorMessage || "Logout failed",
             isLoading: false,
           });
           // Clear state anyway even if API call fails
@@ -100,9 +114,10 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           });
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const errorMessage = getErrorMessage(error);
           set({
-            error: error.message || "Failed to fetch user profile",
+            error: errorMessage || "Failed to fetch user profile",
             isLoading: false,
             user: null,
             isAuthenticated: false,

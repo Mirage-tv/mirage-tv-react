@@ -11,10 +11,10 @@ import { useViewingHistoryStore } from "../../../infrastructure/store/viewingHis
 
 export const HomePage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, user, isSubscriber } = useAuth();
+  const { isAuthenticated, isSubscriber } = useAuth();
 
   // Featured content
-  const { heroBanner, trendingMedia, fetchHeroBanner, fetchTrendingNow, isLoadingHero, isLoadingTrending } = useFeaturedStore();
+  const { heroBanner, trendingMedia, fetchHeroBanner, fetchTrendingNow, isLoadingHero, isLoadingTrending, error } = useFeaturedStore();
 
   // Continue watching
   const { continueWatching, fetchContinueWatching, isLoading: isLoadingHistory } = useViewingHistoryStore();
@@ -24,15 +24,23 @@ export const HomePage = () => {
 
   // Load featured content on mount
   useEffect(() => {
-    fetchHeroBanner().catch(console.error);
-    fetchTrendingNow().catch(console.error);
+    fetchHeroBanner().catch(() => {
+      // Erreur déjà gérée dans le store
+    });
+    fetchTrendingNow().catch(() => {
+      // Erreur déjà gérée dans le store
+    });
   }, [fetchHeroBanner, fetchTrendingNow]);
 
   // Load user-specific content if authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      fetchContinueWatching().catch(console.error);
-      fetchFavorites().catch(console.error);
+      fetchContinueWatching().catch(() => {
+        // Erreur déjà gérée dans le store
+      });
+      fetchFavorites().catch(() => {
+        // Erreur déjà gérée dans le store
+      });
     }
   }, [isAuthenticated, fetchContinueWatching, fetchFavorites]);
 
@@ -64,11 +72,11 @@ export const HomePage = () => {
   };
 
   return (
-    <div className="home-page__home-page">
+    <div className="home-page">
       {/* Hero Banner Section */}
       <section className="home-page__hero-section">
         {isLoadingHero ? (
-          <div className="home-page__hero-loading">Loading hero banner...</div>
+          <div className="home-page__hero-loading">Chargement du contenu vedette...</div>
         ) : heroBanner ? (
           <div className="home-page__hero-banner">
             <div className="home-page__hero-content">
@@ -84,15 +92,15 @@ export const HomePage = () => {
 
               <div className="home-page__hero-actions">
                 <button className="home-page__btn-play" onClick={() => handlePlayMedia(heroBanner.previewMedia.id!)}>
-                  ▶️ Play
+                  ▶️ Lecture
                 </button>
                 {heroBanner.previewMedia.videoURLs?.trailerURL && (
                   <button className="home-page__btn-trailer" onClick={() => navigate(`/trailer/${heroBanner.previewMedia.id}`)}>
-                    🎬 Trailer
+                    🎬 Bande-annonce
                   </button>
                 )}
                 <button className="home-page__btn-info" onClick={() => navigate(`/media/${heroBanner.previewMedia.id}`)}>
-                  ℹ️ More Info
+                  ℹ️ Plus d'infos
                 </button>
               </div>
             </div>
@@ -103,15 +111,36 @@ export const HomePage = () => {
               </div>
             )}
           </div>
-        ) : null}
+        ) : error ? (
+          <div className="home-page__hero-loading">
+            <p>⚠️ Erreur lors du chargement du contenu</p>
+            <span className="home-page__hero-error">{error}</span>
+          </div>
+        ) : (
+          // Affichage de la bannière de bienvenue dans la hero section
+          <div className="home-page__welcome-hero">
+            <div className="home-page__welcome-hero-content">
+              <h1>Bienvenue sur Mirage-TV</h1>
+              <p>Inscrivez-vous pour commencer à regarder du contenu incroyable</p>
+              <div className="home-page__welcome-hero-actions">
+                <button className="home-page__btn-signup" onClick={() => navigate("/signup")}>
+                  S'inscrire
+                </button>
+                <button className="home-page__btn-login" onClick={() => navigate("/login")}>
+                  Se connecter
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Continue Watching Section */}
       {isAuthenticated && continueWatching.length > 0 && (
         <section className="home-page__content-rail">
-          <h2>Continue Watching</h2>
+          <h2>Reprendre la lecture</h2>
           {isLoadingHistory ? (
-            <div className="home-page__rail-loading">Loading...</div>
+            <div className="home-page__rail-loading">Chargement...</div>
           ) : (
             <div className="home-page__media-carousel">
               {continueWatching.map((media) => (
@@ -142,9 +171,9 @@ export const HomePage = () => {
 
       {/* Trending Now Section */}
       <section className="home-page__content-rail">
-        <h2>Trending Now</h2>
+        <h2>Tendances actuelles</h2>
         {isLoadingTrending ? (
-          <div className="home-page__rail-loading">Loading trending...</div>
+          <div className="home-page__rail-loading">Chargement des tendances...</div>
         ) : trendingMedia && trendingMedia.length > 0 ? (
           <div className="home-page__media-carousel">
             {trendingMedia.map((media) => (
@@ -170,16 +199,18 @@ export const HomePage = () => {
             ))}
           </div>
         ) : (
-          <div className="home-page__no-content">No trending content available</div>
+          <div className="home-page__rail-loading">
+            <p>Aucun contenu tendance disponible</p>
+          </div>
         )}
       </section>
 
       {/* My List Section */}
       {isAuthenticated && favorites.length > 0 && (
         <section className="home-page__content-rail">
-          <h2>My List</h2>
+          <h2>Ma Liste</h2>
           {isLoadingFavorites ? (
-            <div className="home-page__rail-loading">Loading favorites...</div>
+            <div className="home-page__rail-loading">Chargement de vos favoris...</div>
           ) : (
             <div className="home-page__media-carousel">
               {favorites.map((media) => (
@@ -212,10 +243,10 @@ export const HomePage = () => {
       {isAuthenticated && !isSubscriber && (
         <section className="home-page__subscription-banner">
           <div className="home-page__banner-content">
-            <h3>Subscribe to watch unlimited content</h3>
-            <p>Get access to thousands of movies and TV shows</p>
+            <h3>Abonnez-vous pour regarder du contenu illimité</h3>
+            <p>Accédez à des milliers de films et séries TV</p>
             <button className="home-page__btn-subscribe" onClick={() => navigate("/subscribe")}>
-              Subscribe Now
+              S'abonner maintenant
             </button>
           </div>
         </section>
@@ -225,14 +256,14 @@ export const HomePage = () => {
       {!isAuthenticated && (
         <section className="home-page__welcome-banner">
           <div className="home-page__banner-content">
-            <h3>Welcome to Mirage-TV</h3>
-            <p>Sign up to start watching amazing content</p>
+            <h3>Bienvenue sur Mirage-TV</h3>
+            <p>Inscrivez-vous pour commencer à regarder du contenu incroyable</p>
             <div className="home-page__banner-actions">
               <button className="home-page__btn-signup" onClick={() => navigate("/signup")}>
-                Sign Up
+                S'inscrire
               </button>
               <button className="home-page__btn-login" onClick={() => navigate("/login")}>
-                Login
+                Se connecter
               </button>
             </div>
           </div>

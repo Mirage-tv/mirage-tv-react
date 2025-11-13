@@ -31,10 +31,98 @@
   width: 100%;
   height: 80vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: 1.25rem;
   color: #e5e5e5;
+}
+
+.home-page__hero-error {
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  color: #7d88b6;
+}
+
+/* Hero Welcome Banner (dans la hero section) */
+.home-page__welcome-hero {
+  width: 100%;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #232526 0%, #373b44 60%, #4f5b93 100%);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  margin: 0 auto;
+}
+
+.home-page__welcome-hero-content {
+  text-align: center;
+  color: #fff;
+  padding: 3rem 2rem;
+  max-width: 600px;
+  width: 100%;
+}
+
+.home-page__welcome-hero-content h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  letter-spacing: 0.01em;
+  color: #e0e6f7;
+  text-shadow: 0 2px 8px rgba(30, 30, 60, 0.18);
+}
+
+.home-page__welcome-hero-content p {
+  font-size: 1.2rem;
+  color: #bfc6e0;
+  margin-bottom: 2.5rem;
+}
+
+.home-page__welcome-hero-actions {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.home-page__btn-signup,
+.home-page__btn-login {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.18s;
+  outline: none;
+}
+
+.home-page__btn-signup {
+  background: linear-gradient(90deg, #667eea 0%, #4f5b93 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(76, 110, 220, 0.08);
+}
+
+.home-page__btn-signup:hover {
+  background: linear-gradient(90deg, #4f5b93 0%, #667eea 100%);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+}
+
+.home-page__btn-login {
+  background: transparent;
+  color: #bfc6e0;
+  border: 2px solid #4f5b93;
+}
+
+.home-page__btn-login:hover {
+  background: #4f5b93;
+  color: #fff;
+  border-color: #667eea;
+  transform: translateY(-2px) scale(1.04);
 }
 
 /* Element: hero-banner */

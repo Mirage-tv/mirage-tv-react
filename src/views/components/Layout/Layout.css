@@ -1,0 +1,19 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #141414;
+}
+
+.layout__navbar {
+  flex-shrink: 0;
+}
+
+.layout__content {
+  flex: 1;
+  width: 100%;
+  max-width: 100vw;
+  margin-top: 4rem; /* Pour éviter que le contenu passe sous la navbar fixe */
+  padding-bottom: 2rem;
+  /* Ajoutez ici d'autres styles globaux si besoin */
+}

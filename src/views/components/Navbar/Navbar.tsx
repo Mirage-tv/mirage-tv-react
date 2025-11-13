@@ -4,13 +4,14 @@
 
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "../../../infrastructure/store";
+import { useAuth } from "../../../core/hooks";
 import "./Navbar.css";
 import type { NavbarProps } from "./Navbar.model";
 
 export const Navbar = ({ className }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
-  const { user, authenticated } = useUser();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,6 +21,27 @@ export const Navbar = ({ className }: NavbarProps) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Fermer le menu si on clique en dehors
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (showUserMenu && !target.closest(".navbar__user-menu")) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [showUserMenu]);
+
+  const handleLogout = async () => {
+    const result = await logout();
+    if (result.success) {
+      setShowUserMenu(false);
+      navigate("/");
+    }
+  };
 
   return (
     <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""} ${className || ""}`}>
@@ -45,20 +67,62 @@ export const Navbar = ({ className }: NavbarProps) => {
                 Films
               </Link>
             </li>
-            <li>
-              <Link to="/my-list" className="navbar__link">
-                Ma Liste
-              </Link>
-            </li>
+            {isAuthenticated && (
+              <li>
+                <Link to="/my-list" className="navbar__link">
+                  Ma Liste
+                </Link>
+              </li>
+            )}
           </ul>
 
           <div className="navbar__actions">
-            {authenticated ? (
-              <button className="btn btn--ghost" onClick={() => navigate("/profile")}>
-                {user?.name}
-              </button>
+            {isAuthenticated ? (
+              <div className="navbar__user-menu">
+                <button className="navbar__user-button" onClick={() => setShowUserMenu(!showUserMenu)}>
+                  <span className="navbar__user-avatar">{user?.name?.charAt(0).toUpperCase() || "U"}</span>
+                  <span className="navbar__user-name">{user?.name}</span>
+                  <span className={`navbar__user-arrow ${showUserMenu ? "navbar__user-arrow--open" : ""}`}>▼</span>
+                </button>
+
+                {showUserMenu && (
+                  <div className="navbar__dropdown">
+                    <button
+                      className="navbar__dropdown-item"
+                      onClick={() => {
+                        navigate("/profile");
+                        setShowUserMenu(false);
+                      }}
+                    >
+                      👤 Mon Profil
+                    </button>
+                    <button
+                      className="navbar__dropdown-item"
+                      onClick={() => {
+                        navigate("/subscription");
+                        setShowUserMenu(false);
+                      }}
+                    >
+                      💳 Abonnement
+                    </button>
+                    <button
+                      className="navbar__dropdown-item"
+                      onClick={() => {
+                        navigate("/my-list");
+                        setShowUserMenu(false);
+                      }}
+                    >
+                      ❤️ Ma Liste
+                    </button>
+                    <hr className="navbar__dropdown-divider" />
+                    <button className="navbar__dropdown-item navbar__dropdown-item--logout" onClick={handleLogout}>
+                      🚪 Se déconnecter
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
-              <button className="btn btn--primary" onClick={() => navigate("/signin")}>
+              <button className="btn btn--primary" onClick={() => navigate("/login")}>
                 Connexion
               </button>
             )}
