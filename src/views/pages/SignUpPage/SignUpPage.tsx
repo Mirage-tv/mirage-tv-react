@@ -64,78 +64,85 @@ export const SignUpPage = () => {
   };
 
   return (
-    <div className="sign-up-page__bg">
-      <div className="sign-up-page__center">
-        <div className="sign-up-page__card">
-          <h1 className="sign-up-page__title">Créer un compte Mirage-TV</h1>
-          <p className="sign-up-page__subtitle">Rejoignez Mirage-TV et profitez de tous les contenus</p>
-          <form onSubmit={handleSubmit} className="sign-up-page__form">
-            <div className="sign-up-page__form-group">
-              <label htmlFor="name">Nom complet</label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="Jean Dupont"
-                required
-                disabled={isLoading}
-              />
-            </div>
-            <div className="sign-up-page__form-group">
-              <label htmlFor="mail">Adresse e-mail</label>
-              <input
-                id="mail"
-                name="mail"
-                type="email"
-                value={formData.mail}
-                onChange={handleInputChange}
-                placeholder="votre@email.com"
-                required
-                autoComplete="email"
-                disabled={isLoading}
-              />
-            </div>
-            <div className="sign-up-page__form-group">
-              <label htmlFor="password">Mot de passe</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                placeholder="Au moins 6 caractères"
-                required
-                autoComplete="new-password"
-                disabled={isLoading}
-              />
-            </div>
-            <div className="sign-up-page__form-group">
-              <label htmlFor="confirmPassword">Confirmer le mot de passe</label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                placeholder="Confirmez votre mot de passe"
-                required
-                autoComplete="new-password"
-                disabled={isLoading}
-              />
-            </div>
-            {(formError || error) && <div className="sign-up-page__error-message">{formError || error}</div>}
-            <button type="submit" className="sign-up-page__btn-submit" disabled={isLoading}>
-              {isLoading ? "Création du compte..." : "S'inscrire"}
-            </button>
-          </form>
-          <div className="sign-up-page__footer">
-            <span>Déjà un compte ? </span>
-            <Link to="/login" className="sign-up-page__link-login">
-              Se connecter
-            </Link>
+    <div className="sign-up-page">
+      <div className="sign-up-page__container">
+        <h1 className="sign-up-page__title">Créer un compte</h1>
+        <p className="sign-up-page__subtitle">Rejoignez Mirage-TV pour un accès illimité.</p>
+
+        {(formError || error) && <div className="sign-up-page__error-message">{formError || error}</div>}
+
+        <form onSubmit={handleSubmit}>
+          <div className="sign-up-page__form-group">
+            <label htmlFor="name">Nom complet</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Jean Dupont"
+              required
+              disabled={isLoading}
+            />
           </div>
+
+          <div className="sign-up-page__form-group">
+            <label htmlFor="mail">Adresse e-mail</label>
+            <input
+              id="mail"
+              name="mail"
+              type="email"
+              value={formData.mail}
+              onChange={handleInputChange}
+              placeholder="votre@email.com"
+              required
+              autoComplete="email"
+              disabled={isLoading}
+            />
+          </div>
+
+          <div className="sign-up-page__form-group">
+            <label htmlFor="password">Mot de passe</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="6+ caractères"
+              required
+              autoComplete="new-password"
+              disabled={isLoading}
+            />
+          </div>
+
+          <div className="sign-up-page__form-group">
+            <label htmlFor="confirmPassword">Confirmer le mot de passe</label>
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              placeholder="Retapez votre mot de passe"
+              required
+              autoComplete="new-password"
+              disabled={isLoading}
+            />
+          </div>
+
+          <button type="submit" className="sign-up-page__btn-submit" disabled={isLoading}>
+            {isLoading ? "Création en cours..." : "Créer le compte"}
+          </button>
+        </form>
+
+        <div className="sign-up-page__footer">
+          <p>
+            Déjà un compte ?{" "}
+            <Link to="/login" className="sign-up-page__link-login">
+              Connectez-vous
+            </Link>
+          </p>
         </div>
       </div>
     </div>

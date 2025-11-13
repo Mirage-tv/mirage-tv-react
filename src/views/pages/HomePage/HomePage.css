@@ -1,612 +1,187 @@
-/* ============================================================================
-   HomePage Component Styles (BEM Methodology)
-   ============================================================================ */
+/* =========================================================================
+   Hero Section Styles (Refonte)
+   ========================================================================= */
 
-/* Block: home-page */
-.home-page {
-  width: 100%;
-  min-height: 100vh;
-  background-color: #141414;
-  color: #ffffff;
-}
-
-/* ============================================================================
-   Hero Section
-   ============================================================================ */
-
-/* Block: hero-section */
-.home-page__hero-section {
+.hero {
   position: relative;
   width: 100%;
-  min-height: 80vh;
+  height: 90vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(20, 20, 20, 1));
-  padding: 2rem;
-  margin-bottom: 2rem;
+  padding: 0 5%;
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  transition: background-image 0.5s ease-in-out;
 }
 
-/* Element: hero-loading */
-.home-page__hero-loading {
-  width: 100%;
-  height: 80vh;
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, var(--color-bg-dark) 5%, transparent 40%);
+  z-index: 1;
+}
+
+.hero__content {
+  position: relative;
+  z-index: 2;
+  max-width: 50%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  color: #e5e5e5;
-}
-
-.home-page__hero-error {
-  font-size: 0.95rem;
-  margin-top: 0.5rem;
-  color: #7d88b6;
-}
-
-/* Hero Welcome Banner (dans la hero section) */
-.home-page__welcome-hero {
-  width: 100%;
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #232526 0%, #373b44 60%, #4f5b93 100%);
-  border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-  margin: 0 auto;
-}
-
-.home-page__welcome-hero-content {
-  text-align: center;
-  color: #fff;
-  padding: 3rem 2rem;
-  max-width: 600px;
-  width: 100%;
-}
-
-.home-page__welcome-hero-content h1 {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
-  letter-spacing: 0.01em;
-  color: #e0e6f7;
-  text-shadow: 0 2px 8px rgba(30, 30, 60, 0.18);
-}
-
-.home-page__welcome-hero-content p {
-  font-size: 1.2rem;
-  color: #bfc6e0;
-  margin-bottom: 2.5rem;
-}
-
-.home-page__welcome-hero-actions {
-  display: flex;
   gap: 1.5rem;
-  justify-content: center;
-  flex-wrap: wrap;
 }
 
-.home-page__btn-signup,
-.home-page__btn-login {
-  padding: 1rem 2.5rem;
-  font-size: 1.1rem;
-  font-weight: 700;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.18s;
-  outline: none;
+.hero__loading,
+.hero__welcome,
+.hero__error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 3;
 }
 
-.home-page__btn-signup {
-  background: linear-gradient(90deg, #667eea 0%, #4f5b93 100%);
-  color: #fff;
-  border: none;
-  box-shadow: 0 2px 8px rgba(76, 110, 220, 0.08);
+.hero__loading span,
+.hero__error {
+  color: var(--color-text-secondary);
+  font-size: var(--text-lg);
 }
 
-.home-page__btn-signup:hover {
-  background: linear-gradient(90deg, #4f5b93 0%, #667eea 100%);
-  color: #fff;
-  transform: translateY(-2px) scale(1.04);
-}
+/* =========================================================================
+   Hero Content Styles
+   ========================================================================= */
 
-.home-page__btn-login {
-  background: transparent;
-  color: #bfc6e0;
-  border: 2px solid #4f5b93;
-}
-
-.home-page__btn-login:hover {
-  background: #4f5b93;
-  color: #fff;
-  border-color: #667eea;
-  transform: translateY(-2px) scale(1.04);
-}
-
-/* Element: hero-banner */
-.home-page__hero-banner {
-  max-width: 1400px;
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 3rem;
-}
-
-/* Element: hero-content */
-.home-page__hero-content {
-  flex: 1;
-  max-width: 600px;
-  z-index: 2;
-}
-
-/* Element: hero-label */
-.home-page__hero-label {
+.hero__label {
   display: inline-block;
-  padding: 0.5rem 1rem;
-  background-color: rgba(229, 9, 20, 0.9);
-  border-radius: 4px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 1rem;
-}
-
-/* Element: hero-title */
-.home-page__hero-title {
-  font-size: 3.5rem;
+  padding: 0.25rem 0.75rem;
+  background-color: var(--color-accent-primary);
+  color: var(--color-bg-dark);
+  border-radius: var(--radius-sm);
   font-weight: 700;
-  margin-bottom: 1rem;
-  line-height: 1.1;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  align-self: flex-start;
 }
 
-/* Element: hero-synopsis */
-.home-page__hero-synopsis {
-  font-size: 1.125rem;
+.hero__title {
+  font-size: var(--text-4xl);
+  font-weight: 800;
+  line-height: 1.1;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.hero__meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.hero__meta span {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+}
+
+.hero__synopsis {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
   line-height: 1.6;
-  color: #e5e5e5;
-  margin-bottom: 1.5rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  max-width: 80%;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* Element: hero-meta */
-.home-page__hero-meta {
+.hero__actions {
   display: flex;
-  align-items: center;
   gap: 1rem;
-  margin-bottom: 2rem;
-  font-size: 0.875rem;
 }
 
-.home-page__hero-meta span {
-  padding: 0.25rem 0.75rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+.hero__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: 600;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.hero__btn--play {
+  background-color: var(--color-text-primary);
+  color: var(--color-bg-dark);
+}
+
+.hero__btn--play:hover {
+  background-color: var(--color-accent-primary);
+  transform: scale(1.05);
+}
+
+.hero__btn--info {
+  background-color: rgba(40, 40, 40, 0.7);
+  color: var(--color-text-primary);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Element: hero-actions */
-.home-page__hero-actions {
+.hero__btn--info:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* =========================================================================
+   Welcome Message Styles (quand pas de hero)
+   ========================================================================= */
+
+.hero__welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hero__welcome-title {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+}
+
+.hero__welcome-subtitle {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  max-width: 50ch;
+}
+
+.hero__welcome-actions {
   display: flex;
   gap: 1rem;
-  flex-wrap: wrap;
+  margin-top: 1rem;
 }
 
-/* Element: btn-play */
-.home-page__btn-play {
-  padding: 0.875rem 2rem;
-  background-color: #ffffff;
-  color: #000000;
-  border: none;
-  border-radius: 4px;
-  font-size: 1.125rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: background-color 0.2s ease;
-}
+/* =========================================================================
+   Legacy & Other HomePage Styles
+   ========================================================================= */
 
-.home-page__btn-play:hover {
-  background-color: #e5e5e5;
-}
-
-/* Element: btn-trailer */
-.home-page__btn-trailer {
-  padding: 0.875rem 2rem;
-  background-color: rgba(109, 109, 110, 0.7);
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  font-size: 1.125rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: background-color 0.2s ease;
-}
-
-.home-page__btn-trailer:hover {
-  background-color: rgba(109, 109, 110, 0.9);
-}
-
-/* Element: btn-info */
-.home-page__btn-info {
-  padding: 0.875rem 2rem;
-  background-color: rgba(109, 109, 110, 0.7);
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  font-size: 1.125rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: background-color 0.2s ease;
-}
-
-.home-page__btn-info:hover {
-  background-color: rgba(109, 109, 110, 0.9);
-}
-
-/* Element: hero-poster */
-.home-page__hero-poster {
-  flex: 0 0 auto;
-  max-width: 400px;
-}
-
-.home-page__hero-poster img {
+.home-page {
   width: 100%;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
-/* ============================================================================
-   Content Rails
-   ============================================================================ */
-
-/* Block: content-rail */
 .home-page__content-rail {
-  padding: 2rem;
-  margin-bottom: 2rem;
+  padding: 2rem 5%;
 }
 
 .home-page__content-rail h2 {
   font-size: 1.75rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
-  padding-left: 0.5rem;
-}
-
-/* Element: rail-loading */
-.home-page__rail-loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 200px;
-  font-size: 1.125rem;
-  color: #e5e5e5;
-}
-
-/* ============================================================================
-   Media Carousel
-   ============================================================================ */
-
-/* Element: media-carousel */
-.home-page__media-carousel {
-  display: flex;
-  gap: 1rem;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 1rem 0.5rem;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-}
-
-.home-page__media-carousel::-webkit-scrollbar {
-  height: 8px;
-}
-
-.home-page__media-carousel::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-}
-
-.home-page__media-carousel::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
-}
-
-.home-page__media-carousel::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
-}
-
-/* ============================================================================
-   Media Card
-   ============================================================================ */
-
-/* Element: media-card */
-.home-page__media-card {
-  position: relative;
-  flex: 0 0 auto;
-  width: 280px;
-  border-radius: 8px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  background-color: #1a1a1a;
-}
-
-.home-page__media-card:hover {
-  transform: scale(1.05);
-  z-index: 1;
-}
-
-/* Element: media-thumbnail */
-.home-page__media-thumbnail {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16/9;
-  overflow: hidden;
-}
-
-.home-page__media-thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Element: progress-bar */
-.home-page__progress-bar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Element: progress-fill */
-.home-page__progress-fill {
-  height: 100%;
-  background-color: #e50914;
-  transition: width 0.3s ease;
-}
-
-/* Element: media-info */
-.home-page__media-info {
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.home-page__media-info h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Element: btn-favorite */
-.home-page__btn-favorite {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.25rem;
-  transition: transform 0.2s ease;
-}
-
-.home-page__btn-favorite:hover {
-  transform: scale(1.2);
-}
-
-/* Element: btn-play-overlay */
-.home-page__btn-play-overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60px;
-  height: 60px;
-  background-color: rgba(255, 255, 255, 0.9);
-  border: none;
-  border-radius: 50%;
-  font-size: 1.5rem;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.home-page__media-card:hover .home-page__btn-play-overlay {
-  opacity: 1;
-}
-
-/* ============================================================================
-   Banners
-   ============================================================================ */
-
-/* Element: subscription-banner */
-.home-page__subscription-banner {
-  padding: 3rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  margin: 2rem;
-  border-radius: 8px;
-  text-align: center;
-}
-
-/* Element: welcome-banner */
-.home-page__welcome-banner {
-  padding: 3rem 2rem;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  margin: 2rem;
-  border-radius: 8px;
-  text-align: center;
-}
-
-/* Element: banner-content */
-.home-page__banner-content h3 {
-  font-size: 2rem;
-  font-weight: 700;
   margin-bottom: 1rem;
-}
-
-.home-page__banner-content p {
-  font-size: 1.125rem;
-  margin-bottom: 2rem;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* Element: banner-actions */
-.home-page__banner-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-/* Element: btn-subscribe */
-.home-page__btn-subscribe {
-  padding: 1rem 2.5rem;
-  background-color: #ffffff;
-  color: #667eea;
-  border: none;
-  border-radius: 4px;
-  font-size: 1.125rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.home-page__btn-subscribe:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-/* Element: btn-signup */
-.home-page__btn-signup {
-  padding: 1rem 2.5rem;
-  background-color: #ffffff;
-  color: #f5576c;
-  border: none;
-  border-radius: 4px;
-  font-size: 1.125rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.home-page__btn-signup:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-/* Element: btn-login */
-.home-page__btn-login {
-  padding: 1rem 2.5rem;
-  background-color: transparent;
-  color: #ffffff;
-  border: 2px solid #ffffff;
-  border-radius: 4px;
-  font-size: 1.125rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.home-page__btn-login:hover {
-  background-color: #ffffff;
-  color: #f5576c;
-  transform: translateY(-2px);
-}
-
-/* ============================================================================
-   Responsive Design
-   ============================================================================ */
-
-@media (max-width: 1024px) {
-  .home-page__hero-title {
-    font-size: 2.5rem;
-  }
-
-  .home-page__hero-banner {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .home-page__hero-content {
-    max-width: 100%;
-  }
-
-  .home-page__hero-actions {
-    justify-content: center;
-  }
-}
-
-@media (max-width: 768px) {
-  .home-page__hero-title {
-    font-size: 2rem;
-  }
-
-  .home-page__hero-synopsis {
-    font-size: 1rem;
-  }
-
-  .home-page__media-card {
-    width: 220px;
-  }
-
-  .home-page__content-rail {
-    padding: 1rem;
-  }
-
-  .home-page__content-rail h2 {
-    font-size: 1.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .home-page__hero-section {
-    padding: 1rem;
-    min-height: 60vh;
-  }
-
-  .home-page__hero-title {
-    font-size: 1.75rem;
-  }
-
-  .home-page__btn-play,
-  .home-page__btn-trailer,
-  .home-page__btn-info {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-  }
-
-  .home-page__media-card {
-    width: 180px;
-  }
-
-  .home-page__banner-content h3 {
-    font-size: 1.5rem;
-  }
 }

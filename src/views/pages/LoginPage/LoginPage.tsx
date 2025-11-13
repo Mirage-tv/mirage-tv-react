@@ -20,7 +20,6 @@ export const LoginPage = () => {
       ...prev,
       [name]: value,
     }));
-    // Clear errors when user starts typing
     if (formError) setFormError(null);
     if (error) clearError();
   };
@@ -29,7 +28,6 @@ export const LoginPage = () => {
     e.preventDefault();
     setFormError(null);
 
-    // Validation côté client
     if (!formData.mail || !formData.password) {
       setFormError("Veuillez remplir tous les champs.");
       return;
@@ -40,7 +38,6 @@ export const LoginPage = () => {
       return;
     }
 
-    // Tentative de connexion
     const result = await login({
       mail: formData.mail,
       password: formData.password,
@@ -53,59 +50,57 @@ export const LoginPage = () => {
     }
   };
 
-  const handleForgotPassword = () => {
-    navigate("/forgot-password");
-  };
-
   return (
-    <div className="login-page__bg">
-      <div className="login-page__center">
-        <div className="login-page__card">
-          <h1 className="login-page__title">Connexion à Mirage-TV</h1>
-          <p className="login-page__subtitle">Connectez-vous pour profiter de tous les contenus</p>
-          <form onSubmit={handleSubmit} className="login-page__form">
-            <div className="login-page__form-group">
-              <label htmlFor="mail">Adresse e-mail</label>
-              <input
-                id="mail"
-                name="mail"
-                type="email"
-                value={formData.mail}
-                onChange={handleInputChange}
-                placeholder="votre@email.com"
-                required
-                autoComplete="email"
-                disabled={isLoading}
-              />
-            </div>
-            <div className="login-page__form-group">
-              <label htmlFor="password">Mot de passe</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                placeholder="Votre mot de passe"
-                required
-                autoComplete="current-password"
-                disabled={isLoading}
-              />
-            </div>
-            {(formError || error) && <div className="login-page__error-message">{formError || error}</div>}
-            <button type="submit" className="login-page__btn-submit" disabled={isLoading}>
-              {isLoading ? "Connexion..." : "Se connecter"}
-            </button>
-            <button type="button" className="login-page__btn-forgot-password" onClick={handleForgotPassword} disabled={isLoading}>
-              Mot de passe oublié ?
-            </button>
-          </form>
-          <div className="login-page__footer">
-            <span>Pas encore de compte ? </span>
-            <Link to="/signup" className="login-page__link-signup">
-              S'inscrire
-            </Link>
+    <div className="login-page">
+      <div className="login-page__container">
+        <h1 className="login-page__title">Connexion</h1>
+        <p className="login-page__subtitle">Accédez à votre compte pour continuer.</p>
+
+        {(formError || error) && <div className="login-page__error-message">{formError || error}</div>}
+
+        <form onSubmit={handleSubmit}>
+          <div className="login-page__form-group">
+            <label htmlFor="mail">Adresse e-mail</label>
+            <input
+              id="mail"
+              name="mail"
+              type="email"
+              value={formData.mail}
+              onChange={handleInputChange}
+              placeholder="votre@email.com"
+              required
+              autoComplete="email"
+              disabled={isLoading}
+            />
           </div>
+
+          <div className="login-page__form-group">
+            <label htmlFor="password">Mot de passe</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="Votre mot de passe"
+              required
+              autoComplete="current-password"
+              disabled={isLoading}
+            />
+          </div>
+
+          <button type="submit" className="login-page__btn-submit" disabled={isLoading}>
+            {isLoading ? "Connexion..." : "Se connecter"}
+          </button>
+        </form>
+
+        <div className="login-page__footer">
+          <p>
+            Pas encore de compte ?{" "}
+            <Link to="/signup" className="login-page__link-signup">
+              Inscrivez-vous
+            </Link>
+          </p>
         </div>
       </div>
     </div>

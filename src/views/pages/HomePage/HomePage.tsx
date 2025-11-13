@@ -8,6 +8,8 @@ import { useAuth } from "../../../core/hooks";
 import { useFavoritesStore } from "../../../infrastructure/store/favoritesStore";
 import { useFeaturedStore } from "../../../infrastructure/store/featuredStore";
 import { useViewingHistoryStore } from "../../../infrastructure/store/viewingHistoryStore";
+import { Carousel } from "../../components/Carousel/Carousel";
+import { PromoSection } from "../../components/PromoSection/PromoSection";
 
 export const HomePage = () => {
   const navigate = useNavigate();
@@ -73,169 +75,142 @@ export const HomePage = () => {
 
   return (
     <div className="home-page">
-      {/* Hero Banner Section */}
-      <section className="home-page__hero-section">
+      {/* =========================================================================
+          Hero Section
+          ========================================================================== */}
+      <section
+        className="hero"
+        style={{
+          backgroundImage: heroBanner
+            ? `linear-gradient(to top, rgba(18,18,18,1) 0%, rgba(18,18,18,0.2) 50%), url(${heroBanner.previewMedia.posterURL})`
+            : "none",
+        }}
+      >
         {isLoadingHero ? (
-          <div className="home-page__hero-loading">Chargement du contenu vedette...</div>
+          <div className="hero__loading">
+            <span>Chargement...</span>
+          </div>
         ) : heroBanner ? (
-          <div className="home-page__hero-banner">
-            <div className="home-page__hero-content">
-              {heroBanner.label && <span className="home-page__hero-label">{heroBanner.label}</span>}
-              <h1 className="home-page__hero-title">{heroBanner.previewMedia.name}</h1>
-              <p className="home-page__hero-synopsis">{heroBanner.previewMedia.synopsis}</p>
-
-              <div className="home-page__hero-meta">
-                <span className="home-page__age-rating">{heroBanner.previewMedia.ageRange}</span>
-                <span className="home-page__quality">{heroBanner.previewMedia.quality}</span>
-                <span className="home-page__duration">{heroBanner.previewMedia.duration}</span>
-              </div>
-
-              <div className="home-page__hero-actions">
-                <button className="home-page__btn-play" onClick={() => handlePlayMedia(heroBanner.previewMedia.id!)}>
-                  ▶️ Lecture
-                </button>
-                {heroBanner.previewMedia.videoURLs?.trailerURL && (
-                  <button className="home-page__btn-trailer" onClick={() => navigate(`/trailer/${heroBanner.previewMedia.id}`)}>
-                    🎬 Bande-annonce
-                  </button>
-                )}
-                <button className="home-page__btn-info" onClick={() => navigate(`/media/${heroBanner.previewMedia.id}`)}>
-                  ℹ️ Plus d'infos
-                </button>
-              </div>
+          <div className="hero__content">
+            {heroBanner.label && <span className="hero__label">{heroBanner.label}</span>}
+            <h1 className="hero__title">{heroBanner.previewMedia.name}</h1>
+            <div className="hero__meta">
+              <span>{heroBanner.previewMedia.ageRange}</span>
+              <span>{heroBanner.previewMedia.duration}</span>
+              <span>{heroBanner.previewMedia.quality}</span>
             </div>
-
-            {heroBanner.previewMedia.posterURL && (
-              <div className="home-page__hero-poster">
-                <img src={heroBanner.previewMedia.posterURL} alt={heroBanner.previewMedia.name} />
-              </div>
-            )}
+            <p className="hero__synopsis\">{heroBanner.previewMedia.synopsis}</p>
+            <div className="hero__actions">
+              <button className="hero__btn hero__btn--play" onClick={() => handlePlayMedia(heroBanner.previewMedia.id!)}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                <span>Play</span>
+              </button>
+              <button className="hero__btn hero__btn--info" onClick={() => navigate(`/media/${heroBanner.previewMedia.id}`)}>
+                <span>More Info</span>
+              </button>
+            </div>
+            <div className="hero__brand">
+              <img src="/src/assets/logo.png" alt="Mirage Originals" />
+              <span>Originals</span>
+            </div>
           </div>
-        ) : error ? (
-          <div className="home-page__hero-loading">
-            <p>⚠️ Erreur lors du chargement du contenu</p>
-            <span className="home-page__hero-error">{error}</span>
-          </div>
-        ) : !isAuthenticated ? (
-          <div className="home-page__welcome-hero">
-            <div className="home-page__welcome-hero-content">
-              <h1>Bienvenue sur Mirage-TV</h1>
-              <p>Inscrivez-vous pour commencer à regarder du contenu incroyable</p>
-              <div className="home-page__welcome-hero-actions">
-                <button className="home-page__btn-signup" onClick={() => navigate("/signup")}>
+        ) : (
+          !isAuthenticated && (
+            <div className="hero__welcome">
+              <h1 className="hero__welcome-title">Bienvenue sur Mirage-TV</h1>
+              <p className="hero__welcome-subtitle">Inscrivez-vous pour commencer à regarder du contenu incroyable.</p>
+              <div className="hero__welcome-actions">
+                <button className="hero__btn hero__btn--play" onClick={() => navigate("/signup")}>
                   S'inscrire
                 </button>
-                <button className="home-page__btn-login" onClick={() => navigate("/login")}>
+                <button className="hero__btn hero__btn--info" onClick={() => navigate("/login")}>
                   Se connecter
                 </button>
               </div>
             </div>
-          </div>
-        ) : null}
+          )
+        )}
+        {error && <div className="hero__error">Erreur de chargement: {error}</div>}
       </section>
+
+      {/* Promo Section */}
+      <PromoSection />
 
       {/* Continue Watching Section */}
       {isAuthenticated && continueWatching.length > 0 && (
-        <section className="home-page__content-rail">
-          <h2>Reprendre la lecture</h2>
-          {isLoadingHistory ? (
-            <div className="home-page__rail-loading">Chargement...</div>
-          ) : (
-            <div className="home-page__media-carousel">
-              {continueWatching.map((media) => (
-                <div key={media.id} className="home-page__media-card">
-                  <div className="home-page__media-thumbnail">
-                    <img src={media.thumbnailUrl} alt={media.name} />
-                    {media.progress && (
-                      <div className="home-page__progress-bar">
-                        <div className="home-page__progress-fill" style={{ width: `${media.progress * 100}%` }} />
-                      </div>
-                    )}
-                  </div>
-                  <div className="home-page__media-info">
-                    <h3>{media.name}</h3>
-                    <button className="home-page__btn-favorite" onClick={() => handleToggleFavorite(media.id!)}>
-                      {media.isFavorite ? "❤️" : "🤍"}
-                    </button>
-                  </div>
-                  <button className="home-page__btn-play-overlay" onClick={() => handlePlayMedia(media.id!)}>
-                    ▶️
+        <Carousel title="Reprendre la lecture">
+          {continueWatching.map((media) => (
+            <div key={media.id} className="media-card">
+              <img src={media.thumbnailUrl} alt={media.name} />
+              {media.progress && (
+                <div className="media-card__progress-bar">
+                  <div className="media-card__progress-fill" style={{ width: `${media.progress * 100}%` }}></div>
+                </div>
+              )}
+              <div className="media-card__overlay">
+                <h3 className="media-card__title">{media.name}</h3>
+                <div className="media-card__actions">
+                  <button className="media-card__action-btn" onClick={() => handlePlayMedia(media.id!)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
                   </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Trending Now Section */}
-      <section className="home-page__content-rail">
-        <h2>Tendances actuelles</h2>
-        {isLoadingTrending ? (
-          <div className="home-page__rail-loading">Chargement des tendances...</div>
-        ) : trendingMedia && trendingMedia.length > 0 ? (
-          <div className="home-page__media-carousel">
-            {trendingMedia.map((media) => (
-              <div key={media.id} className="home-page__media-card">
-                <div className="home-page__media-thumbnail">
-                  <img src={media.thumbnailUrl} alt={media.name} />
-                  {media.progress && (
-                    <div className="home-page__progress-bar">
-                      <div className="home-page__progress-fill" style={{ width: `${media.progress * 100}%` }} />
-                    </div>
-                  )}
-                </div>
-                <div className="home-page__media-info">
-                  <h3>{media.name}</h3>
-                  <button className="home-page__btn-favorite" onClick={() => handleToggleFavorite(media.id!)}>
+                  <button className="media-card__action-btn" onClick={() => handleToggleFavorite(media.id!)}>
                     {media.isFavorite ? "❤️" : "🤍"}
                   </button>
                 </div>
-                <button className="home-page__btn-play-overlay" onClick={() => handlePlayMedia(media.id!)}>
-                  ▶️
+              </div>
+            </div>
+          ))}
+        </Carousel>
+      )}
+
+      {/* Trending Now Section */}
+      <Carousel title="Tendances actuelles">
+        {trendingMedia?.map((media) => (
+          <div key={media.id} className="media-card">
+            <img src={media.thumbnailUrl} alt={media.name} />
+            <div className="media-card__overlay">
+              <h3 className="media-card__title">{media.name}</h3>
+              <div className="media-card__actions">
+                <button className="media-card__action-btn" onClick={() => handlePlayMedia(media.id!)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </button>
+                <button className="media-card__action-btn" onClick={() => handleToggleFavorite(media.id!)}>
+                  {media.isFavorite ? "❤️" : "🤍"}
                 </button>
               </div>
-            ))}
+            </div>
           </div>
-        ) : (
-          <div className="home-page__rail-loading">
-            <p>Aucun contenu tendance disponible</p>
-          </div>
-        )}
-      </section>
+        ))}
+      </Carousel>
 
       {/* My List Section */}
       {isAuthenticated && favorites.length > 0 && (
-        <section className="home-page__content-rail">
-          <h2>Ma Liste</h2>
-          {isLoadingFavorites ? (
-            <div className="home-page__rail-loading">Chargement de vos favoris...</div>
-          ) : (
-            <div className="home-page__media-carousel">
-              {favorites.map((media) => (
-                <div key={media.id} className="home-page__media-card">
-                  <div className="home-page__media-thumbnail">
-                    <img src={media.thumbnailUrl} alt={media.name} />
-                    {media.progress && (
-                      <div className="home-page__progress-bar">
-                        <div className="home-page__progress-fill" style={{ width: `${media.progress * 100}%` }} />
-                      </div>
-                    )}
-                  </div>
-                  <div className="home-page__media-info">
-                    <h3>{media.name}</h3>
-                    <button className="home-page__btn-favorite" onClick={() => handleToggleFavorite(media.id!)}>
-                      ❤️
-                    </button>
-                  </div>
-                  <button className="home-page__btn-play-overlay" onClick={() => handlePlayMedia(media.id!)}>
-                    ▶️
+        <Carousel title="Ma Liste">
+          {favorites.map((media) => (
+            <div key={media.id} className="media-card">
+              <img src={media.thumbnailUrl} alt={media.name} />
+              <div className="media-card__overlay">
+                <h3 className="media-card__title">{media.name}</h3>
+                <div className="media-card__actions">
+                  <button className="media-card__action-btn" onClick={() => handlePlayMedia(media.id!)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </button>
+                  <button className="media-card__action-btn" onClick={() => handleToggleFavorite(media.id!)}>
+                    ❤️
                   </button>
                 </div>
-              ))}
+              </div>
             </div>
-          )}
-        </section>
+          ))}
+        </Carousel>
       )}
 
       {/* User Status Banner */}

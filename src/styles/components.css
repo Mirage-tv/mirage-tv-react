@@ -35,7 +35,9 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   background-color: var(--color-bg-tertiary);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
   cursor: pointer;
 }
 
@@ -123,12 +125,7 @@
 .hero__gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to right,
-    rgba(10, 10, 10, 1) 0%,
-    rgba(10, 10, 10, 0.8) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(to right, rgba(10, 10, 10, 1) 0%, rgba(10, 10, 10, 0.8) 50%, transparent 100%);
 }
 
 .hero__content {
@@ -247,17 +244,6 @@
 .navbar__link:hover,
 .navbar__link--active {
   color: var(--color-text-primary);
-}
-
-.navbar__link--active::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 0.125rem;
-  background: var(--gradient-primary);
-  border-radius: var(--radius-full);
 }
 
 .navbar__toggle {

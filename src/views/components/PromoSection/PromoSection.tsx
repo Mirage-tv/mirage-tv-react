@@ -1,0 +1,26 @@
+import promoImage from "../../../assets/couple-hijab-tele.jpg";
+import logo from "../../../assets/logo.png";
+import "./PromoSection.css";
+
+export const PromoSection = () => {
+  return (
+    <div className="promo-section">
+      <div className="promo-section__image">
+        <img src={promoImage} alt="Couple watching TV" />
+      </div>
+      <div className="promo-section__content">
+        <div className="promo-section__logo">
+          <img src={logo} alt="Mirage TV" />
+          <span>mirage</span>
+        </div>
+        <h2 className="promo-section__title">
+          Watch now <br />
+          in any language
+        </h2>
+        <p className="promo-section__subtitle">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        </p>
+      </div>
+    </div>
+  );
+};

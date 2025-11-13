@@ -2,8 +2,6 @@ import { lazy, Suspense } from "react";
 import type { RouteObject } from "react-router-dom";
 import { Layout } from "./views/components/Layout/Layout";
 import { LoadingFallback } from "./views/components/Routing/Loading/LoadingFallback";
-import { ProtectedRoute } from "./views/components/Routing/Routes/ProctectedRoute";
-import { PublicRoute } from "./views/components/Routing/Routes/PublicRoute";
 
 const HomePage = lazy(() => import("./views/pages/HomePage/HomePage").then((m) => ({ default: m.HomePage })));
 const LoginPage = lazy(() => import("./views/pages/LoginPage/LoginPage").then((m) => ({ default: m.LoginPage })));
@@ -32,9 +30,7 @@ export const routes: RouteObject[] = [
         path: "login",
         element: (
           <Suspense fallback={<LoadingFallback />}>
-            <PublicRoute>
-              <LoginPage />
-            </PublicRoute>
+            <LoginPage />
           </Suspense>
         ),
       },
@@ -42,9 +38,7 @@ export const routes: RouteObject[] = [
         path: "signup",
         element: (
           <Suspense fallback={<LoadingFallback />}>
-            <PublicRoute>
-              <SignUpPage />
-            </PublicRoute>
+            <SignUpPage />
           </Suspense>
         ),
       },
@@ -52,9 +46,7 @@ export const routes: RouteObject[] = [
         path: "forgot-password",
         element: (
           <Suspense fallback={<LoadingFallback />}>
-            <PublicRoute>
-              <div>Forgot Password Page - To be implemented</div>
-            </PublicRoute>
+            <div>Forgot Password Page - To be implemented</div>
           </Suspense>
         ),
       },
@@ -62,9 +54,7 @@ export const routes: RouteObject[] = [
         path: "watch/:mediaId",
         element: (
           <Suspense fallback={<LoadingFallback />}>
-            <ProtectedRoute requireSubscription>
-              <WatchPage />
-            </ProtectedRoute>
+            <WatchPage />
           </Suspense>
         ),
       },
@@ -72,9 +62,7 @@ export const routes: RouteObject[] = [
         path: "media/:id",
         element: (
           <Suspense fallback={<LoadingFallback />}>
-            <ProtectedRoute>
-              <div>Media Detail Page - To be implemented</div>
-            </ProtectedRoute>
+            <div>Media Detail Page - To be implemented</div>
           </Suspense>
         ),
       },
@@ -82,9 +70,7 @@ export const routes: RouteObject[] = [
         path: "shows/:id",
         element: (
           <Suspense fallback={<LoadingFallback />}>
-            <ProtectedRoute>
-              <div>Show Detail Page - To be implemented</div>
-            </ProtectedRoute>
+            <div>Show Detail Page - To be implemented</div>
           </Suspense>
         ),
       },
@@ -116,9 +102,7 @@ export const routes: RouteObject[] = [
         path: "my-list",
         element: (
           <Suspense fallback={<LoadingFallback />}>
-            <ProtectedRoute>
-              <MyListPage />
-            </ProtectedRoute>
+            <MyListPage />
           </Suspense>
         ),
       },
@@ -126,9 +110,7 @@ export const routes: RouteObject[] = [
         path: "profile",
         element: (
           <Suspense fallback={<LoadingFallback />}>
-            <ProtectedRoute>
-              <div>Profile Page - To be implemented</div>
-            </ProtectedRoute>
+            <div>Profile Page - To be implemented</div>
           </Suspense>
         ),
       },
@@ -136,9 +118,7 @@ export const routes: RouteObject[] = [
         path: "subscribe",
         element: (
           <Suspense fallback={<LoadingFallback />}>
-            <ProtectedRoute>
-              <div>Subscription Page - To be implemented</div>
-            </ProtectedRoute>
+            <div>Subscription Page - To be implemented</div>
           </Suspense>
         ),
       },
@@ -146,9 +126,7 @@ export const routes: RouteObject[] = [
         path: "account",
         element: (
           <Suspense fallback={<LoadingFallback />}>
-            <ProtectedRoute>
-              <div>Account Settings Page - To be implemented</div>
-            </ProtectedRoute>
+            <div>Account Settings Page - To be implemented</div>
           </Suspense>
         ),
       },
