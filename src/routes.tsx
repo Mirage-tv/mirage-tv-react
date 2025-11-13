@@ -11,6 +11,7 @@ const WatchPage = lazy(() => import("./views/pages/WatchPage/WatchPage").then((m
 const SignUpPage = lazy(() => import("./views/pages/SignUpPage/SignUpPage").then((m) => ({ default: m.SignUpPage })));
 const MoviesPage = lazy(() => import("./views/pages/MoviesPage/MoviesPage").then((m) => ({ default: m.MoviesPage })));
 const ShowsPage = lazy(() => import("./views/pages/ShowsPage/ShowsPage").then((m) => ({ default: m.ShowsPage })));
+const MyListPage = lazy(() => import("./views/pages/MyListPage/MyListPage").then((m) => ({ default: m.MyListPage })));
 
 // Ajoutez ici les autres pages lazy si besoin
 
@@ -116,7 +117,7 @@ export const routes: RouteObject[] = [
         element: (
           <Suspense fallback={<LoadingFallback />}>
             <ProtectedRoute>
-              <div>My List Page - To be implemented</div>
+              <MyListPage />
             </ProtectedRoute>
           </Suspense>
         ),

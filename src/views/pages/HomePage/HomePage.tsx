@@ -116,8 +116,7 @@ export const HomePage = () => {
             <p>⚠️ Erreur lors du chargement du contenu</p>
             <span className="home-page__hero-error">{error}</span>
           </div>
-        ) : (
-          // Affichage de la bannière de bienvenue dans la hero section
+        ) : !isAuthenticated ? (
           <div className="home-page__welcome-hero">
             <div className="home-page__welcome-hero-content">
               <h1>Bienvenue sur Mirage-TV</h1>
@@ -132,7 +131,7 @@ export const HomePage = () => {
               </div>
             </div>
           </div>
-        )}
+        ) : null}
       </section>
 
       {/* Continue Watching Section */}
@@ -248,24 +247,6 @@ export const HomePage = () => {
             <button className="home-page__btn-subscribe" onClick={() => navigate("/subscribe")}>
               S'abonner maintenant
             </button>
-          </div>
-        </section>
-      )}
-
-      {/* Welcome Message for Non-Authenticated Users */}
-      {!isAuthenticated && (
-        <section className="home-page__welcome-banner">
-          <div className="home-page__banner-content">
-            <h3>Bienvenue sur Mirage-TV</h3>
-            <p>Inscrivez-vous pour commencer à regarder du contenu incroyable</p>
-            <div className="home-page__banner-actions">
-              <button className="home-page__btn-signup" onClick={() => navigate("/signup")}>
-                S'inscrire
-              </button>
-              <button className="home-page__btn-login" onClick={() => navigate("/login")}>
-                Se connecter
-              </button>
-            </div>
           </div>
         </section>
       )}
