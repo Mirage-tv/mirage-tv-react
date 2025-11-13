@@ -3,10 +3,17 @@
 
 import { type APIError } from "../../../core/domain/types";
 
+// Default base URL for API requests
+// En développement, utilise le proxy Vite (chemin relatif)
+// En production, utilisera l'URL complète ou sera configuré via variable d'environnement
+const DEFAULT_BASE_URL = import.meta.env.DEV
+  ? "" // Chemin relatif, Vite va proxyfier vers https://mirage-divine-moon-57.fly.dev
+  : "https://mirage-divine-moon-57.fly.dev";
+
 export interface RequestConfig {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   headers?: Record<string, string>;
-  body?: any;
+  body?: unknown;
   params?: Record<string, string | number | boolean>;
 }
 
@@ -14,7 +21,7 @@ export class HttpClient {
   private baseURL: string;
   private defaultHeaders: Record<string, string>;
 
-  constructor(baseURL: string = "") {
+  constructor(baseURL: string = DEFAULT_BASE_URL) {
     this.baseURL = baseURL;
     this.defaultHeaders = {
       "Content-Type": "application/json",
@@ -25,7 +32,9 @@ export class HttpClient {
    * Build URL with query parameters
    */
   private buildURL(endpoint: string, params?: Record<string, string | number | boolean>): string {
-    const url = new URL(endpoint, this.baseURL || window.location.origin);
+    // Si baseURL est vide (mode dev avec proxy), on utilise juste l'endpoint
+    // Sinon on construit une URL complète
+    const url = this.baseURL ? new URL(endpoint, this.baseURL) : new URL(endpoint, window.location.origin);
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
@@ -126,14 +135,14 @@ export class HttpClient {
   /**
    * POST request
    */
-  async post<T>(endpoint: string, body?: any): Promise<T> {
+  async post<T>(endpoint: string, body?: unknown): Promise<T> {
     return this.request<T>(endpoint, { method: "POST", body });
   }
 
   /**
    * PUT request
    */
-  async put<T>(endpoint: string, body?: any): Promise<T> {
+  async put<T>(endpoint: string, body?: unknown): Promise<T> {
     return this.request<T>(endpoint, { method: "PUT", body });
   }
 
@@ -147,7 +156,7 @@ export class HttpClient {
   /**
    * PATCH request
    */
-  async patch<T>(endpoint: string, body?: any): Promise<T> {
+  async patch<T>(endpoint: string, body?: unknown): Promise<T> {
     return this.request<T>(endpoint, { method: "PATCH", body });
   }
 
@@ -174,4 +183,4 @@ export class HttpClient {
 }
 
 // Export singleton instance
-export const httpClient = new HttpClient("/");
+export const httpClient = new HttpClient();

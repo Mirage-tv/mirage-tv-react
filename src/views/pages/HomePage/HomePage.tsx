@@ -145,7 +145,7 @@ export const HomePage = () => {
         <h2>Trending Now</h2>
         {isLoadingTrending ? (
           <div className="home-page__rail-loading">Loading trending...</div>
-        ) : (
+        ) : trendingMedia && trendingMedia.length > 0 ? (
           <div className="home-page__media-carousel">
             {trendingMedia.map((media) => (
               <div key={media.id} className="home-page__media-card">
@@ -169,6 +169,8 @@ export const HomePage = () => {
               </div>
             ))}
           </div>
+        ) : (
+          <div className="home-page__no-content">No trending content available</div>
         )}
       </section>
 

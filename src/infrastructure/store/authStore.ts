@@ -2,7 +2,7 @@
 // Manages authentication state and user session using Zustand
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import type { CreateUserReq, LoginReq, UserDTO } from "../../core/domain/types";
 import { authService, userService } from "../adapters/api";
 
@@ -123,6 +123,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
+      storage: createJSONStorage(() => sessionStorage), // Utilise sessionStorage au lieu de localStorage
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,

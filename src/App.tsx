@@ -1,17 +1,16 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, useRoutes } from "react-router-dom";
 import "./App.css";
-import { HomePage } from "./views/pages/HomePage/HomePage";
-import { LoginPage } from "./views/pages/LoginPage/LoginPage";
-import { SignUpPage } from "./views/pages/SignUpPage/SignUpPage";
+import { routes } from "./routes";
+
+function AppRoutes() {
+  const routing = useRoutes(routes);
+  return routing;
+}
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/signin" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-      </Routes>
+      <AppRoutes />
     </BrowserRouter>
   );
 }

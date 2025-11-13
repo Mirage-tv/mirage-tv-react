@@ -51,7 +51,8 @@ export const useFeaturedStore = create<FeaturedState>((set) => ({
     try {
       const trendingMedia = await featuredMediaService.getTrendingNow();
       set({
-        trendingMedia,
+        // S'assurer que trendingMedia est toujours un tableau
+        trendingMedia: Array.isArray(trendingMedia) ? trendingMedia : [],
         isLoadingTrending: false,
       });
     } catch (error) {
@@ -59,6 +60,8 @@ export const useFeaturedStore = create<FeaturedState>((set) => ({
       set({
         error: errorMessage || "Failed to fetch trending media",
         isLoadingTrending: false,
+        // Garder un tableau vide en cas d'erreur
+        trendingMedia: [],
       });
       throw error;
     }
