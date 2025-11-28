@@ -16,13 +16,13 @@ export const HomePage = () => {
   const { isAuthenticated, isSubscriber } = useAuth();
 
   // Featured content
-  const { heroBanner, trendingMedia, fetchHeroBanner, fetchTrendingNow, isLoadingHero, isLoadingTrending, error } = useFeaturedStore();
+  const { heroBanner, trendingMedia, fetchHeroBanner, fetchTrendingNow, isLoadingHero, error } = useFeaturedStore();
 
   // Continue watching
-  const { continueWatching, fetchContinueWatching, isLoading: isLoadingHistory } = useViewingHistoryStore();
+  const { continueWatching, fetchContinueWatching } = useViewingHistoryStore();
 
   // Favorites
-  const { favorites, fetchFavorites, toggleFavorite, isLoading: isLoadingFavorites } = useFavoritesStore();
+  const { favorites, fetchFavorites, toggleFavorite } = useFavoritesStore();
 
   // Load featured content on mount
   useEffect(() => {

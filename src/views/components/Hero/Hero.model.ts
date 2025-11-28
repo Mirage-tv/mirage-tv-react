@@ -1,7 +1,7 @@
-import { Movie } from '../../../core/domain/Movie';
+import type { MediaThumbnail } from "../../../core/domain/types";
 
 export interface HeroProps {
-  movie: Movie;
+  movie: MediaThumbnail;
   onPlayClick?: () => void;
   onInfoClick?: () => void;
 }

@@ -1,10 +1,10 @@
-import { LoaderProps } from './Loader.model';
-import './Loader.css';
+import "./Loader.css";
+import type { LoaderProps } from "./Loader.model";
 
-export const Loader = ({ size = 'base' }: LoaderProps) => {
+export const Loader = ({ size = "base" }: LoaderProps) => {
   return (
     <div className="loader-container">
-      <div className={`loader ${size !== 'base' ? `loader--${size}` : ''}`} />
+      <div className={`loader ${size !== "base" ? `loader--${size}` : ""}`} />
     </div>
   );
 };

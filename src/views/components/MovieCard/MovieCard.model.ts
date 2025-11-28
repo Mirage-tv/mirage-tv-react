@@ -1,13 +1,9 @@
 /**
  * MovieCard Types & Interfaces
  */
-
-/**
- * MovieCard Types & Interfaces
- */
-import type { Movie } from "../../../core/domain/Movie";
+import type { MediaThumbnail } from "../../../core/domain/types";
 
 export interface MovieCardProps {
-  movie: Movie;
+  movie: MediaThumbnail;
   onClick?: () => void;
 }

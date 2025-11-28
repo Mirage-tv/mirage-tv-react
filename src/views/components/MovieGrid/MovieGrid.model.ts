@@ -1,6 +1,6 @@
-import { Movie } from '../../../core/domain/Movie';
+import type { MediaThumbnail } from "../../../core/domain/types";
 
 export interface MovieGridProps {
-  movies: Movie[];
-  onMovieClick: (movie: Movie) => void;
+  movies: MediaThumbnail[];
+  onMovieClick: (movie: MediaThumbnail) => void;
 }
