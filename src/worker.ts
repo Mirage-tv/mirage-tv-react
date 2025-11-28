@@ -3,8 +3,15 @@
  * Handles static asset serving and SPA routing
  */
 
+interface Env {
+  ASSETS: {
+    fetch: (request: Request) => Promise<Response>;
+  };
+  API_URL?: string;
+}
+
 export default {
-  async fetch(request: Request, env: any): Promise<Response> {
+  async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     const pathname = url.pathname;
 
@@ -34,7 +41,7 @@ export default {
 
       try {
         return await fetch(apiRequest);
-      } catch (error) {
+      } catch (_error) {
         return new Response(JSON.stringify({ error: "API request failed" }), {
           status: 502,
           headers: { "Content-Type": "application/json" },
