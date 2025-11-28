@@ -41,7 +41,7 @@ export default {
 
       try {
         return await fetch(apiRequest);
-      } catch (_error) {
+      } catch {
         return new Response(JSON.stringify({ error: "API request failed" }), {
           status: 502,
           headers: { "Content-Type": "application/json" },
