@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "include": [
+    "/index.html",
+    "/assets/*",
+    "/*.js",
+    "/*.css",
+    "/*.png",
+    "/*.jpg",
+    "/*.svg",
+    "/*.ico"
+  ],
+  "exclude": [
+    "/api/*"
+  ],
+  "rules": [
+    {
+      "condition": {
+        "if": "NOT request.uri.startsWith(\"/api/\")"
+      },
+      "status": 200,
+      "path": "/index.html"
+    }
+  ]
+}

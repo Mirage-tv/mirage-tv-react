@@ -6,7 +6,7 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node build-worker.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "deploy": "npm run build && wrangler deploy"
@@ -16,10 +16,10 @@
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.5",
     "zod": "^4.1.12",
-    "zustand": "^5.0.8",
-    "wrangler": "^3.0.0"
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "wrangler": "^3.0.0",
     "@eslint/js": "^9.33.0",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
