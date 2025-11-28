@@ -47,4 +47,12 @@ if (!fs.existsSync(wranglerPath)) {
   process.exit(1);
 }
 
+// Copy .assetsignore to dist directory
+const assetsignoreSrc = path.join(__dirname, ".assetsignore");
+const assetsignoreDist = path.join(distDir, ".assetsignore");
+if (fs.existsSync(assetsignoreSrc)) {
+  fs.copyFileSync(assetsignoreSrc, assetsignoreDist);
+  console.log("✓ .assetsignore copied to dist/");
+}
+
 console.log("✓ Build script completed successfully");
