@@ -55,10 +55,9 @@ export default {
     }
 
     // API proxy - forward to backend
+    // TODO: Replace with the correct backend API URL (not the admin interface)
     if (pathname.startsWith("/api/")) {
-      // Remove /api prefix before forwarding to backend
-      const backendPath = pathname.replace(/^\/api/, "");
-      const backendUrl = `${env.API_URL || "https://mirage-divine-moon-57.fly.dev"}${backendPath}${url.search}`;
+      const backendUrl = `${env.API_URL || "https://mirage-divine-moon-57.fly.dev"}${pathname}${url.search}`;
 
       // Create new headers without host
       const headers = new Headers(request.headers);

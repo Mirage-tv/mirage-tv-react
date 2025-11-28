@@ -4,11 +4,9 @@
 import { type APIError } from "../../../core/domain/types";
 
 // Default base URL for API requests
-// En développement, utilise le proxy Vite (chemin relatif)
-// En production, utilisera l'URL complète ou sera configuré via variable d'environnement
-const DEFAULT_BASE_URL = import.meta.env.DEV
-  ? "" // Chemin relatif, Vite va proxyfier vers https://mirage-divine-moon-57.fly.dev
-  : "https://mirage-divine-moon-57.fly.dev";
+// Toujours utiliser des URLs relatives pour passer par le worker Cloudflare en production
+// ou par le proxy Vite en développement
+const DEFAULT_BASE_URL = "";
 
 export interface RequestConfig {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
