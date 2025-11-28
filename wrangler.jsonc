@@ -1,0 +1,25 @@
+{
+  "name": "mirage-front",
+  "type": "javascript",
+  "main": "dist/index.js",
+  "compatibility_date": "2025-01-28",
+  "assets": {
+    "directory": "./dist"
+  },
+  "env": {
+    "production": {
+      "name": "mirage-front-prod",
+      "routes": [
+        {
+          "pattern": "example.com/*",
+          "zone_name": "example.com"
+        }
+      ]
+    }
+  },
+  "build": {
+    "command": "npm run build",
+    "cwd": "./",
+    "watch_paths": ["src/**/*.ts", "src/**/*.tsx"]
+  }
+}

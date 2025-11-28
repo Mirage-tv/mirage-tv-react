@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Wrangler and Cloudflare
+.wrangler
+wrangler.toml
+dist/
+.env.*.local
