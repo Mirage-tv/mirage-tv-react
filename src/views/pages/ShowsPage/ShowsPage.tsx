@@ -38,7 +38,9 @@ export const ShowsPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/v1/media/shows?page=${page}&per=${per}`);
+        const response = await fetch(`/api/v1/media/shows?page=${page}&per=${per}`, {
+          credentials: "include",
+        });
         if (!response.ok) {
           throw new Error(`Erreur API: ${response.status}`);
         }
@@ -66,6 +68,7 @@ export const ShowsPage = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mediaId: serieId }),
+        credentials: "include",
       });
       if (!response.ok) {
         throw new Error("Erreur lors du like");
@@ -94,7 +97,7 @@ export const ShowsPage = () => {
         <>
           <div className="shows-page__grid">
             {shows.map((show) => (
-              <div key={show.id} className="shows-page__card">
+              <div key={show.id} className="shows-page__card" onClick={() => navigate(`/shows/${show.id}`)} style={{ cursor: "pointer" }}>
                 <div className="shows-page__poster">
                   {show.posterURL ? (
                     <img src={show.posterURL} alt={show.title} />
@@ -117,7 +120,10 @@ export const ShowsPage = () => {
                   {"isFavorite" in show ? (
                     <button
                       className="shows-page__favorite"
-                      onClick={() => handleToggleFavorite(show.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleFavorite(show.id);
+                      }}
                       disabled={likeLoading === show.id}
                       aria-label={show.isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
                     >

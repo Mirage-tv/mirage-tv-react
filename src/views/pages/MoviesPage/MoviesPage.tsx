@@ -37,7 +37,9 @@ export const MoviesPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/v1/media/movies?page=${page}&per=${per}`);
+        const response = await fetch(`/api/v1/media/movies?page=${page}&per=${per}`, {
+          credentials: "include",
+        });
         if (!response.ok) {
           throw new Error(`Erreur API: ${response.status}`);
         }
@@ -64,6 +66,7 @@ export const MoviesPage = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mediaId }),
+        credentials: "include",
       });
       if (!response.ok) {
         throw new Error("Erreur lors du like");
@@ -92,7 +95,12 @@ export const MoviesPage = () => {
         <>
           <div className="movies-page__grid">
             {movies.map((movie) => (
-              <div key={movie.id} className="movies-page__card">
+              <div
+                key={movie.id}
+                className="movies-page__card"
+                onClick={() => navigate(`/watch/${movie.id}`)}
+                style={{ cursor: "pointer" }}
+              >
                 <div className="movies-page__thumbnail">
                   <img src={movie.thumbnailUrl} alt={movie.name} />
                   {movie.progress !== undefined && (
@@ -105,7 +113,10 @@ export const MoviesPage = () => {
                   <h2 className="movies-page__name">{movie.name}</h2>
                   <button
                     className="movies-page__favorite"
-                    onClick={() => handleToggleFavorite(movie.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleFavorite(movie.id);
+                    }}
                     disabled={likeLoading === movie.id}
                     aria-label={movie.isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
                   >

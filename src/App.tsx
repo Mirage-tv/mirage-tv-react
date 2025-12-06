@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { BrowserRouter, useRoutes } from "react-router-dom";
 import "./App.css";
+import { useAuthStore } from "./infrastructure/store/authStore";
 import { routes } from "./routes";
 
 function AppRoutes() {
@@ -7,10 +9,26 @@ function AppRoutes() {
   return routing;
 }
 
+function AuthProvider({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, validateSession } = useAuthStore();
+
+  useEffect(() => {
+    // Valider la session au chargement de l'app
+    // Cela vérifie si le cookie de session est toujours valide côté serveur
+    if (isAuthenticated) {
+      validateSession();
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return <>{children}</>;
+}
+
 function App() {
   return (
     <BrowserRouter>
-      <AppRoutes />
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

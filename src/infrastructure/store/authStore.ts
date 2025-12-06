@@ -19,6 +19,7 @@ interface AuthState {
   fetchUserProfile: () => Promise<void>;
   clearError: () => void;
   setUser: (user: UserDTO | null) => void;
+  validateSession: () => Promise<void>;
 }
 
 // Helper pour extraire le message d'erreur
@@ -133,16 +134,45 @@ export const useAuthStore = create<AuthState>()(
 
       // Set user directly (useful for updates)
       setUser: (user: UserDTO | null) => {
-        set({ user });
+        set({ user, isAuthenticated: user !== null });
+      },
+
+      // Validate session with server
+      validateSession: async () => {
+        try {
+          const user = await userService.getProfile();
+          set({
+            user,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+        } catch {
+          // Session invalid, clear state
+          set({
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
+            error: null,
+          });
+        }
       },
     }),
     {
       name: "auth-storage",
-      storage: createJSONStorage(() => sessionStorage), // Utilise sessionStorage au lieu de localStorage
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state) => {
+        // Après réhydratation, valider la session avec le serveur
+        if (state?.isAuthenticated) {
+          state.fetchUserProfile().catch(() => {
+            // Si la session n'est plus valide, déconnecter l'utilisateur
+            state.setUser(null);
+          });
+        }
+      },
     },
   ),
 );

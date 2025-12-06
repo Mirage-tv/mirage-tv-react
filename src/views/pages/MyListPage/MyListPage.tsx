@@ -27,18 +27,16 @@ export const MyListPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch("/api/v1/favorites");
+        const response = await fetch("/api/v1/favorites", {
+          credentials: "include",
+        });
         if (!response.ok) {
           throw new Error(`Erreur API: ${response.status}`);
         }
         const data: MediaThumbnail[] = await response.json();
         setFavorites(data);
       } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Erreur inconnue lors du chargement des favoris"
-        );
+        setError(err instanceof Error ? err.message : "Erreur inconnue lors du chargement des favoris");
       } finally {
         setLoading(false);
       }
@@ -55,16 +53,13 @@ export const MyListPage = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mediaId }),
+        credentials: "include",
       });
       if (!response.ok) {
         throw new Error("Erreur lors du like");
       }
       const isNowFavorite = await response.json();
-      setFavorites((prev) =>
-        isNowFavorite
-          ? prev
-          : prev.filter((m) => m.id !== mediaId)
-      );
+      setFavorites((prev) => (isNowFavorite ? prev : prev.filter((m) => m.id !== mediaId)));
     } catch (err) {
       // Optionnel : afficher une notification d'erreur
     } finally {
@@ -89,10 +84,7 @@ export const MyListPage = () => {
                 <img src={media.thumbnailUrl} alt={media.name} />
                 {media.progress !== undefined && (
                   <div className="mylist-page__progress-bar">
-                    <div
-                      className="mylist-page__progress-fill"
-                      style={{ width: `${media.progress * 100}%` }}
-                    />
+                    <div className="mylist-page__progress-fill" style={{ width: `${media.progress * 100}%` }} />
                   </div>
                 )}
               </div>

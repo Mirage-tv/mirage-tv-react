@@ -39,6 +39,12 @@
   --color-border-primary: #27272a;
   --color-border-secondary: #3f3f46;
 
+  /* ==================== ALIAS POUR COMPOSANTS ==================== */
+
+  --color-accent-primary: var(--color-primary-500);
+  --color-accent-secondary: var(--color-primary-600);
+  --color-bg-dark: var(--color-bg-primary);
+
   /* ==================== COULEURS SÉMANTIQUES ==================== */
 
   --color-success: #10b981;

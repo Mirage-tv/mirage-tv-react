@@ -10,6 +10,7 @@ export default defineConfig({
         target: "https://mirage-divine-moon-57.fly.dev",
         changeOrigin: true,
         secure: true,
+        cookieDomainRewrite: "localhost",
       },
     },
   },

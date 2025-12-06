@@ -9,7 +9,9 @@ const WatchPage = lazy(() => import("./views/pages/WatchPage/WatchPage").then((m
 const SignUpPage = lazy(() => import("./views/pages/SignUpPage/SignUpPage").then((m) => ({ default: m.SignUpPage })));
 const MoviesPage = lazy(() => import("./views/pages/MoviesPage/MoviesPage").then((m) => ({ default: m.MoviesPage })));
 const ShowsPage = lazy(() => import("./views/pages/ShowsPage/ShowsPage").then((m) => ({ default: m.ShowsPage })));
+const ShowDetailPage = lazy(() => import("./views/pages/ShowDetailPage/ShowDetailPage").then((m) => ({ default: m.ShowDetailPage })));
 const MyListPage = lazy(() => import("./views/pages/MyListPage/MyListPage").then((m) => ({ default: m.MyListPage })));
+const ProfilePage = lazy(() => import("./views/pages/ProfilePage/ProfilePage").then((m) => ({ default: m.ProfilePage })));
 
 // Ajoutez ici les autres pages lazy si besoin
 
@@ -70,7 +72,7 @@ export const routes: RouteObject[] = [
         path: "shows/:id",
         element: (
           <Suspense fallback={<LoadingFallback />}>
-            <div>Show Detail Page - To be implemented</div>
+            <ShowDetailPage />
           </Suspense>
         ),
       },
@@ -110,7 +112,7 @@ export const routes: RouteObject[] = [
         path: "profile",
         element: (
           <Suspense fallback={<LoadingFallback />}>
-            <div>Profile Page - To be implemented</div>
+            <ProfilePage />
           </Suspense>
         ),
       },

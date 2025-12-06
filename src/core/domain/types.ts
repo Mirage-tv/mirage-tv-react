@@ -50,6 +50,7 @@ export type VideoURLsDTO = {
   readonly source: string;
   readonly subtitles: readonly Subtitle[];
   readonly trailerURL?: string | null;
+  readonly trailer?: string | null; // Alternative field name from API
 };
 
 export type EpisodeInfo = {

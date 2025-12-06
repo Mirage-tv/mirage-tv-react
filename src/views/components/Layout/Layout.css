@@ -17,3 +17,10 @@
   padding-bottom: 2rem;
   /* Ajoutez ici d'autres styles globaux si besoin */
 }
+
+/* Ajouter du padding en bas sur mobile pour la barre de navigation */
+@media (max-width: 768px) {
+  .layout__content {
+    padding-bottom: 5rem; /* Espace pour la barre de navigation mobile */
+  }
+}

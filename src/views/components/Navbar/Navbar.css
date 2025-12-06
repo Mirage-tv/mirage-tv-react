@@ -13,7 +13,8 @@
   justify-content: space-between;
   padding: 0 2.5%;
   height: 80px;
-  background-color: transparent;
+  background-color: rgba(18, 18, 18, 0.6);
+  backdrop-filter: blur(8px);
   transition:
     background-color 0.3s ease,
     backdrop-filter 0.3s ease;
@@ -71,8 +72,8 @@
 }
 
 .navbar__link {
-  color: var(--color-text-secondary);
-  font-size: var(--text-sm);
+  color: var(--color-text-secondary, #a1a1aa);
+  font-size: var(--text-sm, 0.875rem);
   font-weight: 600;
   text-transform: uppercase;
   text-decoration: none !important;
@@ -84,12 +85,12 @@
 }
 
 .navbar__link:hover {
-  color: var(--color-text-primary);
+  color: var(--color-text-primary, #ffffff);
 }
 
 .navbar__link--active {
-  background-color: var(--color-accent-primary);
-  color: var(--color-bg-dark);
+  background-color: var(--color-accent-primary, #f97316);
+  color: var(--color-bg-dark, #0a0a0a);
 }
 
 /* =SA=======================================================================
@@ -107,7 +108,7 @@
 .navbar__action-btn {
   background-color: transparent;
   border: none;
-  color: var(--color-text-secondary);
+  color: var(--color-text-secondary, #a1a1aa);
   padding: 0.5rem;
   border-radius: 50%;
   display: flex;
@@ -119,7 +120,7 @@
 }
 
 .navbar__action-btn:hover {
-  color: var(--color-text-primary);
+  color: var(--color-text-primary, #ffffff);
   background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -132,32 +133,34 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: var(--color-accent-primary);
-  color: var(--color-bg-dark);
+  background-color: var(--color-accent-primary, #f97316);
+  color: var(--color-bg-dark, #0a0a0a);
   font-weight: 700;
-  font-size: var(--text-base);
+  font-size: var(--text-base, 1rem);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid var(--color-accent-primary);
+  border: 2px solid var(--color-accent-primary, #f97316);
+  cursor: pointer;
 }
 
 .navbar__login-btn {
-  background-color: var(--color-accent-primary);
-  color: var(--color-bg-dark);
+  background-color: var(--color-accent-primary, #f97316);
+  color: var(--color-bg-dark, #0a0a0a);
   border: none;
   border-radius: 50px;
   padding: 0.75rem 1.5rem;
-  font-size: var(--text-sm);
+  font-size: var(--text-sm, 0.875rem);
   font-weight: 700;
   text-transform: uppercase;
+  cursor: pointer;
   transition:
     background-color 0.2s ease,
     transform 0.2s ease;
 }
 
 .navbar__login-btn:hover {
-  background-color: var(--color-accent-secondary);
+  background-color: var(--color-accent-secondary, #ea580c);
   transform: scale(1.05);
 }
 
