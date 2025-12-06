@@ -215,7 +215,15 @@ export const WatchPage = () => {
       </button>
 
       <div className="watch-page__video-container">
-        <video ref={videoRef} className="watch-page__video-player" controls autoPlay controlsList="nodownload">
+        <video
+          ref={videoRef}
+          className="watch-page__video-player"
+          controls
+          autoPlay
+          playsInline
+          preload="metadata"
+          controlsList="nodownload"
+        >
           <source src={videoUrls.source} type="video/mp4" />
           {/* Subtitles */}
           {videoUrls.subtitles.map((subtitle, index) => (
