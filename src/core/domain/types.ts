@@ -16,7 +16,7 @@ export type AgeRange = (typeof AgeRange)[keyof typeof AgeRange];
 export const VideoQuality = {
   SD: "sd",
   HD: "hd",
-  TwoK: "2K",
+  TwoK: "2k",
   FourK: "4k",
 } as const;
 export type VideoQuality = (typeof VideoQuality)[keyof typeof VideoQuality];
@@ -36,6 +36,13 @@ export const PaymentStatus = {
   Refunded: "refunded",
 } as const;
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus];
+
+export const PlanDuration = {
+  Weekly: "weekly",
+  Monthly: "monthly",
+  Yearly: "yearly",
+} as const;
+export type PlanDuration = (typeof PlanDuration)[keyof typeof PlanDuration];
 
 // ============================================================================
 // Basic Types
@@ -204,6 +211,30 @@ export type SubscriptionDTO = {
 
 export type CancelSubReq = {
   readonly id: string;
+};
+
+export type PlanDTO = {
+  readonly id?: string | null;
+  readonly name: string;
+  readonly priceCents: number;
+  readonly duration: PlanDuration;
+};
+
+export type StripeConfigRes = {
+  readonly publishableKey: string;
+};
+
+export type CheckoutSessionReq = {
+  readonly planId: string;
+};
+
+export type CheckoutSessionRes = {
+  readonly sessionId: string;
+  readonly url: string;
+};
+
+export type ConfirmCheckoutReq = {
+  readonly sessionId: string;
 };
 
 // ============================================================================

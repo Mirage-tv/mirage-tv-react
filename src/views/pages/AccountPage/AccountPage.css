@@ -1,0 +1,483 @@
+/* AccountPage Styles - Thème Orange Mirage */
+
+.account-page {
+  min-height: 100vh;
+  padding: 100px 20px 60px 20px;
+  background: linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
+}
+
+.account-page__container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.account-page__back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0;
+  margin-bottom: 24px;
+  transition: color var(--transition-fast);
+}
+
+.account-page__back-btn:hover {
+  color: var(--color-accent-500);
+}
+
+.account-page__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 32px;
+}
+
+/* Messages */
+.account-page__message {
+  padding: 16px 20px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+}
+
+.account-page__message--success {
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--color-success);
+}
+
+.account-page__message--error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--color-error);
+}
+
+/* Section */
+.account-page__section {
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: border-color var(--transition-fast);
+}
+
+.account-page__section:hover {
+  border-color: var(--color-border-secondary);
+}
+
+.account-page__section--danger {
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.account-page__section--danger:hover {
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.account-page__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.account-page__section-header:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.account-page__section-info {
+  flex: 1;
+}
+
+.account-page__section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+}
+
+.account-page__section-title--danger {
+  color: var(--color-error);
+}
+
+.account-page__section-value {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.account-page__edit-btn {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-accent-500);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--radius-base);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.account-page__edit-btn:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+.account-page__edit-btn--danger {
+  color: var(--color-error);
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.account-page__edit-btn--danger:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* Forms */
+.account-page__form {
+  padding: 0 24px 24px 24px;
+  border-top: 1px solid var(--color-border-primary);
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.account-page__form-group {
+  margin-top: 20px;
+}
+
+.account-page__form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.account-page__form-group input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.account-page__form-group input:focus {
+  outline: none;
+  border-color: var(--color-accent-500);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+}
+
+.account-page__form-group input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.account-page__form-group input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.account-page__submit-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000000;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.account-page__submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+}
+
+.account-page__submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Subscription Content */
+.account-page__subscription-content {
+  padding: 0 24px 24px 24px;
+  border-top: 1px solid var(--color-border-primary);
+  animation: slideDown 0.2s ease-out;
+}
+
+.account-page__subscription-info {
+  padding-top: 20px;
+}
+
+.account-page__subscription-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.account-page__subscription-plan {
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #000000;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border-radius: var(--radius-full);
+}
+
+.account-page__subscription-status {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-success);
+  background: rgba(16, 185, 129, 0.15);
+  border-radius: var(--radius-full);
+}
+
+.account-page__subscription-status--cancelled {
+  color: var(--color-warning);
+  background: rgba(245, 158, 11, 0.15);
+}
+
+.account-page__subscription-status--expired {
+  color: var(--color-error);
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.account-page__subscription-desc {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.account-page__subscription-details {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-md);
+}
+
+.account-page__subscription-details p {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.account-page__subscription-details p:last-child {
+  margin-bottom: 0;
+}
+
+.account-page__subscription-details strong {
+  color: var(--color-text-primary);
+}
+
+.account-page__cancel-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-error);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.account-page__cancel-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.account-page__cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.account-page__no-subscription {
+  padding-top: 20px;
+  text-align: center;
+}
+
+.account-page__no-subscription p {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.account-page__subscribe-btn {
+  padding: 14px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000000;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.account-page__subscribe-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+}
+
+.account-page__subscription-cancelled-note {
+  margin-top: 16px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  color: var(--color-warning);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+/* Loading */
+.account-page__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+  color: var(--color-text-secondary);
+}
+
+.account-page__loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(245, 158, 11, 0.2);
+  border-top-color: var(--color-accent-500);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Danger Form */
+.account-page__form--danger {
+  border-top-color: rgba(239, 68, 68, 0.2);
+}
+
+.account-page__warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  margin-top: 20px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-md);
+}
+
+.account-page__warning svg {
+  flex-shrink: 0;
+  color: var(--color-error);
+}
+
+.account-page__warning strong {
+  display: block;
+  color: var(--color-error);
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.account-page__warning p {
+  font-size: 0.9rem;
+  color: #fca5a5;
+  line-height: 1.5;
+}
+
+.account-page__delete-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.account-page__delete-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.account-page__delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .account-page {
+    padding: 90px 16px 40px 16px;
+  }
+
+  .account-page__title {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+  }
+
+  .account-page__section-header {
+    padding: 16px 20px;
+  }
+
+  .account-page__form {
+    padding: 0 20px 20px 20px;
+  }
+
+  .account-page__subscription-content {
+    padding: 0 20px 20px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .account-page {
+    padding: 80px 12px 30px 12px;
+  }
+
+  .account-page__section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .account-page__edit-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

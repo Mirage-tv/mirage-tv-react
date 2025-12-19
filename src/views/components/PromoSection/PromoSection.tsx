@@ -6,7 +6,7 @@ export const PromoSection = () => {
   return (
     <div className="promo-section">
       <div className="promo-section__image">
-        <img src={promoImage} alt="Couple watching TV" />
+        <img src={promoImage} alt="Couple regardant la télévision" />
       </div>
       <div className="promo-section__content">
         <div className="promo-section__logo">
@@ -14,11 +14,11 @@ export const PromoSection = () => {
           <span>mirage</span>
         </div>
         <h2 className="promo-section__title">
-          Watch now <br />
-          in any language
+          Regardez maintenant <br />
+          dans toutes les langues
         </h2>
         <p className="promo-section__subtitle">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Découvrez des milliers de films et séries avec sous-titres et doublages dans votre langue préférée.
         </p>
       </div>
     </div>

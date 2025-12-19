@@ -73,7 +73,7 @@ export const MoviesPage = () => {
       }
       const isNowFavorite = await response.json();
       setMovies((prev) => prev.map((m) => (m.id === mediaId ? { ...m, isFavorite: isNowFavorite } : m)));
-    } catch (err) {
+    } catch {
       // Optionnel : afficher une notification d'erreur
     } finally {
       setLikeLoading(null);

@@ -3,6 +3,7 @@ import { BrowserRouter, useRoutes } from "react-router-dom";
 import "./App.css";
 import { useAuthStore } from "./infrastructure/store/authStore";
 import { routes } from "./routes";
+import { ScrollToTop } from "./views/components/ScrollToTop";
 
 function AppRoutes() {
   const routing = useRoutes(routes);
@@ -26,6 +27,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <AuthProvider>
         <AppRoutes />
       </AuthProvider>

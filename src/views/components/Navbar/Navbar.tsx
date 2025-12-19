@@ -18,7 +18,7 @@ const NavLink = ({ to, label, currentPath }: { to: string; label: string; curren
 
 export const Navbar = ({ className }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isSubscriber } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,15 +41,15 @@ export const Navbar = ({ className }: NavbarProps) => {
 
       <nav className="navbar__center">
         <ul className="navbar__menu">
-          <NavLink to="/" label="HOME" currentPath={location.pathname} />
-          <NavLink to="/browse/shows" label="SHOWS" currentPath={location.pathname} />
-          <NavLink to="/browse/movies" label="MOVIES" currentPath={location.pathname} />
-          {isAuthenticated && <NavLink to="/my-list" label="FAVORITES" currentPath={location.pathname} />}
+          <NavLink to="/" label="ACCUEIL" currentPath={location.pathname} />
+          <NavLink to="/browse/shows" label="SÉRIES" currentPath={location.pathname} />
+          <NavLink to="/browse/movies" label="FILMS" currentPath={location.pathname} />
+          {isAuthenticated && isSubscriber && <NavLink to="/my-list" label="FAVORIS" currentPath={location.pathname} />}
         </ul>
       </nav>
 
       <div className="navbar__right">
-        <button className="navbar__action-btn navbar__search-btn" aria-label="Search">
+        <button className="navbar__action-btn navbar__search-btn" aria-label="Rechercher">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -66,6 +66,13 @@ export const Navbar = ({ className }: NavbarProps) => {
           </svg>
         </button>
 
+        {/* Bouton S'abonner pour les utilisateurs non connectés ou sans abonnement */}
+        {(!isAuthenticated || !isSubscriber) && (
+          <button className="navbar__subscribe-btn" onClick={() => navigate("/subscribe")}>
+            S'abonner
+          </button>
+        )}
+
         {isAuthenticated ? (
           <div className="navbar__user-menu">
             <button className="navbar__action-btn navbar__user-avatar" onClick={() => navigate("/profile")}>
@@ -75,7 +82,7 @@ export const Navbar = ({ className }: NavbarProps) => {
           </div>
         ) : (
           <button className="navbar__login-btn" onClick={() => navigate("/login")}>
-            Sign In
+            Connexion
           </button>
         )}
       </div>

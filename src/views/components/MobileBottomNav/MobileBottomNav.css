@@ -31,11 +31,14 @@
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0;
   color: var(--color-text-secondary, #888);
   text-decoration: none;
-  transition: color 0.2s ease, transform 0.2s ease;
-  min-width: 60px;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+  width: 20%;
+  flex: 1;
 }
 
 .mobile-bottom-nav__item:hover {
@@ -54,13 +57,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
 }
 
 .mobile-bottom-nav__icon svg {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   transition: transform 0.2s ease;
 }
 
@@ -78,6 +81,33 @@
 /* Animation subtile au tap */
 .mobile-bottom-nav__item:active {
   transform: scale(0.95);
+}
+
+/* Style spécial pour le bouton S'abonner */
+.mobile-bottom-nav__item--subscribe {
+  color: #f59e0b;
+}
+
+.mobile-bottom-nav__item--subscribe .mobile-bottom-nav__icon svg {
+  fill: none;
+  stroke: #f59e0b;
+}
+
+.mobile-bottom-nav__item--subscribe:hover {
+  color: #fbbf24;
+}
+
+.mobile-bottom-nav__item--subscribe:hover .mobile-bottom-nav__icon svg {
+  stroke: #fbbf24;
+}
+
+.mobile-bottom-nav__item--subscribe.mobile-bottom-nav__item--active {
+  color: #fbbf24;
+}
+
+.mobile-bottom-nav__item--subscribe.mobile-bottom-nav__item--active .mobile-bottom-nav__icon svg {
+  fill: none;
+  stroke: #fbbf24;
 }
 
 /* Safe area pour les appareils avec encoche */

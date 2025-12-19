@@ -3,7 +3,7 @@
   min-height: 100vh;
   background: #181a20;
   color: #f5f6fa;
-  padding: 2rem 0;
+  padding: 100px 20px 2rem 20px;
 }
 
 .movies-page__title {
@@ -158,6 +158,9 @@
 }
 
 @media (max-width: 700px) {
+  .movies-page {
+    padding: 90px 16px 1.5rem 16px;
+  }
   .movies-page__grid {
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
@@ -168,14 +171,14 @@
 }
 
 @media (max-width: 480px) {
+  .movies-page {
+    padding: 80px 12px 1rem 12px;
+  }
   .movies-page__grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
   .movies-page__title {
     font-size: 1.2rem;
-  }
-  .movies-page {
-    padding: 1rem 0;
   }
 }

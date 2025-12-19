@@ -34,7 +34,12 @@ body {
 
 /* ==================== TYPOGRAPHY ==================== */
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-display);
   font-weight: var(--font-bold);
   line-height: var(--leading-tight);
@@ -116,7 +121,8 @@ a:focus-visible {
   border-radius: var(--radius-sm);
 }
 
-strong, b {
+strong,
+b {
   font-weight: var(--font-semibold);
 }
 
@@ -183,7 +189,11 @@ small {
 
 /* ==================== IMAGES & MEDIA ==================== */
 
-img, picture, video, canvas, svg {
+img,
+picture,
+video,
+canvas,
+svg {
   display: block;
   max-width: 100%;
   height: auto;
@@ -213,7 +223,9 @@ button:disabled {
 
 /* ==================== FORMS ==================== */
 
-input, textarea, select {
+input,
+textarea,
+select {
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
@@ -223,14 +235,17 @@ input, textarea, select {
   appearance: none;
 }
 
-input:disabled, textarea:disabled, select:disabled {
+input:disabled,
+textarea:disabled,
+select:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
 
 /* ==================== LISTS ==================== */
 
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
 
@@ -257,5 +272,129 @@ ul, ol {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ==================== PLACEHOLDER PAGES ==================== */
+
+.placeholder-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 20px 60px 20px;
+  text-align: center;
+  background-color: var(--color-background-primary);
+}
+
+.placeholder-page h1 {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+}
+
+.placeholder-page p {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: 2rem;
+  max-width: 400px;
+}
+
+.placeholder-page a {
+  display: inline-block;
+  padding: 0.875rem 2rem;
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  color: var(--color-text-primary);
+  font-weight: var(--font-semibold);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.placeholder-page a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 768px) {
+  .placeholder-page {
+    padding: 100px 16px 40px 16px;
+  }
+
+  .placeholder-page h1 {
+    font-size: var(--text-2xl);
+  }
+
+  .placeholder-page p {
+    font-size: var(--text-base);
+  }
+}
+
+/* ==================== NOT FOUND PAGE ==================== */
+
+.not-found {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 20px 60px 20px;
+  text-align: center;
+  background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+}
+
+.not-found h1 {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-extrabold);
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #ffffff 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.not-found p {
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: 2rem;
+  max-width: 400px;
+}
+
+.not-found a {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  color: #ffffff;
+  font-weight: var(--font-semibold);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.not-found a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .not-found {
+    padding: 100px 16px 40px 16px;
+  }
+
+  .not-found h1 {
+    font-size: var(--text-2xl);
+  }
+
+  .not-found p {
+    font-size: var(--text-base);
   }
 }

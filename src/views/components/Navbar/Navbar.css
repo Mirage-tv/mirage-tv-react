@@ -164,6 +164,36 @@
   transform: scale(1.05);
 }
 
+.navbar__subscribe-btn {
+  background-color: transparent;
+  color: #f59e0b;
+  border: 2px solid #f59e0b;
+  border-radius: 50px;
+  padding: 0.6rem 1.25rem;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+  /* Cacher sur mobile - le bouton est déjà dans le menu du bas */
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .navbar__subscribe-btn {
+    display: inline-block;
+  }
+}
+
+.navbar__subscribe-btn:hover {
+  background-color: #f59e0b;
+  color: #000000;
+  transform: scale(1.05);
+}
+
 /* ==========================================================================
    Responsive
    ========================================================================== */

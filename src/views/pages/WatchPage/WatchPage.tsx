@@ -1,13 +1,19 @@
 import "./WatchPage.css";
 // Watch Page Component
 // Video player with playback progress tracking and viewing history integration
+// Uses hybrid storage (localStorage + API) for optimal performance
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { type VideoURLsDTO } from "../../../core/domain/types";
 import { useAuth } from "../../../core/hooks";
+import { PlaybackStatus, videoProgressService } from "../../../infrastructure/services/VideoProgressService";
 import { useMediaStore } from "../../../infrastructure/store/mediaStore";
 import { useViewingHistoryStore } from "../../../infrastructure/store/viewingHistoryStore";
+
+// Constants
+const LOCAL_UPDATE_INTERVAL_MS = 2000; // Update local storage every 2 seconds
+const API_SYNC_INTERVAL_MS = 30000; // Sync to API every 30 seconds during playback
 
 export const WatchPage = () => {
   const { mediaId } = useParams<{ mediaId: string }>();
@@ -15,20 +21,161 @@ export const WatchPage = () => {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const progressIntervalRef = useRef<number | null>(null);
+  const localProgressIntervalRef = useRef<number | null>(null);
+  const apiSyncIntervalRef = useRef<number | null>(null);
+  const hasInitializedRef = useRef(false);
+  const isPlayingRef = useRef(false);
+  const lastMediaIdRef = useRef<string | null>(null);
 
   const [videoUrls, setVideoUrls] = useState<VideoURLsDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [historyEntryId, setHistoryEntryId] = useState<string | null>(null);
   const [requiresSubscription, setRequiresSubscription] = useState(false);
+  const [playbackStatus, setPlaybackStatus] = useState<PlaybackStatus>(PlaybackStatus.NotStarted);
 
   const { currentMedia, fetchMediaById } = useMediaStore();
-  const { createHistoryEntry, updateProgress } = useViewingHistoryStore();
+  const { createHistoryEntry } = useViewingHistoryStore();
 
-  // Check authentication only - subscription will be checked by the API
+  // ============================================================================
+  // Progress Tracking Functions
+  // ============================================================================
+
+  const getVideoProgress = useCallback((): {
+    progress: number;
+    currentTime: number;
+    duration: number;
+  } | null => {
+    const video = videoRef.current;
+    if (!video || !video.duration || isNaN(video.duration)) return null;
+
+    const progress = video.currentTime / video.duration;
+    if (!isFinite(progress) || isNaN(progress)) return null;
+
+    return {
+      progress,
+      currentTime: video.currentTime,
+      duration: video.duration,
+    };
+  }, []);
+
+  const updateLocalProgress = useCallback(() => {
+    if (!mediaId) return;
+
+    const progressData = getVideoProgress();
+    if (!progressData) return;
+
+    // Update local storage
+    videoProgressService.updateProgressLocal(mediaId, progressData.progress, progressData.currentTime, progressData.duration);
+
+    // Update status display
+    const newStatus = videoProgressService.getStatus(mediaId);
+    if (newStatus !== playbackStatus) {
+      setPlaybackStatus(newStatus);
+    }
+  }, [mediaId, getVideoProgress, playbackStatus]);
+
+  const syncToApi = useCallback(async () => {
+    if (!mediaId) return;
+    await videoProgressService.syncToApi(mediaId);
+  }, [mediaId]);
+
+  const saveProgressAndSync = useCallback(async () => {
+    if (!mediaId) return;
+
+    const progressData = getVideoProgress();
+    if (!progressData) return;
+
+    try {
+      await videoProgressService.saveProgress(mediaId, progressData.progress, progressData.currentTime, progressData.duration);
+    } catch (error) {
+      console.warn("Failed to save progress:", error);
+    }
+  }, [mediaId, getVideoProgress]);
+
+  // ============================================================================
+  // Video Event Handlers
+  // ============================================================================
+
+  const handlePlay = useCallback(() => {
+    isPlayingRef.current = true;
+
+    // Start local progress tracking
+    if (!localProgressIntervalRef.current) {
+      localProgressIntervalRef.current = window.setInterval(updateLocalProgress, LOCAL_UPDATE_INTERVAL_MS);
+    }
+
+    // Start API sync interval
+    if (!apiSyncIntervalRef.current) {
+      apiSyncIntervalRef.current = window.setInterval(syncToApi, API_SYNC_INTERVAL_MS);
+    }
+  }, [updateLocalProgress, syncToApi]);
+
+  const handlePause = useCallback(() => {
+    isPlayingRef.current = false;
+
+    // Save progress immediately on pause
+    saveProgressAndSync();
+
+    // Clear intervals
+    if (localProgressIntervalRef.current) {
+      window.clearInterval(localProgressIntervalRef.current);
+      localProgressIntervalRef.current = null;
+    }
+    if (apiSyncIntervalRef.current) {
+      window.clearInterval(apiSyncIntervalRef.current);
+      apiSyncIntervalRef.current = null;
+    }
+  }, [saveProgressAndSync]);
+
+  const handleEnded = useCallback(() => {
+    isPlayingRef.current = false;
+
+    if (!mediaId) return;
+
+    // Mark as finished (95%+ is considered finished)
+    const progressData = getVideoProgress();
+    if (progressData) {
+      videoProgressService.saveProgress(mediaId, 1.0, progressData.duration, progressData.duration).catch(console.error);
+    }
+
+    setPlaybackStatus(PlaybackStatus.Finished);
+
+    // Clear intervals
+    if (localProgressIntervalRef.current) {
+      window.clearInterval(localProgressIntervalRef.current);
+      localProgressIntervalRef.current = null;
+    }
+    if (apiSyncIntervalRef.current) {
+      window.clearInterval(apiSyncIntervalRef.current);
+      apiSyncIntervalRef.current = null;
+    }
+  }, [mediaId, getVideoProgress]);
+
+  const handleSeeked = useCallback(() => {
+    // Save progress after seeking
+    updateLocalProgress();
+  }, [updateLocalProgress]);
+
+  const handleFullscreenChange = useCallback(() => {
+    // Sync to API when exiting fullscreen
+    if (!document.fullscreenElement) {
+      syncToApi();
+    }
+  }, [syncToApi]);
+
+  const handleVisibilityChange = useCallback(() => {
+    if (document.visibilityState === "hidden" && isPlayingRef.current) {
+      // Save progress when user switches tabs/apps
+      saveProgressAndSync();
+    }
+  }, [saveProgressAndSync]);
+
+  // ============================================================================
+  // Authentication Check
+  // ============================================================================
+
   useEffect(() => {
-    // Wait for auth to finish loading
     if (authLoading) return;
 
     if (!isAuthenticated) {
@@ -37,7 +184,10 @@ export const WatchPage = () => {
     }
   }, [isAuthenticated, authLoading, navigate]);
 
-  // Load media details and video URLs
+  // ============================================================================
+  // Load Media
+  // ============================================================================
+
   useEffect(() => {
     if (!mediaId || !isAuthenticated || authLoading) return;
 
@@ -47,18 +197,16 @@ export const WatchPage = () => {
       setRequiresSubscription(false);
 
       try {
-        // Fetch media details - this includes videoURL for subscribers
         await fetchMediaById(mediaId);
       } catch (err) {
         console.error("Failed to load media:", err);
 
-        // Check if this is a subscription-related error (401 or 403)
         const errorObj = err as { statusCode?: number; message?: string };
         if (errorObj.statusCode === 401 || errorObj.statusCode === 403) {
           setRequiresSubscription(true);
           setError("Un abonnement actif est requis pour regarder ce contenu.");
         } else {
-          const errorMessage = err instanceof Error ? err.message : "Failed to load video. Please try again.";
+          const errorMessage = err instanceof Error ? err.message : "Impossible de charger la vidéo. Veuillez réessayer.";
           setError(errorMessage);
         }
       } finally {
@@ -69,83 +217,155 @@ export const WatchPage = () => {
     loadVideo();
   }, [mediaId, isAuthenticated, authLoading, fetchMediaById]);
 
-  // Set video URLs from currentMedia once loaded
+  // ============================================================================
+  // Initialize Playback
+  // ============================================================================
+
+  // Reset initialization when mediaId changes
+  useEffect(() => {
+    if (mediaId && mediaId !== lastMediaIdRef.current) {
+      lastMediaIdRef.current = mediaId;
+      hasInitializedRef.current = false;
+    }
+  }, [mediaId]);
+
   useEffect(() => {
     if (currentMedia?.videoURL) {
       setVideoUrls(currentMedia.videoURL);
 
-      // Create viewing history entry (non-blocking)
-      if (mediaId) {
-        createHistoryEntry(mediaId, 0.0)
-          .then(() => setHistoryEntryId(mediaId))
+      if (mediaId && !hasInitializedRef.current) {
+        hasInitializedRef.current = true;
+
+        // Start playback tracking and get best resume position
+        videoProgressService
+          .startPlayback(mediaId, currentMedia.progress ?? 0)
+          .then(() => {
+            setHistoryEntryId(mediaId);
+            setPlaybackStatus(localProgress?.status ?? PlaybackStatus.InProgress);
+          })
           .catch((err) => {
-            console.warn("Failed to create history entry:", err);
+            console.warn("Failed to start playback tracking:", err);
+            // Still set historyEntryId to enable progress tracking
             setHistoryEntryId(mediaId);
           });
+
+        // Also create history entry in case it doesn't exist
+        createHistoryEntry(mediaId, currentMedia.progress ?? 0).catch(() => {
+          // Entry might already exist, that's OK
+        });
       }
     } else if (currentMedia && !currentMedia.videoURL) {
-      // Media loaded but no videoURL - user is not a subscriber
       setRequiresSubscription(true);
       setError("Un abonnement actif est requis pour regarder ce contenu.");
     }
   }, [currentMedia, mediaId, createHistoryEntry]);
 
-  // Setup video player and progress tracking
+  // ============================================================================
+  // Set Initial Video Position
+  // ============================================================================
+
   useEffect(() => {
-    if (!videoRef.current || !videoUrls || !historyEntryId) return;
-
     const video = videoRef.current;
+    if (!video || !historyEntryId || !mediaId) return;
 
-    // Set initial progress if available
-    if (currentMedia?.progress) {
-      video.currentTime = video.duration * currentMedia.progress;
+    const applyResumeTime = () => {
+      if (!video.duration || isNaN(video.duration)) return;
+
+      // Get the best resume time (with 30s tolerance)
+      const resumeTime = videoProgressService.getResumeTime(mediaId, video.duration, currentMedia?.progress ?? undefined);
+
+      if (resumeTime > 0 && resumeTime < video.duration) {
+        video.currentTime = resumeTime;
+      }
+    };
+
+    const handleLoadedMetadata = () => {
+      applyResumeTime();
+    };
+
+    // If metadata is already loaded
+    if (video.readyState >= 1 && video.duration > 0) {
+      applyResumeTime();
+    } else {
+      video.addEventListener("loadedmetadata", handleLoadedMetadata);
     }
 
-    // Track progress every 5 seconds
-    progressIntervalRef.current = window.setInterval(() => {
-      if (video.paused || video.ended) return;
-
-      const progress = video.currentTime / video.duration;
-      if (!isNaN(progress) && isFinite(progress)) {
-        updateProgress(historyEntryId, progress).catch(console.error);
-      }
-    }, 5000);
-
-    // Update progress when video ends or user leaves
-    const handleVideoEnd = () => {
-      const progress = video.currentTime / video.duration;
-      if (!isNaN(progress) && isFinite(progress)) {
-        updateProgress(historyEntryId, progress).catch(console.error);
-      }
-    };
-
-    const handleBeforeUnload = () => {
-      handleVideoEnd();
-    };
-
-    video.addEventListener("ended", handleVideoEnd);
-    video.addEventListener("pause", handleVideoEnd);
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
     return () => {
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-      }
-      video.removeEventListener("ended", handleVideoEnd);
-      video.removeEventListener("pause", handleVideoEnd);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      handleVideoEnd();
+      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
     };
-  }, [videoUrls, historyEntryId, updateProgress, currentMedia?.progress]);
+  }, [historyEntryId, mediaId, currentMedia?.progress]);
 
-  const handleBack = () => {
+  // ============================================================================
+  // Video Event Listeners
+  // ============================================================================
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !historyEntryId) return;
+
+    // Add event listeners
+    video.addEventListener("play", handlePlay);
+    video.addEventListener("pause", handlePause);
+    video.addEventListener("ended", handleEnded);
+    video.addEventListener("seeked", handleSeeked);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Cleanup
+    return () => {
+      video.removeEventListener("play", handlePlay);
+      video.removeEventListener("pause", handlePause);
+      video.removeEventListener("ended", handleEnded);
+      video.removeEventListener("seeked", handleSeeked);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+
+      // Clear intervals
+      if (localProgressIntervalRef.current) {
+        window.clearInterval(localProgressIntervalRef.current);
+        localProgressIntervalRef.current = null;
+      }
+      if (apiSyncIntervalRef.current) {
+        window.clearInterval(apiSyncIntervalRef.current);
+        apiSyncIntervalRef.current = null;
+      }
+
+      // Final save on unmount
+      if (mediaId && isPlayingRef.current) {
+        const progressData = video.duration
+          ? {
+              progress: video.currentTime / video.duration,
+              currentTime: video.currentTime,
+              duration: video.duration,
+            }
+          : null;
+
+        if (progressData && isFinite(progressData.progress)) {
+          videoProgressService
+            .saveProgress(mediaId, progressData.progress, progressData.currentTime, progressData.duration)
+            .catch(console.error);
+        }
+      }
+    };
+  }, [historyEntryId, mediaId, handlePlay, handlePause, handleEnded, handleSeeked, handleFullscreenChange, handleVisibilityChange]);
+
+  // ============================================================================
+  // Navigation
+  // ============================================================================
+
+  const handleBack = useCallback(() => {
+    // Save progress before leaving
+    saveProgressAndSync();
     navigate(-1);
-  };
+  }, [navigate, saveProgressAndSync]);
 
-  // Show loading while auth is being checked
+  // ============================================================================
+  // Render
+  // ============================================================================
+
   if (authLoading) {
     return (
-      <div className="watch-page__watch-page loading">
+      <div className="watch-page watch-page__loading">
         <div className="watch-page__loading-spinner">
           <div className="watch-page__spinner"></div>
           <p>Vérification de la session...</p>
@@ -156,7 +376,7 @@ export const WatchPage = () => {
 
   if (isLoading) {
     return (
-      <div className="watch-page__watch-page loading">
+      <div className="watch-page watch-page__loading">
         <div className="watch-page__loading-spinner">
           <div className="watch-page__spinner"></div>
           <p>Chargement de la vidéo...</p>
@@ -165,10 +385,9 @@ export const WatchPage = () => {
     );
   }
 
-  // Show subscription required message with option to subscribe
   if (requiresSubscription) {
     return (
-      <div className="watch-page__watch-page error">
+      <div className="watch-page watch-page__error">
         <div className="watch-page__error-container">
           <h2>Abonnement requis</h2>
           <p>{error}</p>
@@ -187,7 +406,7 @@ export const WatchPage = () => {
 
   if (error) {
     return (
-      <div className="watch-page__watch-page error">
+      <div className="watch-page watch-page__error">
         <div className="watch-page__error-container">
           <h2>Oops! Une erreur s'est produite</h2>
           <p>{error}</p>
@@ -209,7 +428,7 @@ export const WatchPage = () => {
   }
 
   return (
-    <div className="watch-page__watch-page">
+    <div className="watch-page">
       <button className="watch-page__btn-back-overlay" onClick={handleBack}>
         ← Retour
       </button>
@@ -247,6 +466,9 @@ export const WatchPage = () => {
             <span className="watch-page__age-rating">{currentMedia.ageRange}</span>
             <span className="watch-page__quality">{currentMedia.quality}</span>
             <span className="watch-page__duration">{currentMedia.duration}</span>
+            {playbackStatus === PlaybackStatus.Finished && (
+              <span className="watch-page__status watch-page__status--finished">✓ Terminé</span>
+            )}
           </div>
           <p className="watch-page__video-synopsis">{currentMedia.synopsis}</p>
 

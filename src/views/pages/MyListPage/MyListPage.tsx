@@ -60,7 +60,7 @@ export const MyListPage = () => {
       }
       const isNowFavorite = await response.json();
       setFavorites((prev) => (isNowFavorite ? prev : prev.filter((m) => m.id !== mediaId)));
-    } catch (err) {
+    } catch {
       // Optionnel : afficher une notification d'erreur
     } finally {
       setLikeLoading(null);

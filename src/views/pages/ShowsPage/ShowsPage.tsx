@@ -75,7 +75,7 @@ export const ShowsPage = () => {
       }
       const isNowFavorite = await response.json();
       setShows((prev) => prev.map((s) => (s.id === serieId ? { ...s, isFavorite: isNowFavorite } : s)));
-    } catch (err) {
+    } catch {
       // Optionnel : afficher une notification d'erreur
     } finally {
       setLikeLoading(null);

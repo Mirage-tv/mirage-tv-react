@@ -99,16 +99,16 @@ export const HomePage = () => {
               <span>{heroBanner.previewMedia.duration}</span>
               <span>{heroBanner.previewMedia.quality}</span>
             </div>
-            <p className="hero__synopsis\">{heroBanner.previewMedia.synopsis}</p>
+            <p className="hero__synopsis">{heroBanner.previewMedia.synopsis}</p>
             <div className="hero__actions">
               <button className="hero__btn hero__btn--play" onClick={() => handlePlayMedia(heroBanner.previewMedia.id!)}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M8 5v14l11-7z" />
                 </svg>
-                <span>Play</span>
+                <span>Lecture</span>
               </button>
               <button className="hero__btn hero__btn--info" onClick={() => navigate(`/media/${heroBanner.previewMedia.id}`)}>
-                <span>More Info</span>
+                <span>Plus d'infos</span>
               </button>
             </div>
             <div className="hero__brand">
