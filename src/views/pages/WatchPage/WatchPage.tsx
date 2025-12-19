@@ -241,7 +241,7 @@ export const WatchPage = () => {
           .startPlayback(mediaId, currentMedia.progress ?? 0)
           .then(() => {
             setHistoryEntryId(mediaId);
-            setPlaybackStatus(localProgress?.status ?? PlaybackStatus.InProgress);
+            setPlaybackStatus(videoProgressService.getStatus(mediaId));
           })
           .catch((err) => {
             console.warn("Failed to start playback tracking:", err);
