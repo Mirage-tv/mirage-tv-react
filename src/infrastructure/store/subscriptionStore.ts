@@ -41,10 +41,10 @@ export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
     }
   },
 
-  cancelSubscription: async (subscriptionId: string) => {
+  cancelSubscription: async () => {
     set({ isLoading: true, error: null });
     try {
-      await subscriptionService.cancelSubscription({ id: subscriptionId });
+      await subscriptionService.cancelSubscription();
       await get().fetchSubscription();
       set({ isLoading: false });
     } catch (error) {

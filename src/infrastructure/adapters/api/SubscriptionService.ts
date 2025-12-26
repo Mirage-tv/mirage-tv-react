@@ -2,13 +2,13 @@
 // Handles subscription and billing API operations
 
 import type {
-    CheckoutSessionReq,
-    CheckoutSessionRes,
-    ConfirmCheckoutReq,
-    HTTPResponseStatus,
-    PlanDTO,
-    StripeConfigRes,
-    SubscriptionDTO
+  CheckoutSessionReq,
+  CheckoutSessionRes,
+  ConfirmCheckoutReq,
+  HTTPResponseStatus,
+  PlanDTO,
+  StripeConfigRes,
+  SubscriptionDTO
 } from "../../../core/domain/types";
 import { API_ENDPOINTS } from "../../config/api.config";
 import { httpClient } from "../http/HttpClient";
