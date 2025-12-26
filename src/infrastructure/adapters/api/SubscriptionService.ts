@@ -2,14 +2,13 @@
 // Handles subscription and billing API operations
 
 import type {
-  CancelSubReq,
-  CheckoutSessionReq,
-  CheckoutSessionRes,
-  ConfirmCheckoutReq,
-  HTTPResponseStatus,
-  PlanDTO,
-  StripeConfigRes,
-  SubscriptionDTO,
+    CheckoutSessionReq,
+    CheckoutSessionRes,
+    ConfirmCheckoutReq,
+    HTTPResponseStatus,
+    PlanDTO,
+    StripeConfigRes,
+    SubscriptionDTO
 } from "../../../core/domain/types";
 import { API_ENDPOINTS } from "../../config/api.config";
 import { httpClient } from "../http/HttpClient";
@@ -80,8 +79,8 @@ export class SubscriptionService {
    * @param data - Subscription ID to cancel
    * @returns 200 OK when cancellation is registered
    */
-  async cancelSubscription(data: CancelSubReq): Promise<HTTPResponseStatus> {
-    return httpClient.post<HTTPResponseStatus>(API_ENDPOINTS.SUBSCRIPTION.CANCEL, data);
+  async cancelSubscription(): Promise<HTTPResponseStatus> {
+    return httpClient.post<HTTPResponseStatus>(API_ENDPOINTS.SUBSCRIPTION.CANCEL);
   }
 }
 

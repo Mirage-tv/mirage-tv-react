@@ -4,7 +4,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type { CreateUserReq, LoginReq, UserDTO } from "../../core/domain/types";
-import { authService, userService } from "../adapters/api";
+import { authService, subscriptionService, userService } from "../adapters/api";
 
 interface AuthState {
   user: UserDTO | null;
@@ -109,7 +109,21 @@ export const useAuthStore = create<AuthState>()(
       fetchUserProfile: async () => {
         set({ isLoading: true, error: null });
         try {
-          const user = await userService.getProfile();
+          let user = await userService.getProfile();
+
+          // Patch: fetch subscription to get planName if missing or to confirm status
+          try {
+            const subscription = await subscriptionService.getSubscription();
+            if (subscription && (subscription.status === "active" || subscription.status === "gracePeriod")) {
+              user = {
+                ...user,
+                planName: subscription.planName,
+              };
+            }
+          } catch {
+            // No active subscription or failed to fetch, ignore
+          }
+
           set({
             user,
             isAuthenticated: true,

@@ -142,6 +142,14 @@ export const routes: RouteObject[] = [
         ),
       },
       {
+        path: "success",
+        element: (
+          <Suspense fallback={<LoadingFallback />}>
+            <SubscribePage />
+          </Suspense>
+        ),
+      },
+      {
         path: "subscribe/cancel",
         element: (
           <Suspense fallback={<LoadingFallback />}>

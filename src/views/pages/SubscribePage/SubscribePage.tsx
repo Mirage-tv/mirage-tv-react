@@ -10,7 +10,7 @@ type PageState = "plans" | "success" | "cancel" | "loading" | "error";
 export const SubscribePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, isSubscriber, user } = useAuth();
+  const { isAuthenticated, isSubscriber, user, refreshProfile } = useAuth();
 
   const [pageState, setPageState] = useState<PageState>("loading");
   const [plans, setPlans] = useState<PlanDTO[]>([]);
@@ -53,6 +53,8 @@ export const SubscribePage = () => {
     try {
       const confirmedSub = await subscriptionService.confirmCheckout({ sessionId });
       setSubscription(confirmedSub);
+      // Refresh profile to update subscription status in global state (Navbar, etc.)
+      await refreshProfile();
     } catch (err) {
       console.error("Failed to confirm checkout:", err);
       // Still show success page, the webhook might handle it

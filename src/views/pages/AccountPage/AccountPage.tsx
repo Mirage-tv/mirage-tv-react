@@ -139,13 +139,18 @@ export const AccountPage = () => {
     setIsLoading(true);
     try {
       if (subscription?.id) {
-        await subscriptionService.cancelSubscription({ id: subscription.id });
+        console.log("Cancelling subscription with ID:", subscription.id);
+        console.log("Full subscription object:", subscription);
+        await subscriptionService.cancelSubscription();
         setSuccessMessage("Votre abonnement a été annulé. Il restera actif jusqu'à la fin de la période en cours.");
         await loadSubscription();
         await refreshProfile();
       }
-    } catch {
-      setErrorMessage("Impossible d'annuler l'abonnement. Veuillez réessayer.");
+    } catch (error: any) {
+      console.error("Cancellation error:", error);
+      const keys = subscription ? Object.keys(subscription).join(", ") : "no-sub";
+      const msg = `${error?.message} (ID: ${subscription?.id}) Keys: ${keys}`;
+      setErrorMessage(msg);
     } finally {
       setIsLoading(false);
     }
