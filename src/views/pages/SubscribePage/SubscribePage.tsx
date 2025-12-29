@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import type { PlanDTO, SubscriptionDTO } from "../../../core/domain/types";
-import { useAuth } from "../../../core/hooks";
-import { subscriptionService } from "../../../infrastructure/adapters/api";
-import "./SubscribePage.css";
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import type { PlanDTO, SubscriptionDTO } from '../../../core/domain/types';
+import { useAuth } from '../../../core/hooks';
+import { subscriptionService } from '../../../infrastructure/adapters/api';
+import './SubscribePage.css';
 
-type PageState = "plans" | "success" | "cancel" | "loading" | "error";
+type PageState = 'plans' | 'success' | 'cancel' | 'loading' | 'error';
 
 export const SubscribePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, isSubscriber, user, refreshProfile } = useAuth();
 
-  const [pageState, setPageState] = useState<PageState>("loading");
+  const [pageState, setPageState] = useState<PageState>('loading');
   const [plans, setPlans] = useState<PlanDTO[]>([]);
   const [subscription, setSubscription] = useState<SubscriptionDTO | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -20,32 +20,32 @@ export const SubscribePage = () => {
 
   // Determine page state based on URL
   useEffect(() => {
-    if (location.pathname.includes("/success")) {
-      setPageState("success");
+    if (location.pathname.includes('/payment-success')) {
+      setPageState('success');
       // Confirm the checkout session
       const params = new URLSearchParams(location.search);
-      const sessionId = params.get("session_id");
+      const sessionId = params.get('session_id');
       if (sessionId) {
         confirmCheckout(sessionId);
       }
-    } else if (location.pathname.includes("/cancel")) {
-      setPageState("cancel");
+    } else if (location.pathname.includes('/cancel')) {
+      setPageState('cancel');
     } else {
       loadPlans();
     }
   }, [location.pathname, location.search]);
 
   const loadPlans = async () => {
-    setPageState("loading");
+    setPageState('loading');
     setError(null);
     try {
       const plansData = await subscriptionService.getPlans();
       setPlans(Array.isArray(plansData) ? plansData : [plansData]);
-      setPageState("plans");
+      setPageState('plans');
     } catch (err) {
-      console.error("Failed to load plans:", err);
-      setError("Impossible de charger les offres. Veuillez réessayer.");
-      setPageState("error");
+      console.error('Failed to load plans:', err);
+      setError('Impossible de charger les offres. Veuillez réessayer.');
+      setPageState('error');
     }
   };
 
@@ -56,19 +56,19 @@ export const SubscribePage = () => {
       // Refresh profile to update subscription status in global state (Navbar, etc.)
       await refreshProfile();
     } catch (err) {
-      console.error("Failed to confirm checkout:", err);
+      console.error('Failed to confirm checkout:', err);
       // Still show success page, the webhook might handle it
     }
   };
 
   const handleSubscribe = async (planId: string) => {
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate('/login');
       return;
     }
 
     if (!planId) {
-      setError("Veuillez sélectionner un plan valide.");
+      setError('Veuillez sélectionner un plan valide.');
       return;
     }
 
@@ -80,51 +80,51 @@ export const SubscribePage = () => {
       // Redirect to Stripe Checkout
       window.location.href = checkoutSession.url;
     } catch (err) {
-      console.error("Failed to create checkout session:", err);
-      setError("Impossible de créer la session de paiement. Veuillez réessayer.");
+      console.error('Failed to create checkout session:', err);
+      setError('Impossible de créer la session de paiement. Veuillez réessayer.');
       setCheckoutLoading(null);
     }
   };
 
   const formatPrice = (priceCents: number): string => {
-    return new Intl.NumberFormat("fr-FR", {
-      style: "currency",
-      currency: "EUR",
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'EUR'
     }).format(priceCents / 100);
   };
 
   const getDurationLabel = (duration: string): string => {
     switch (duration) {
-      case "weekly":
-        return "par semaine";
-      case "monthly":
-        return "par mois";
-      case "yearly":
-        return "par an";
+      case 'weekly':
+        return 'par semaine';
+      case 'monthly':
+        return 'par mois';
+      case 'yearly':
+        return 'par an';
       default:
-        return "";
+        return '';
     }
   };
 
   const getDurationBadge = (duration: string): string => {
     switch (duration) {
-      case "weekly":
-        return "Hebdomadaire";
-      case "monthly":
-        return "Mensuel";
-      case "yearly":
-        return "Annuel";
+      case 'weekly':
+        return 'Hebdomadaire';
+      case 'monthly':
+        return 'Mensuel';
+      case 'yearly':
+        return 'Annuel';
       default:
-        return "";
+        return '';
     }
   };
 
   const isPopularPlan = (plan: PlanDTO): boolean => {
-    return plan.duration === "monthly";
+    return plan.duration === 'monthly';
   };
 
   // Success page
-  if (pageState === "success") {
+  if (pageState === 'success') {
     return (
       <div className="subscribe-page">
         <div className="subscribe-page__container subscribe-page__result">
@@ -153,15 +153,15 @@ export const SubscribePage = () => {
                 <strong>Prix :</strong> {formatPrice(subscription.price * 100)}
               </p>
               <p>
-                <strong>Date de début :</strong> {new Date(subscription.startDate).toLocaleDateString("fr-FR")}
+                <strong>Date de début :</strong> {new Date(subscription.startDate).toLocaleDateString('fr-FR')}
               </p>
             </div>
           )}
           <div className="subscribe-page__result-actions">
-            <button className="subscribe-page__btn subscribe-page__btn--primary" onClick={() => navigate("/")}>
+            <button className="subscribe-page__btn subscribe-page__btn--primary" onClick={() => navigate('/')}>
               Commencer à regarder
             </button>
-            <button className="subscribe-page__btn subscribe-page__btn--secondary" onClick={() => navigate("/profile")}>
+            <button className="subscribe-page__btn subscribe-page__btn--secondary" onClick={() => navigate('/profile')}>
               Voir mon profil
             </button>
           </div>
@@ -171,7 +171,7 @@ export const SubscribePage = () => {
   }
 
   // Cancel page
-  if (pageState === "cancel") {
+  if (pageState === 'cancel') {
     return (
       <div className="subscribe-page">
         <div className="subscribe-page__container subscribe-page__result">
@@ -193,10 +193,10 @@ export const SubscribePage = () => {
           <h1 className="subscribe-page__result-title">Paiement annulé</h1>
           <p className="subscribe-page__result-text">Le paiement a été annulé. Vous pouvez réessayer à tout moment.</p>
           <div className="subscribe-page__result-actions">
-            <button className="subscribe-page__btn subscribe-page__btn--primary" onClick={() => navigate("/subscribe")}>
+            <button className="subscribe-page__btn subscribe-page__btn--primary" onClick={() => navigate('/subscribe')}>
               Voir les offres
             </button>
-            <button className="subscribe-page__btn subscribe-page__btn--secondary" onClick={() => navigate("/")}>
+            <button className="subscribe-page__btn subscribe-page__btn--secondary" onClick={() => navigate('/')}>
               Retour à l'accueil
             </button>
           </div>
@@ -206,7 +206,7 @@ export const SubscribePage = () => {
   }
 
   // Loading state
-  if (pageState === "loading") {
+  if (pageState === 'loading') {
     return (
       <div className="subscribe-page">
         <div className="subscribe-page__container">
@@ -220,7 +220,7 @@ export const SubscribePage = () => {
   }
 
   // Error state
-  if (pageState === "error") {
+  if (pageState === 'error') {
     return (
       <div className="subscribe-page">
         <div className="subscribe-page__container subscribe-page__result">
@@ -247,7 +247,7 @@ export const SubscribePage = () => {
             <button className="subscribe-page__btn subscribe-page__btn--primary" onClick={loadPlans}>
               Réessayer
             </button>
-            <button className="subscribe-page__btn subscribe-page__btn--secondary" onClick={() => navigate("/")}>
+            <button className="subscribe-page__btn subscribe-page__btn--secondary" onClick={() => navigate('/')}>
               Retour à l'accueil
             </button>
           </div>
@@ -277,13 +277,13 @@ export const SubscribePage = () => {
           </div>
           <h1 className="subscribe-page__result-title">Vous êtes déjà abonné !</h1>
           <p className="subscribe-page__result-text">
-            Vous bénéficiez actuellement de l'abonnement <strong>{user?.planName || "Premium"}</strong>.
+            Vous bénéficiez actuellement de l'abonnement <strong>{user?.planName || 'Premium'}</strong>.
           </p>
           <div className="subscribe-page__result-actions">
-            <button className="subscribe-page__btn subscribe-page__btn--primary" onClick={() => navigate("/")}>
+            <button className="subscribe-page__btn subscribe-page__btn--primary" onClick={() => navigate('/')}>
               Regarder du contenu
             </button>
-            <button className="subscribe-page__btn subscribe-page__btn--secondary" onClick={() => navigate("/profile")}>
+            <button className="subscribe-page__btn subscribe-page__btn--secondary" onClick={() => navigate('/profile')}>
               Gérer mon abonnement
             </button>
           </div>
@@ -307,7 +307,7 @@ export const SubscribePage = () => {
           {plans.map((plan) => (
             <div
               key={plan.id || plan.name}
-              className={`subscribe-page__plan ${isPopularPlan(plan) ? "subscribe-page__plan--popular" : ""}`}
+              className={`subscribe-page__plan ${isPopularPlan(plan) ? 'subscribe-page__plan--popular' : ''}`}
             >
               {isPopularPlan(plan) && <div className="subscribe-page__plan-badge">Le plus populaire</div>}
               <div className="subscribe-page__plan-header">
@@ -375,7 +375,7 @@ export const SubscribePage = () => {
                   </svg>
                   Sans engagement, annulez quand vous voulez
                 </li>
-                {plan.duration === "yearly" && (
+                {plan.duration === 'yearly' && (
                   <li className="subscribe-page__plan-feature--highlight">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -393,7 +393,7 @@ export const SubscribePage = () => {
                 )}
               </ul>
               <button
-                className={`subscribe-page__btn ${isPopularPlan(plan) ? "subscribe-page__btn--primary" : "subscribe-page__btn--secondary"}`}
+                className={`subscribe-page__btn ${isPopularPlan(plan) ? 'subscribe-page__btn--primary' : 'subscribe-page__btn--secondary'}`}
                 onClick={() => handleSubscribe(plan.id!)}
                 disabled={checkoutLoading !== null || !plan.id}
               >
@@ -403,7 +403,7 @@ export const SubscribePage = () => {
                     Redirection...
                   </>
                 ) : (
-                  "Choisir cette offre"
+                  'Choisir cette offre'
                 )}
               </button>
             </div>
@@ -428,8 +428,8 @@ export const SubscribePage = () => {
           </p>
           {!isAuthenticated && (
             <p className="subscribe-page__login-prompt">
-              Vous avez déjà un compte ?{" "}
-              <button className="subscribe-page__link" onClick={() => navigate("/login")}>
+              Vous avez déjà un compte ?{' '}
+              <button className="subscribe-page__link" onClick={() => navigate('/login')}>
                 Connectez-vous
               </button>
             </p>
