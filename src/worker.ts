@@ -113,6 +113,7 @@ export default {
     }
 
     // SPA routing - serve index.html for all other routes
-    return env.ASSETS.fetch(new Request(new URL("/index.html", request.url), request));
+    const indexUrl = new URL("/index.html", request.url);
+    return env.ASSETS.fetch(new Request(indexUrl.toString()));
   },
 };
