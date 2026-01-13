@@ -23,8 +23,7 @@ export const SubscribePage = () => {
     if (location.pathname.includes("/payment-success")) {
       setPageState("success");
       // Confirm the checkout session
-      const params = new URLSearchParams(location.search);
-      const sessionId = params.get("session_id") || sessionStorage.getItem("stripe_session_id");
+      const sessionId = sessionStorage.getItem("stripe_session_id");
 
       if (sessionId) {
         confirmCheckout(sessionId);
@@ -59,7 +58,6 @@ export const SubscribePage = () => {
       await refreshProfile();
     } catch (err) {
       console.error("Failed to confirm checkout:", err);
-      // Still show success page, the webhook might handle it
     }
   };
 

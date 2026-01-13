@@ -5,6 +5,10 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react()],
   server: {
+    host: true,
+    watch: {
+      usePolling: true,
+    },
     proxy: {
       "/api": {
         target: "https://mirage-divine-moon-57.fly.dev",

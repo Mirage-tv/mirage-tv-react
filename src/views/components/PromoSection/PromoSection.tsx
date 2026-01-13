@@ -1,4 +1,4 @@
-import promoImage from "../../../assets/couple-hijab-tele.jpg";
+import promoImage from "../../../assets/couple-devant-tv.jpg";
 import logo from "../../../assets/logo.png";
 import "./PromoSection.css";
 
