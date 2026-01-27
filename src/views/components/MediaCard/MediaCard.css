@@ -127,9 +127,10 @@ img.media-card__img {
   .media-card__action-btn {
     width: 32px;
     height: 32px;
-    background-color: rgba(245, 158, 11, 0.9);
-    color: #000;
-    border: none;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: var(--color-text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
   }
 
   .media-card__action-btn svg {
