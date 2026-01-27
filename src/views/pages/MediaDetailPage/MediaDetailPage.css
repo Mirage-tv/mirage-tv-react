@@ -115,6 +115,7 @@
 /* Hero Content */
 .media-detail-page__hero-content {
   max-width: 800px;
+  width: 100%;
 }
 
 .media-detail-page__title {
@@ -168,8 +169,10 @@
 /* Action Buttons */
 .media-detail-page__actions {
   display: flex;
+  align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  flex-wrap: nowrap;
 }
 
 .media-detail-page__btn {
@@ -210,12 +213,14 @@
 
 .media-detail-page__btn--icon {
   width: 48px;
+  min-width: 48px;
   height: 48px;
   padding: 0;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
+  flex-shrink: 0;
 }
 
 .media-detail-page__btn--icon:hover {
@@ -337,9 +342,15 @@
   }
 
   .media-detail-page__hero-overlay {
-    padding: 1.5rem;
+    padding: 1rem;
     padding-top: 80px;
-    padding-bottom: 100px;
+    padding-bottom: 80px;
+    overflow: visible;
+  }
+
+  .media-detail-page__hero-content {
+    max-width: 100%;
+    overflow: visible;
   }
 
   .media-detail-page__btn-back {
@@ -363,17 +374,27 @@
   }
 
   .media-detail-page__actions {
-    flex-wrap: wrap;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+    width: 100%;
   }
 
   .media-detail-page__btn {
-    padding: 0.875rem 1.5rem;
+    /*padding: 0.875rem 1.25rem;*/
     font-size: 0.9rem;
   }
 
   .media-detail-page__btn--primary {
     flex: 1;
-    min-width: 150px;
+    min-width: 0;
+  }
+
+  .media-detail-page__btn--icon {
+    flex-shrink: 0;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
   }
 
   .media-detail-page__content {
