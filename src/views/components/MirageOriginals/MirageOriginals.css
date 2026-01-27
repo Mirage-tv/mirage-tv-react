@@ -3,33 +3,35 @@
   background-color: #121212;
 }
 
+/* Header avec logo vertical comme la maquette */
 .mirage-originals__header {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
   margin-bottom: 3rem;
 }
 
 .mirage-originals__logo {
-  height: 32px;
+  height: 48px;
   width: auto;
+  margin-bottom: 0.5rem;
 }
 
 .mirage-originals__brand {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--color-text-primary);
   letter-spacing: -0.5px;
 }
 
 .mirage-originals__badge {
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 500;
   color: var(--color-text-secondary);
   text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-left: -0.25rem;
+  letter-spacing: 4px;
 }
 
 /* Grid de cartes */
