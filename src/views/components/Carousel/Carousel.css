@@ -61,3 +61,9 @@
 .carousel__btn:hover {
   background-color: rgba(18, 18, 18, 0.8);
 }
+
+@media (max-width: 768px) {
+  .carousel__btn {
+    display: none;
+  }
+}

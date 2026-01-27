@@ -21,6 +21,7 @@ export const WatchPage = () => {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
   const localProgressIntervalRef = useRef<number | null>(null);
   const apiSyncIntervalRef = useRef<number | null>(null);
   const hasInitializedRef = useRef(false);
@@ -272,6 +273,18 @@ export const WatchPage = () => {
       saveProgressAndSync();
     }
   }, [saveProgressAndSync]);
+
+  const toggleFullscreen = useCallback(async () => {
+    if (!document.fullscreenElement) {
+      if (videoContainerRef.current?.requestFullscreen) {
+        await videoContainerRef.current.requestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      }
+    }
+  }, []);
 
   // ============================================================================
   // Authentication Check
@@ -550,7 +563,7 @@ export const WatchPage = () => {
         ← Retour
       </button>
 
-      <div className="watch-page__video-container">
+      <div className="watch-page__video-container" ref={videoContainerRef}>
         <video
           ref={videoRef}
           className="watch-page__video-player"
@@ -575,6 +588,21 @@ export const WatchPage = () => {
               CC
             </button>
           )}
+          <button className="watch-page__btn-fullscreen" onClick={toggleFullscreen} title="Plein écran">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+            </svg>
+          </button>
         </div>
 
         {/* Zone de sous-titres externe */}

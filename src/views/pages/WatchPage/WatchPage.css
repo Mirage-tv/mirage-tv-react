@@ -208,6 +208,11 @@
   background-color: #000;
 }
 
+/* Hide native fullscreen button to force container fullscreen */
+.watch-page__video-player::-webkit-media-controls-fullscreen-button {
+  display: none;
+}
+
 /* Zone de sous-titres externe */
 .watch-page__subtitles {
   width: 100%;
@@ -297,7 +302,24 @@
   overflow: hidden;
 }
 
-/* Resume indicator */
+/* Hide native fullscreen button to force container fullscreen */
+video::-webkit-media-controls-fullscreen-button {
+  display: none;
+}
+
+/* Fix mobile interaction: Ensure carousel arrows don't block media card actions */
+.carousel__button {
+  z-index: 5; /* Lower than media card actions if possible, or adjust placement */
+}
+
+@media (max-width: 768px) {
+  /* On mobile, move arrows outside or ensure touch targets don't overlap */
+  .carousel__button {
+    width: 32px;
+    height: 32px;
+    /* Ensure they don't cover the card content area too aggressively */
+  }
+}
 .watch-page__resume-indicator {
   position: absolute;
   bottom: 80px;
