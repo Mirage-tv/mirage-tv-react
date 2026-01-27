@@ -1,6 +1,3 @@
-import '../../components/MediaCard/MediaCard.css';
-import './HomePage.css';
-// Home Page Component
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../../assets/logo.png';
@@ -10,7 +7,10 @@ import { useFavoritesStore } from '../../../infrastructure/store/favoritesStore'
 import { useFeaturedStore } from '../../../infrastructure/store/featuredStore';
 import { useViewingHistoryStore } from '../../../infrastructure/store/viewingHistoryStore';
 import { Carousel } from '../../components/Carousel/Carousel';
+import '../../components/MediaCard/MediaCard.css';
+import { MirageOriginals } from '../../components/MirageOriginals/MirageOriginals';
 import { PromoSection } from '../../components/PromoSection/PromoSection';
+import './HomePage.css';
 
 export const HomePage = () => {
   const navigate = useNavigate();
@@ -88,9 +88,6 @@ export const HomePage = () => {
 
   return (
     <div className="home-page">
-      {/* =========================================================================
-          Hero Section
-          ========================================================================== */}
       <section
         className="hero"
         style={{
@@ -290,6 +287,8 @@ export const HomePage = () => {
           </div>
         </section>
       )}
+
+      <MirageOriginals />
 
       <PromoSection />
     </div>

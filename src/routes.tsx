@@ -15,6 +15,7 @@ const MyListPage = lazy(() => import('./views/pages/MyListPage/MyListPage').then
 const ProfilePage = lazy(() => import('./views/pages/ProfilePage/ProfilePage').then((m) => ({ default: m.ProfilePage })));
 const SubscribePage = lazy(() => import('./views/pages/SubscribePage/SubscribePage').then((m) => ({ default: m.SubscribePage })));
 const AccountPage = lazy(() => import('./views/pages/AccountPage/AccountPage').then((m) => ({ default: m.AccountPage })));
+const FaqPage = lazy(() => import('./views/pages/FaqPage/FaqPage').then((m) => ({ default: m.FaqPage })));
 
 export const routes: RouteObject[] = [
   {
@@ -169,11 +170,7 @@ export const routes: RouteObject[] = [
         path: 'faq',
         element: (
           <Suspense fallback={<LoadingFallback />}>
-            <div className="placeholder-page">
-              <h1>Foire aux questions</h1>
-              <p>Cette page sera bientôt disponible.</p>
-              <a href="/">Retour à l'accueil</a>
-            </div>
+            <FaqPage />
           </Suspense>
         )
       },
