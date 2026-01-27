@@ -1,10 +1,13 @@
 .hero {
   position: relative;
-  width: 100%;
-  height: 90vh;
+  width: calc(100% - 4rem);
+  margin: 5rem auto 2rem;
+  height: 70vh;
+  min-height: 450px;
   display: flex;
-  align-items: center;
-  padding: 0 5%;
+  align-items: flex-end;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
   background-size: cover;
   background-position: center 20%;
   background-repeat: no-repeat;
@@ -18,17 +21,46 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to top, var(--color-bg-dark) 5%, transparent 40%);
+  background: linear-gradient(to top, rgba(18, 18, 18, 0.95) 0%, rgba(18, 18, 18, 0.3) 50%, transparent 100%);
   z-index: 1;
+  border-radius: var(--radius-xl);
 }
 
 .hero__content {
   position: relative;
   z-index: 2;
-  max-width: 50%;
+  width: 100%;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+/* Badge Mirage Originals */
+.hero__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hero__brand img {
+  height: 24px;
+  width: auto;
+}
+
+.hero__brand span {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-accent-primary);
+  letter-spacing: 0.5px;
+}
+
+.hero__tagline {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-top: -0.5rem;
 }
 
 .hero__loading,
@@ -111,12 +143,13 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-md);
-  font-size: var(--text-base);
+  padding: 0.875rem 1.75rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
   font-weight: 600;
   border: none;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .hero__btn--play {
@@ -130,13 +163,15 @@
 }
 
 .hero__btn--info {
-  background-color: rgba(40, 40, 40, 0.7);
+  background-color: rgba(60, 60, 60, 0.6);
   color: var(--color-text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
 }
 
 .hero__btn--info:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(80, 80, 80, 0.7);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 /* =========================================================================
@@ -288,4 +323,36 @@
 
 .home-page__btn-subscribe:hover {
   transform: scale(1.05);
+}
+
+/* =========================================================================
+   Responsive Hero
+   ========================================================================= */
+
+@media (max-width: 768px) {
+  .hero {
+    width: calc(100% - 2rem);
+    margin: 5rem auto 1.5rem;
+    height: 60vh;
+    min-height: 400px;
+  }
+
+  .hero__content {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+
+  .hero__title {
+    font-size: 1.75rem;
+  }
+
+  .hero__actions {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .hero__btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.85rem;
+  }
 }
