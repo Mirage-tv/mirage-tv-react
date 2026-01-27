@@ -17,12 +17,7 @@
 .hero__gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to right,
-    rgba(10, 10, 10, 1) 0%,
-    rgba(10, 10, 10, 0.8) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(to right, rgba(10, 10, 10, 1) 0%, rgba(10, 10, 10, 0.8) 50%, transparent 100%);
 }
 
 .hero__content {
@@ -43,6 +38,13 @@
   line-height: var(--leading-tight);
   margin-bottom: var(--space-3);
   text-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.5);
+  /* Limiter le titre à 2 lignes maximum */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 }
 
 .hero__description {

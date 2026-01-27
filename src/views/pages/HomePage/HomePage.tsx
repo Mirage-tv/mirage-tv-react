@@ -1,16 +1,16 @@
-import "../../components/MediaCard/MediaCard.css";
-import "./HomePage.css";
+import '../../components/MediaCard/MediaCard.css';
+import './HomePage.css';
 // Home Page Component
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import logo from "../../../assets/logo.png";
-import { useAuth } from "../../../core/hooks";
-import { useCategoryStore } from "../../../infrastructure/store/categoryStore";
-import { useFavoritesStore } from "../../../infrastructure/store/favoritesStore";
-import { useFeaturedStore } from "../../../infrastructure/store/featuredStore";
-import { useViewingHistoryStore } from "../../../infrastructure/store/viewingHistoryStore";
-import { Carousel } from "../../components/Carousel/Carousel";
-import { PromoSection } from "../../components/PromoSection/PromoSection";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import logo from '../../../assets/logo.png';
+import { useAuth } from '../../../core/hooks';
+import { useCategoryStore } from '../../../infrastructure/store/categoryStore';
+import { useFavoritesStore } from '../../../infrastructure/store/favoritesStore';
+import { useFeaturedStore } from '../../../infrastructure/store/featuredStore';
+import { useViewingHistoryStore } from '../../../infrastructure/store/viewingHistoryStore';
+import { Carousel } from '../../components/Carousel/Carousel';
+import { PromoSection } from '../../components/PromoSection/PromoSection';
 
 export const HomePage = () => {
   const navigate = useNavigate();
@@ -54,12 +54,12 @@ export const HomePage = () => {
 
   const handlePlayMedia = (mediaId: string) => {
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate('/login');
       return;
     }
 
     if (!isSubscriber) {
-      navigate("/subscribe");
+      navigate('/subscribe');
       return;
     }
 
@@ -72,7 +72,7 @@ export const HomePage = () => {
 
   const handleToggleFavorite = async (mediaId: string) => {
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate('/login');
       return;
     }
 
@@ -80,7 +80,7 @@ export const HomePage = () => {
     try {
       await toggleFavorite(mediaId);
     } catch (error) {
-      console.error("Failed to toggle favorite:", error);
+      console.error('Failed to toggle favorite:', error);
     } finally {
       setLikeLoading(null);
     }
@@ -96,7 +96,7 @@ export const HomePage = () => {
         style={{
           backgroundImage: heroBanner
             ? `linear-gradient(to top, rgba(18,18,18,1) 0%, rgba(18,18,18,0.2) 50%), url(${heroBanner.previewMedia.posterURL})`
-            : "none",
+            : 'none'
         }}
       >
         {isLoadingHero ? (
@@ -133,7 +133,7 @@ export const HomePage = () => {
       {isAuthenticated && continueWatching.length > 0 && (
         <Carousel title="Reprendre la lecture">
           {continueWatching.map((media) => (
-            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
+            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: 'pointer' }}>
               <img
                 src={media.thumbnailUrl || logo}
                 alt={media.name}
@@ -169,7 +169,7 @@ export const HomePage = () => {
                   }}
                   disabled={likeLoading === media.id}
                 >
-                  {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
+                  {likeLoading === media.id ? '...' : isFavorite(media.id!) ? '❤️' : '🤍'}
                 </button>
               </div>
             </div>
@@ -181,7 +181,7 @@ export const HomePage = () => {
       {isAuthenticated && favorites.length > 0 && (
         <Carousel title="Ma Liste">
           {favorites.map((media) => (
-            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
+            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: 'pointer' }}>
               <img
                 src={media.thumbnailUrl || logo}
                 alt={media.name}
@@ -212,7 +212,7 @@ export const HomePage = () => {
                   }}
                   disabled={likeLoading === media.id}
                 >
-                  {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
+                  {likeLoading === media.id ? '...' : isFavorite(media.id!) ? '❤️' : '🤍'}
                 </button>
               </div>
             </div>
@@ -223,7 +223,7 @@ export const HomePage = () => {
       {/* Trending Now Section */}
       <Carousel title="Tendances actuelles">
         {trendingMedia?.map((media) => (
-          <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
+          <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: 'pointer' }}>
             <img
               className="media-card__img"
               src={media.thumbnailUrl || logo}
@@ -255,7 +255,7 @@ export const HomePage = () => {
                 }}
                 disabled={likeLoading === media.id}
               >
-                {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
+                {likeLoading === media.id ? '...' : isFavorite(media.id!) ? '❤️' : '🤍'}
               </button>
             </div>
           </div>
@@ -266,10 +266,25 @@ export const HomePage = () => {
       {categories.length > 0 && (
         <section className="categories-section">
           <h2 className="section-title">Parcourir par catégorie</h2>
-          <div className="categories-grid">
+          <div className="categories-list">
             {categories.map((category) => (
-              <div key={category} className="category-card" onClick={() => navigate(`/browse/${category}`)}>
-                <span className="category-card__name">{category}</span>
+              <div key={category} className="category-chip" onClick={() => navigate(`/browse/${category}`)}>
+                <span className="category-name">{category}</span>
+                <span className="category-arrow">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </span>
               </div>
             ))}
           </div>
