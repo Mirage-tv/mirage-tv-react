@@ -1,4 +1,4 @@
-import promoImage from "../../../assets/couple-devant-tv.jpg";
+import promoImage from "../../../assets/couple-devant-tv.png";
 import logo from "../../../assets/logo.png";
 import "./PromoSection.css";
 
