@@ -67,27 +67,78 @@ img.media-card__img {
   font-weight: 600;
   font-size: 1rem;
   margin-bottom: 0.5rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
 .media-card__actions {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
   display: flex;
   gap: 0.5rem;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.media-card:hover .media-card__actions {
+  opacity: 1;
 }
 
 .media-card__action-btn {
-  background-color: rgba(40, 40, 40, 0.8);
+  background-color: rgba(20, 20, 20, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: var(--color-text-primary);
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.media-card__action-btn:hover {
+  background-color: var(--color-accent-primary);
+  border-color: var(--color-accent-primary);
+  color: #000;
+  transform: scale(1.1);
 }
 
 .media-card__action-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 768px) {
+  .media-card__overlay {
+    opacity: 1;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 70%);
+  }
+
+  .media-card__actions {
+    opacity: 1;
+    bottom: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .media-card__action-btn {
+    width: 32px;
+    height: 32px;
+    background-color: rgba(245, 158, 11, 0.9);
+    color: #000;
+    border: none;
+  }
+
+  .media-card__action-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .media-card__title {
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
 }

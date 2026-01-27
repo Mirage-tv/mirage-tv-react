@@ -103,43 +103,24 @@ export const HomePage = () => {
           <div className="hero__loading">
             <span>Chargement...</span>
           </div>
-        ) : heroBanner ? (
-          <div className="hero__content">
-            {heroBanner.label && <span className="hero__label">{heroBanner.label}</span>}
-            <h1 className="hero__title">{heroBanner.previewMedia.name}</h1>
-            <div className="hero__meta">
-              <span>{heroBanner.previewMedia.ageRange}</span>
-              <span>{heroBanner.previewMedia.duration}</span>
-              <span>{heroBanner.previewMedia.quality}</span>
-            </div>
-            <p className="hero__synopsis">{heroBanner.previewMedia.synopsis}</p>
-            <div className="hero__actions">
-              <button className="hero__btn hero__btn--play" onClick={() => handlePlayMedia(heroBanner.previewMedia.id!)}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-                <span>Lecture</span>
-              </button>
-              <button className="hero__btn hero__btn--info" onClick={() => navigate(`/media/${heroBanner.previewMedia.id}`)}>
-                <span>Plus d'infos</span>
-              </button>
-            </div>
-            <div className="hero__brand">
-              <img src="/src/assets/logo.png" alt="Mirage Originals" />
-              <span>Originals</span>
-            </div>
-          </div>
         ) : (
-          !isAuthenticated && (
-            <div className="hero__welcome">
-              <h1 className="hero__welcome-title">Bienvenue sur Mirage-TV</h1>
-              <p className="hero__welcome-subtitle">Inscrivez-vous pour commencer à regarder du contenu incroyable.</p>
-              <div className="hero__welcome-actions">
-                <button className="hero__btn hero__btn--play" onClick={() => navigate("/signup")}>
-                  S'inscrire
+          heroBanner && (
+            <div className="hero__content">
+              <div className="hero__brand">
+                <img src="/src/assets/logo.png" alt="Mirage Originals" />
+                <span>Originals</span>
+              </div>
+              <h1 className="hero__title">{heroBanner.previewMedia.name}</h1>
+              {heroBanner.label && <p className="hero__tagline">{heroBanner.label}</p>}
+              <div className="hero__actions">
+                <button className="hero__btn hero__btn--play" onClick={() => handlePlayMedia(heroBanner.previewMedia.id!)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                  <span>Lecture</span>
                 </button>
-                <button className="hero__btn hero__btn--info" onClick={() => navigate("/login")}>
-                  Se connecter
+                <button className="hero__btn hero__btn--info" onClick={() => navigate(`/media/${heroBanner.previewMedia.id}`)}>
+                  <span>Plus d'infos</span>
                 </button>
               </div>
             </div>
@@ -167,91 +148,7 @@ export const HomePage = () => {
               )}
               <div className="media-card__overlay">
                 <h3 className="media-card__title">{media.name}</h3>
-                <div className="media-card__actions">
-                  <button
-                    className="media-card__action-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePlayMedia(media.id!);
-                    }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </button>
-                  <button
-                    className="media-card__action-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleToggleFavorite(media.id!);
-                    }}
-                    disabled={likeLoading === media.id}
-                  >
-                    {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
-                  </button>
-                </div>
               </div>
-            </div>
-          ))}
-        </Carousel>
-      )}
-
-      {/* My List Section */}
-      {isAuthenticated && favorites.length > 0 && (
-        <Carousel title="Ma Liste">
-          {favorites.map((media) => (
-            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
-              <img
-                src={media.thumbnailUrl || logo}
-                alt={media.name}
-                onError={(e) => {
-                  e.currentTarget.src = logo;
-                }}
-              />
-              <div className="media-card__overlay">
-                <h3 className="media-card__title">{media.name}</h3>
-                <div className="media-card__actions">
-                  <button
-                    className="media-card__action-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePlayMedia(media.id!);
-                    }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </button>
-                  <button
-                    className="media-card__action-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleToggleFavorite(media.id!);
-                    }}
-                    disabled={likeLoading === media.id}
-                  >
-                    {likeLoading === media.id ? "..." : "❤️"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </Carousel>
-      )}
-
-      <Carousel title="Tendances actuelles">
-        {trendingMedia?.map((media) => (
-          <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
-            <img
-              className="media-card__img"
-              src={media.thumbnailUrl || logo}
-              alt={media.name}
-              onError={(e) => {
-                e.currentTarget.src = logo;
-              }}
-            />
-            <div className="media-card__overlay">
-              <h3 className="media-card__title">{media.name}</h3>
               <div className="media-card__actions">
                 <button
                   className="media-card__action-btn"
@@ -276,6 +173,91 @@ export const HomePage = () => {
                 </button>
               </div>
             </div>
+          ))}
+        </Carousel>
+      )}
+
+      {/* My List Section */}
+      {isAuthenticated && favorites.length > 0 && (
+        <Carousel title="Ma Liste">
+          {favorites.map((media) => (
+            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
+              <img
+                src={media.thumbnailUrl || logo}
+                alt={media.name}
+                onError={(e) => {
+                  e.currentTarget.src = logo;
+                }}
+              />
+              <div className="media-card__overlay">
+                <h3 className="media-card__title">{media.name}</h3>
+              </div>
+              <div className="media-card__actions">
+                <button
+                  className="media-card__action-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePlayMedia(media.id!);
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </button>
+                <button
+                  className="media-card__action-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleFavorite(media.id!);
+                  }}
+                  disabled={likeLoading === media.id}
+                >
+                  {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
+                </button>
+              </div>
+            </div>
+          ))}
+        </Carousel>
+      )}
+
+      {/* Trending Now Section */}
+      <Carousel title="Tendances actuelles">
+        {trendingMedia?.map((media) => (
+          <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
+            <img
+              className="media-card__img"
+              src={media.thumbnailUrl || logo}
+              alt={media.name}
+              onError={(e) => {
+                e.currentTarget.src = logo;
+              }}
+            />
+            <div className="media-card__overlay">
+              <h3 className="media-card__title">{media.name}</h3>
+            </div>
+            <div className="media-card__actions">
+              <button
+                className="media-card__action-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePlayMedia(media.id!);
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </button>
+              <button
+                className="media-card__action-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleToggleFavorite(media.id!);
+                }}
+                disabled={likeLoading === media.id}
+              >
+                {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
+              </button>
+            </div>
           </div>
         ))}
       </Carousel>
@@ -284,46 +266,17 @@ export const HomePage = () => {
       {categories.length > 0 && (
         <section className="categories-section">
           <h2 className="section-title">Parcourir par catégorie</h2>
-          <div className="categories-list">
+          <div className="categories-grid">
             {categories.map((category) => (
-              <button key={category} className="category-chip" onClick={() => navigate(`/movies?category=${category}`)}>
-                <span className="category-name">{category}</span>
-                <div className="category-arrow">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
-                  </svg>
-                </div>
-              </button>
+              <div key={category} className="category-card" onClick={() => navigate(`/browse/${category}`)}>
+                <span className="category-card__name">{category}</span>
+              </div>
             ))}
           </div>
         </section>
       )}
 
       <PromoSection />
-
-      {/* User Status Banner */}
-      {isAuthenticated && !isSubscriber && (
-        <section className="home-page__subscription-banner">
-          <div className="home-page__banner-content">
-            <h3>Abonnez-vous pour regarder du contenu illimité</h3>
-            <p>Accédez à des milliers de films et séries TV</p>
-            <button className="home-page__btn-subscribe" onClick={() => navigate("/subscribe")}>
-              S'abonner maintenant
-            </button>
-          </div>
-        </section>
-      )}
     </div>
   );
 };
