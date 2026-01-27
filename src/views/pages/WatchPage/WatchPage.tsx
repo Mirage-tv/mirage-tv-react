@@ -35,6 +35,7 @@ export const WatchPage = () => {
   const [playbackStatus, setPlaybackStatus] = useState<PlaybackStatus>(PlaybackStatus.NotStarted);
   const [currentSubtitle, setCurrentSubtitle] = useState<string>('');
   const [subtitleCues, setSubtitleCues] = useState<Array<{ start: number; end: number; text: string }>>([]);
+  const [showSubtitles, setShowSubtitles] = useState(true);
 
   const { currentMedia, fetchMediaById } = useMediaStore();
   const { createHistoryEntry } = useViewingHistoryStore();
@@ -97,11 +98,35 @@ export const WatchPage = () => {
             const start = parseVttTime(startStr.trim());
             const end = parseVttTime(endStr.trim().split(' ')[0]); // Handle position info
 
-            // Collect text lines
+            // Collect text lines and strip tags
             const textLines: string[] = [];
-            i++;
-            while (i < lines.length && lines[i].trim() !== '') {
-              textLines.push(lines[i].trim());
+            i++; // Move to line after timestamp
+
+            while (i < lines.length) {
+              const currentLine = lines[i].trim();
+
+              // Safety: if we hit the next timestamp, stop immediately
+              if (currentLine.includes(' --> ')) {
+                i--; // Backtrack so outer loop processes this timestamp
+                break;
+              }
+
+              // Handle empty lines
+              if (currentLine === '') {
+                // If we already have text, a blank line ends the cue
+                if (textLines.length > 0) {
+                  break;
+                }
+                // If no text yet, it's a leading blank line (quirk), skip it
+                i++;
+                continue;
+              }
+
+              // Process text line
+              const cleanLine = currentLine.replace(/<[^>]*>/g, '');
+              if (cleanLine) {
+                textLines.push(cleanLine);
+              }
               i++;
             }
 
@@ -536,12 +561,26 @@ export const WatchPage = () => {
           controlsList="nodownload"
         >
           <source src={videoUrls.source} type="video/mp4" />
-          {/* Subtitles tracks disabled - external display used */}
           Votre navigateur ne supporte pas la lecture vidéo.
         </video>
 
+        {/* Custom Video Controls Overlay */}
+        <div className="watch-page__video-controls-overlay">
+          {videoUrls.subtitles && videoUrls.subtitles.length > 0 && (
+            <button
+              className={`watch-page__btn-cc ${showSubtitles ? 'active' : ''}`}
+              onClick={() => setShowSubtitles(!showSubtitles)}
+              title={showSubtitles ? 'Désactiver les sous-titres' : 'Activer les sous-titres'}
+            >
+              CC
+            </button>
+          )}
+        </div>
+
         {/* Zone de sous-titres externe */}
-        <div className="watch-page__subtitles">{currentSubtitle && <p className="watch-page__subtitle-text">{currentSubtitle}</p>}</div>
+        <div className="watch-page__subtitles">
+          {showSubtitles && currentSubtitle && <p className="watch-page__subtitle-text">{currentSubtitle}</p>}
+        </div>
       </div>
 
       {currentMedia && (

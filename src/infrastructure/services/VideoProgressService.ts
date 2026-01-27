@@ -2,16 +2,16 @@
 // Service de gestion de la progression vidéo avec approche hybride (localStorage + API)
 // Optimisé pour économiser les ressources réseau
 
-import { viewingHistoryService } from "../adapters/api";
+import { viewingHistoryService } from '../adapters/api';
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export const PlaybackStatus = {
-  NotStarted: "notStarted",
-  InProgress: "inProgress",
-  Finished: "finished",
+  NotStarted: 'notStarted',
+  InProgress: 'inProgress',
+  Finished: 'finished'
 } as const;
 export type PlaybackStatus = (typeof PlaybackStatus)[keyof typeof PlaybackStatus];
 
@@ -37,7 +37,7 @@ interface ProgressEntry {
 // Constants
 // ============================================================================
 
-const STORAGE_KEY = "mirage_video_progress";
+const STORAGE_KEY = 'mirage_video_progress';
 const FINISHED_THRESHOLD = 0.95; // 95% = finished
 const MAX_RESUME_OFFSET_SECONDS = 30; // Tolérance de 30 secondes max
 const DEBOUNCE_LOCAL_SAVE_MS = 1000; // Debounce pour sauvegarde locale
@@ -72,7 +72,7 @@ class VideoProgressService {
         });
       }
     } catch (error) {
-      console.warn("Failed to load progress from localStorage:", error);
+      console.warn('Failed to load progress from localStorage:', error);
     }
   }
 
@@ -84,7 +84,7 @@ class VideoProgressService {
       });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
-      console.warn("Failed to save progress to localStorage:", error);
+      console.warn('Failed to save progress to localStorage:', error);
     }
   }
 
@@ -94,8 +94,8 @@ class VideoProgressService {
 
   private setupVisibilityListener(): void {
     // Save when user leaves the tab/window
-    document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "hidden") {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
         this.syncAllPendingToApi();
       }
     });
@@ -103,7 +103,7 @@ class VideoProgressService {
 
   private setupBeforeUnloadListener(): void {
     // Final save before page unload
-    window.addEventListener("beforeunload", () => {
+    window.addEventListener('beforeunload', () => {
       this.saveToLocalStorage();
       // Note: API calls in beforeunload are unreliable,
       // but we try with sendBeacon if available
@@ -136,7 +136,7 @@ class VideoProgressService {
       duration: localEntry?.duration ?? 0,
       status: PlaybackStatus.InProgress,
       updatedAt: Date.now(),
-      pendingSync: true,
+      pendingSync: true
     };
     this.progressCache.set(mediaId, entry);
     this.saveToLocalStorage();
@@ -166,7 +166,7 @@ class VideoProgressService {
       duration,
       status,
       updatedAt: Date.now(),
-      pendingSync: true,
+      pendingSync: true
     };
 
     this.progressCache.set(mediaId, entry);
@@ -194,7 +194,7 @@ class VideoProgressService {
     try {
       await viewingHistoryService.updateProgress({
         id: mediaId,
-        progress: entry.progress,
+        progress: entry.progress
       });
 
       // Mark as synced
@@ -203,7 +203,7 @@ class VideoProgressService {
       this.progressCache.set(mediaId, entry);
       this.saveToLocalStorage();
     } catch (error) {
-      console.warn("Failed to sync progress to API:", error);
+      console.warn('Failed to sync progress to API:', error);
       // Keep pendingSync = true for retry later
     }
   }
@@ -221,7 +221,7 @@ class VideoProgressService {
       duration,
       status,
       updatedAt: Date.now(),
-      pendingSync: false, // Will be synced immediately
+      pendingSync: false // Will be synced immediately
     };
 
     this.progressCache.set(mediaId, entry);
@@ -231,7 +231,7 @@ class VideoProgressService {
     try {
       await viewingHistoryService.updateProgress({
         id: mediaId,
-        progress,
+        progress
       });
       this.lastSyncedProgress.set(mediaId, progress);
     } catch (error) {
@@ -262,7 +262,7 @@ class VideoProgressService {
         currentTime: localEntry.currentTime,
         duration: localEntry.duration,
         status: localEntry.status,
-        updatedAt: localEntry.updatedAt,
+        updatedAt: localEntry.updatedAt
       };
     }
 
@@ -273,7 +273,7 @@ class VideoProgressService {
       currentTime: 0, // Unknown, will be calculated
       duration: 0,
       status: this.determineStatus(apiProgress),
-      updatedAt: Date.now(),
+      updatedAt: Date.now()
     };
   }
 
@@ -354,7 +354,7 @@ class VideoProgressService {
     try {
       await viewingHistoryService.createHistoryEntry({
         mediaId,
-        progress,
+        progress
       });
       this.lastSyncedProgress.set(mediaId, progress);
     } catch {
@@ -362,11 +362,11 @@ class VideoProgressService {
       try {
         await viewingHistoryService.updateProgress({
           id: mediaId,
-          progress,
+          progress
         });
         this.lastSyncedProgress.set(mediaId, progress);
       } catch (updateError) {
-        console.warn("Failed to create/update API history entry:", updateError);
+        console.warn('Failed to create/update API history entry:', updateError);
       }
     }
   }
@@ -391,11 +391,11 @@ class VideoProgressService {
       if (entry.pendingSync) {
         const data = JSON.stringify({
           id: mediaId,
-          progress: entry.progress,
+          progress: entry.progress
         });
         // Note: This would need a dedicated endpoint that accepts beacon requests
         // For now, we rely on localStorage and sync on next visit
-        navigator.sendBeacon("/api/v1/history/update", data);
+        navigator.sendBeacon('/api/v1/history', data);
       }
     });
   }
