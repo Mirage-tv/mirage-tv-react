@@ -200,6 +200,17 @@ export const WatchPage = () => {
   // Video Event Handlers
   // ============================================================================
 
+  const handlePlayPause = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (video.paused) {
+      video.play().catch(console.error);
+    } else {
+      video.pause();
+    }
+  }, []);
+
   const handlePlay = useCallback(() => {
     isPlayingRef.current = true;
 
@@ -274,14 +285,47 @@ export const WatchPage = () => {
     }
   }, [saveProgressAndSync]);
 
+  // Interface for cross-browser fullscreen support
+  interface DocumentWithFullscreen extends Document {
+    webkitFullscreenElement?: Element;
+    mozFullScreenElement?: Element;
+    msFullscreenElement?: Element;
+    webkitExitFullscreen?: () => Promise<void>;
+    mozCancelFullScreen?: () => Promise<void>;
+    msExitFullscreen?: () => Promise<void>;
+  }
+
+  interface HTMLElementWithFullscreen extends HTMLElement {
+    webkitRequestFullscreen?: () => Promise<void>;
+    mozRequestFullScreen?: () => Promise<void>;
+    msRequestFullscreen?: () => Promise<void>;
+  }
+
   const toggleFullscreen = useCallback(async () => {
-    if (!document.fullscreenElement) {
-      if (videoContainerRef.current?.requestFullscreen) {
-        await videoContainerRef.current.requestFullscreen();
+    const container = videoContainerRef.current as HTMLElementWithFullscreen;
+    const doc = document as DocumentWithFullscreen;
+
+    if (!container) return;
+
+    if (!doc.fullscreenElement && !doc.webkitFullscreenElement && !doc.mozFullScreenElement && !doc.msFullscreenElement) {
+      if (container.requestFullscreen) {
+        await container.requestFullscreen();
+      } else if (container.webkitRequestFullscreen) {
+        await container.webkitRequestFullscreen();
+      } else if (container.mozRequestFullScreen) {
+        await container.mozRequestFullScreen();
+      } else if (container.msRequestFullscreen) {
+        await container.msRequestFullscreen();
       }
     } else {
-      if (document.exitFullscreen) {
-        await document.exitFullscreen();
+      if (doc.exitFullscreen) {
+        await doc.exitFullscreen();
+      } else if (doc.webkitExitFullscreen) {
+        await doc.webkitExitFullscreen();
+      } else if (doc.mozCancelFullScreen) {
+        await doc.mozCancelFullScreen();
+      } else if (doc.msExitFullscreen) {
+        await doc.msExitFullscreen();
       }
     }
   }, []);
@@ -567,7 +611,8 @@ export const WatchPage = () => {
         <video
           ref={videoRef}
           className="watch-page__video-player"
-          controls
+          onClick={handlePlayPause}
+          onDoubleClick={toggleFullscreen}
           autoPlay
           playsInline
           preload="metadata"

@@ -152,15 +152,26 @@
 
 .watch-page__video-container {
   width: 100%;
-  min-height: 60vh;
-  max-height: 70vh;
-  margin-top: 80px;
+  padding: 0;
   background-color: #000000;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center; /* Center video vertically */
   position: relative; /* Pour positionner l'overlay */
+  overflow: hidden; /* Ensure nothing spills out */
+}
+
+.watch-page__video-container:fullscreen {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+}
+
+.watch-page__video-container:-webkit-full-screen {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
 }
 
 .watch-page__video-controls-overlay {
@@ -213,13 +224,21 @@
   display: none;
 }
 
-/* Zone de sous-titres externe */
+/* Zone de sous-titres externe - Position absolue pour overlay */
 .watch-page__subtitles {
-  width: 100%;
+  position: absolute;
+  bottom: 60px; /* Au-dessus des contrôles ou du bas de l'écran */
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  min-width: 60%;
+  max-width: 90%;
   padding: 0.5rem 1rem;
-  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.6); /* Fond semi-transparent */
   text-align: center;
-  min-height: 40px;
+  border-radius: 8px;
+  z-index: 10;
+  pointer-events: none; /* Permet de cliquer à travers */
 }
 
 .watch-page__subtitles:empty,
@@ -228,10 +247,11 @@
 }
 
 .watch-page__subtitle-text {
-  font-size: 1.1rem;
+  font-size: 1.25rem; /* Un peu plus grand */
   color: #fff;
   line-height: 1.4;
   margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .watch-page__video-info {
