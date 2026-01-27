@@ -66,6 +66,10 @@ export const HomePage = () => {
     navigate(`/watch/${mediaId}`);
   };
 
+  const handleViewDetail = (mediaId: string) => {
+    navigate(`/media/${mediaId}`);
+  };
+
   const handleToggleFavorite = async (mediaId: string) => {
     if (!isAuthenticated) {
       navigate("/login");
@@ -148,7 +152,7 @@ export const HomePage = () => {
       {isAuthenticated && continueWatching.length > 0 && (
         <Carousel title="Reprendre la lecture">
           {continueWatching.map((media) => (
-            <div key={media.id} className="media-card">
+            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
               <img
                 src={media.thumbnailUrl || logo}
                 alt={media.name}
@@ -164,14 +168,23 @@ export const HomePage = () => {
               <div className="media-card__overlay">
                 <h3 className="media-card__title">{media.name}</h3>
                 <div className="media-card__actions">
-                  <button className="media-card__action-btn" onClick={() => handlePlayMedia(media.id!)}>
+                  <button
+                    className="media-card__action-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePlayMedia(media.id!);
+                    }}
+                  >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M8 5v14l11-7z" />
                     </svg>
                   </button>
                   <button
                     className="media-card__action-btn"
-                    onClick={() => handleToggleFavorite(media.id!)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleFavorite(media.id!);
+                    }}
                     disabled={likeLoading === media.id}
                   >
                     {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
@@ -187,8 +200,7 @@ export const HomePage = () => {
       {isAuthenticated && favorites.length > 0 && (
         <Carousel title="Ma Liste">
           {favorites.map((media) => (
-            <div key={media.id} className="media-card">
-              <img src={media.thumbnailUrl} alt={media.name} />
+            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
               <img
                 src={media.thumbnailUrl || logo}
                 alt={media.name}
@@ -199,14 +211,23 @@ export const HomePage = () => {
               <div className="media-card__overlay">
                 <h3 className="media-card__title">{media.name}</h3>
                 <div className="media-card__actions">
-                  <button className="media-card__action-btn" onClick={() => handlePlayMedia(media.id!)}>
+                  <button
+                    className="media-card__action-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePlayMedia(media.id!);
+                    }}
+                  >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M8 5v14l11-7z" />
                     </svg>
                   </button>
                   <button
                     className="media-card__action-btn"
-                    onClick={() => handleToggleFavorite(media.id!)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleFavorite(media.id!);
+                    }}
                     disabled={likeLoading === media.id}
                   >
                     {likeLoading === media.id ? "..." : "❤️"}
@@ -220,7 +241,7 @@ export const HomePage = () => {
 
       <Carousel title="Tendances actuelles">
         {trendingMedia?.map((media) => (
-          <div key={media.id} className="media-card">
+          <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
             <img
               className="media-card__img"
               src={media.thumbnailUrl || logo}
@@ -232,14 +253,23 @@ export const HomePage = () => {
             <div className="media-card__overlay">
               <h3 className="media-card__title">{media.name}</h3>
               <div className="media-card__actions">
-                <button className="media-card__action-btn" onClick={() => handlePlayMedia(media.id!)}>
+                <button
+                  className="media-card__action-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePlayMedia(media.id!);
+                  }}
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 </button>
                 <button
                   className="media-card__action-btn"
-                  onClick={() => handleToggleFavorite(media.id!)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleFavorite(media.id!);
+                  }}
                   disabled={likeLoading === media.id}
                 >
                   {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}

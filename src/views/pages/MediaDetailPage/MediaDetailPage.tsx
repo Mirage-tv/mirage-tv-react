@@ -1,8 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import logo from "../../../assets/logo.png";
 import { useAuth } from "../../../core/hooks";
 import { useFavoritesStore } from "../../../infrastructure/store/favoritesStore";
 import { useMediaStore } from "../../../infrastructure/store/mediaStore";
+import { Carousel } from "../../components/Carousel/Carousel";
+import "../../components/MediaCard/MediaCard.css";
 import "./MediaDetailPage.css";
 
 export const MediaDetailPage = () => {
@@ -10,26 +13,32 @@ export const MediaDetailPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated, isSubscriber } = useAuth();
 
-  const { currentMedia, isLoadingCurrentMedia, error, fetchMediaById, clearCurrentMedia } = useMediaStore();
-  const { favorites, toggleFavorite, fetchFavorites } = useFavoritesStore();
+  const { currentMedia, isLoadingCurrentMedia, error, fetchMediaById, clearCurrentMedia, movies, fetchMovies } = useMediaStore();
+  const { favorites, toggleFavorite, fetchFavorites, isFavorite } = useFavoritesStore();
+  const [likeLoading, setLikeLoading] = useState<string | null>(null);
 
-  const isFavorite = favorites.some((fav) => fav.id === id);
+  const isCurrentFavorite = favorites.some((fav) => fav.id === id);
 
   useEffect(() => {
     if (id) {
       fetchMediaById(id);
     }
+    // Charger les films similaires
+    fetchMovies({ per: 10 });
 
     return () => {
       clearCurrentMedia();
     };
-  }, [id, fetchMediaById, clearCurrentMedia]);
+  }, [id, fetchMediaById, clearCurrentMedia, fetchMovies]);
 
   useEffect(() => {
     if (isAuthenticated) {
       fetchFavorites();
     }
   }, [isAuthenticated, fetchFavorites]);
+
+  // Filtrer les films similaires (exclure le média actuel)
+  const similarMedia = movies.filter((movie) => movie.id !== id).slice(0, 8);
 
   const handlePlay = () => {
     if (!isAuthenticated) {
@@ -43,14 +52,24 @@ export const MediaDetailPage = () => {
     navigate(`/watch/${id}`);
   };
 
-  const handleToggleFavorite = async () => {
+  const handleToggleFavorite = async (mediaId?: string) => {
+    const targetId = mediaId || id;
     if (!isAuthenticated) {
       navigate("/login");
       return;
     }
-    if (id) {
-      await toggleFavorite(id);
+    if (targetId) {
+      setLikeLoading(targetId);
+      try {
+        await toggleFavorite(targetId);
+      } finally {
+        setLikeLoading(null);
+      }
     }
+  };
+
+  const handleViewDetail = (mediaId: string) => {
+    navigate(`/media/${mediaId}`);
   };
 
   const handleBack = () => {
@@ -152,23 +171,28 @@ export const MediaDetailPage = () => {
 
               {isAuthenticated && (
                 <button
-                  className={`media-detail-page__btn media-detail-page__btn--icon ${isFavorite ? "media-detail-page__btn--favorite" : ""}`}
-                  onClick={handleToggleFavorite}
-                  title={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                  className={`media-detail-page__btn media-detail-page__btn--icon ${isCurrentFavorite ? "media-detail-page__btn--favorite" : ""}`}
+                  onClick={() => handleToggleFavorite()}
+                  disabled={likeLoading === id}
+                  title={isCurrentFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill={isFavorite ? "currentColor" : "none"}
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                  </svg>
+                  {likeLoading === id ? (
+                    "..."
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill={isCurrentFavorite ? "currentColor" : "none"}
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                  )}
                 </button>
               )}
             </div>
@@ -231,6 +255,57 @@ export const MediaDetailPage = () => {
             <button className="media-detail-page__btn media-detail-page__btn--primary" onClick={() => navigate("/subscribe")}>
               S'abonner maintenant
             </button>
+          </div>
+        )}
+
+        {/* Contenus similaires */}
+        {similarMedia.length > 0 && (
+          <div className="media-detail-page__section">
+            <Carousel title="Contenus similaires">
+              {similarMedia.map((media) => (
+                <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
+                  <img
+                    src={media.thumbnailUrl || logo}
+                    alt={media.name}
+                    onError={(e) => {
+                      e.currentTarget.src = logo;
+                    }}
+                  />
+                  <div className="media-card__overlay">
+                    <h3 className="media-card__title">{media.name}</h3>
+                    <div className="media-card__actions">
+                      <button
+                        className="media-card__action-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isAuthenticated && isSubscriber) {
+                            navigate(`/watch/${media.id}`);
+                          } else if (!isAuthenticated) {
+                            navigate("/login");
+                          } else {
+                            navigate("/subscribe");
+                          }
+                        }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </button>
+                      <button
+                        className="media-card__action-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleFavorite(media.id!);
+                        }}
+                        disabled={likeLoading === media.id}
+                      >
+                        {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </Carousel>
           </div>
         )}
       </div>
