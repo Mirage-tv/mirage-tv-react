@@ -121,7 +121,7 @@ export const MobileBottomNav = () => {
   const { isAuthenticated, isSubscriber } = useAuth();
 
   // Determine if we should show the subscribe button
-  const showSubscribe = !isAuthenticated || !isSubscriber;
+  const showSubscribe = !isAuthenticated && !isSubscriber;
 
   const navItems: NavItem[] = [
     { path: "/", label: "Accueil", icon: <HomeIcon /> },
