@@ -1,6 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../../../core/hooks";
-import "./MobileBottomNav.css";
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../../../core/hooks';
+import './MobileBottomNav.css';
 
 interface NavItem {
   path: string;
@@ -120,48 +120,37 @@ export const MobileBottomNav = () => {
   const location = useLocation();
   const { isAuthenticated, isSubscriber } = useAuth();
 
-  // Determine if we should show the subscribe button
-  const showSubscribe = !isAuthenticated && !isSubscriber;
+  // Show Subscribe button when user is not a subscriber (regardless of auth status)
+  const showSubscribe = !isSubscriber;
 
   const navItems: NavItem[] = [
-    { path: "/", label: "Accueil", icon: <HomeIcon /> },
-    { path: "/browse/shows", label: "Séries", icon: <ShowsIcon /> },
-    { path: "/browse/movies", label: "Films", icon: <MoviesIcon /> },
+    { path: '/', label: 'Accueil', icon: <HomeIcon /> },
+    { path: '/browse/shows', label: 'Séries', icon: <ShowsIcon /> },
+    { path: '/browse/movies', label: 'Films', icon: <MoviesIcon /> },
     // Show Favorites only for authenticated subscribers
-    { path: "/my-list", label: "Favoris", icon: <FavoritesIcon />, requiresAuth: true, hideWhenNotSubscribed: true },
-    // Show Subscribe button when not authenticated or not subscribed
-    ...(showSubscribe ? [{ path: "/subscribe", label: "S'abonner", icon: <SubscribeIcon /> }] : []),
+    ...(isAuthenticated && isSubscriber ? [{ path: '/my-list', label: 'Favoris', icon: <FavoritesIcon /> }] : []),
+    // Show Subscribe button when not subscribed
+    ...(showSubscribe ? [{ path: '/subscribe', label: "S'abonner", icon: <SubscribeIcon /> }] : []),
     // Profile/Login button
-    { path: isAuthenticated ? "/profile" : "/login", label: isAuthenticated ? "Profil" : "Connexion", icon: <ProfileIcon /> },
+    { path: isAuthenticated ? '/profile' : '/login', label: isAuthenticated ? 'Profil' : 'Connexion', icon: <ProfileIcon /> }
   ];
 
-  // Filter items based on auth and subscription status
-  const filteredItems = navItems.filter((item) => {
-    // Hide items that require auth for non-authenticated users
-    if (item.requiresAuth && !isAuthenticated) {
-      return false;
-    }
-    // Hide items marked as hideWhenNotSubscribed for non-subscribers
-    if (item.hideWhenNotSubscribed && !isSubscriber) {
-      return false;
-    }
-    return true;
-  });
+  // Les items sont déjà conditionnels, pas besoin de filtrage supplémentaire
 
   const isActive = (path: string) => {
-    if (path === "/") {
-      return location.pathname === "/";
+    if (path === '/') {
+      return location.pathname === '/';
     }
     return location.pathname.startsWith(path);
   };
 
   return (
     <nav className="mobile-bottom-nav">
-      {filteredItems.map((item) => (
+      {navItems.map((item) => (
         <Link
           key={item.path}
           to={item.path}
-          className={`mobile-bottom-nav__item ${isActive(item.path) ? "mobile-bottom-nav__item--active" : ""} ${item.path === "/subscribe" ? "mobile-bottom-nav__item--subscribe" : ""}`}
+          className={`mobile-bottom-nav__item ${isActive(item.path) ? 'mobile-bottom-nav__item--active' : ''} ${item.path === '/subscribe' ? 'mobile-bottom-nav__item--subscribe' : ''}`}
         >
           <span className="mobile-bottom-nav__icon">{item.icon}</span>
           <span className="mobile-bottom-nav__label">{item.label}</span>

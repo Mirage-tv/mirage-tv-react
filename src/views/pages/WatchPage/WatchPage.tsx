@@ -1,15 +1,15 @@
-import "./WatchPage.css";
+import './WatchPage.css';
 // Watch Page Component
 // Video player with playback progress tracking and viewing history integration
 // Uses hybrid storage (localStorage + API) for optimal performance
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { type VideoURLsDTO } from "../../../core/domain/types";
-import { useAuth } from "../../../core/hooks";
-import { PlaybackStatus, videoProgressService } from "../../../infrastructure/services/VideoProgressService";
-import { useMediaStore } from "../../../infrastructure/store/mediaStore";
-import { useViewingHistoryStore } from "../../../infrastructure/store/viewingHistoryStore";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { type VideoURLsDTO } from '../../../core/domain/types';
+import { useAuth } from '../../../core/hooks';
+import { PlaybackStatus, videoProgressService } from '../../../infrastructure/services/VideoProgressService';
+import { useMediaStore } from '../../../infrastructure/store/mediaStore';
+import { useViewingHistoryStore } from '../../../infrastructure/store/viewingHistoryStore';
 
 // Constants
 const LOCAL_UPDATE_INTERVAL_MS = 2000; // Update local storage every 2 seconds
@@ -33,6 +33,8 @@ export const WatchPage = () => {
   const [historyEntryId, setHistoryEntryId] = useState<string | null>(null);
   const [requiresSubscription, setRequiresSubscription] = useState(false);
   const [playbackStatus, setPlaybackStatus] = useState<PlaybackStatus>(PlaybackStatus.NotStarted);
+  const [currentSubtitle, setCurrentSubtitle] = useState<string>('');
+  const [subtitleCues, setSubtitleCues] = useState<Array<{ start: number; end: number; text: string }>>([]);
 
   const { currentMedia, fetchMediaById } = useMediaStore();
   const { createHistoryEntry } = useViewingHistoryStore();
@@ -55,9 +57,84 @@ export const WatchPage = () => {
     return {
       progress,
       currentTime: video.currentTime,
-      duration: video.duration,
+      duration: video.duration
     };
   }, []);
+
+  // Parse VTT timestamp to seconds
+  const parseVttTime = useCallback((timeStr: string): number => {
+    const parts = timeStr.split(':');
+    if (parts.length === 3) {
+      const [hours, minutes, secondsMs] = parts;
+      const [seconds, ms] = secondsMs.split('.');
+      return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds) + parseInt(ms || '0') / 1000;
+    } else if (parts.length === 2) {
+      const [minutes, secondsMs] = parts;
+      const [seconds, ms] = secondsMs.split('.');
+      return parseInt(minutes) * 60 + parseInt(seconds) + parseInt(ms || '0') / 1000;
+    }
+    return 0;
+  }, []);
+
+  // Load and parse VTT file
+  useEffect(() => {
+    if (!videoUrls?.subtitles?.length) return;
+
+    const loadSubtitles = async () => {
+      try {
+        const response = await fetch(videoUrls.subtitles[0].url);
+        const vttText = await response.text();
+
+        const cues: Array<{ start: number; end: number; text: string }> = [];
+        const lines = vttText.split('\n');
+        let i = 0;
+
+        while (i < lines.length) {
+          const line = lines[i].trim();
+          // Look for timestamp line
+          if (line.includes(' --> ')) {
+            const [startStr, endStr] = line.split(' --> ');
+            const start = parseVttTime(startStr.trim());
+            const end = parseVttTime(endStr.trim().split(' ')[0]); // Handle position info
+
+            // Collect text lines
+            const textLines: string[] = [];
+            i++;
+            while (i < lines.length && lines[i].trim() !== '') {
+              textLines.push(lines[i].trim());
+              i++;
+            }
+
+            if (textLines.length > 0) {
+              cues.push({ start, end, text: textLines.join(' ') });
+            }
+          }
+          i++;
+        }
+
+        setSubtitleCues(cues);
+      } catch (err) {
+        console.error('Failed to load subtitles:', err);
+      }
+    };
+
+    loadSubtitles();
+  }, [videoUrls, parseVttTime]);
+
+  // Sync subtitle with video time
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || subtitleCues.length === 0) return;
+
+    const handleTimeUpdate = () => {
+      const currentTime = video.currentTime;
+      const activeCue = subtitleCues.find((cue) => currentTime >= cue.start && currentTime <= cue.end);
+      setCurrentSubtitle(activeCue?.text || '');
+    };
+
+    video.addEventListener('timeupdate', handleTimeUpdate);
+    return () => video.removeEventListener('timeupdate', handleTimeUpdate);
+  }, [subtitleCues]);
 
   const updateLocalProgress = useCallback(() => {
     if (!mediaId) return;
@@ -89,7 +166,7 @@ export const WatchPage = () => {
     try {
       await videoProgressService.saveProgress(mediaId, progressData.progress, progressData.currentTime, progressData.duration);
     } catch (error) {
-      console.warn("Failed to save progress:", error);
+      console.warn('Failed to save progress:', error);
     }
   }, [mediaId, getVideoProgress]);
 
@@ -165,7 +242,7 @@ export const WatchPage = () => {
   }, [syncToApi]);
 
   const handleVisibilityChange = useCallback(() => {
-    if (document.visibilityState === "hidden" && isPlayingRef.current) {
+    if (document.visibilityState === 'hidden' && isPlayingRef.current) {
       // Save progress when user switches tabs/apps
       saveProgressAndSync();
     }
@@ -179,7 +256,7 @@ export const WatchPage = () => {
     if (authLoading) return;
 
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate('/login');
       return;
     }
   }, [isAuthenticated, authLoading, navigate]);
@@ -199,14 +276,14 @@ export const WatchPage = () => {
       try {
         await fetchMediaById(mediaId);
       } catch (err) {
-        console.error("Failed to load media:", err);
+        console.error('Failed to load media:', err);
 
         const errorObj = err as { statusCode?: number; message?: string };
         if (errorObj.statusCode === 401 || errorObj.statusCode === 403) {
           setRequiresSubscription(true);
-          setError("Un abonnement actif est requis pour regarder ce contenu.");
+          setError('Un abonnement actif est requis pour regarder ce contenu.');
         } else {
-          const errorMessage = err instanceof Error ? err.message : "Impossible de charger la vidéo. Veuillez réessayer.";
+          const errorMessage = err instanceof Error ? err.message : 'Impossible de charger la vidéo. Veuillez réessayer.';
           setError(errorMessage);
         }
       } finally {
@@ -244,7 +321,7 @@ export const WatchPage = () => {
             setPlaybackStatus(videoProgressService.getStatus(mediaId));
           })
           .catch((err) => {
-            console.warn("Failed to start playback tracking:", err);
+            console.warn('Failed to start playback tracking:', err);
             // Still set historyEntryId to enable progress tracking
             setHistoryEntryId(mediaId);
           });
@@ -256,7 +333,7 @@ export const WatchPage = () => {
       }
     } else if (currentMedia && !currentMedia.videoURL) {
       setRequiresSubscription(true);
-      setError("Un abonnement actif est requis pour regarder ce contenu.");
+      setError('Un abonnement actif est requis pour regarder ce contenu.');
     }
   }, [currentMedia, mediaId, createHistoryEntry]);
 
@@ -287,11 +364,11 @@ export const WatchPage = () => {
     if (video.readyState >= 1 && video.duration > 0) {
       applyResumeTime();
     } else {
-      video.addEventListener("loadedmetadata", handleLoadedMetadata);
+      video.addEventListener('loadedmetadata', handleLoadedMetadata);
     }
 
     return () => {
-      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
     };
   }, [historyEntryId, mediaId, currentMedia?.progress]);
 
@@ -304,21 +381,21 @@ export const WatchPage = () => {
     if (!video || !historyEntryId) return;
 
     // Add event listeners
-    video.addEventListener("play", handlePlay);
-    video.addEventListener("pause", handlePause);
-    video.addEventListener("ended", handleEnded);
-    video.addEventListener("seeked", handleSeeked);
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
+    video.addEventListener('ended', handleEnded);
+    video.addEventListener('seeked', handleSeeked);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     // Cleanup
     return () => {
-      video.removeEventListener("play", handlePlay);
-      video.removeEventListener("pause", handlePause);
-      video.removeEventListener("ended", handleEnded);
-      video.removeEventListener("seeked", handleSeeked);
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
+      video.removeEventListener('ended', handleEnded);
+      video.removeEventListener('seeked', handleSeeked);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
 
       // Clear intervals
       if (localProgressIntervalRef.current) {
@@ -336,7 +413,7 @@ export const WatchPage = () => {
           ? {
               progress: video.currentTime / video.duration,
               currentTime: video.currentTime,
-              duration: video.duration,
+              duration: video.duration
             }
           : null;
 
@@ -395,7 +472,7 @@ export const WatchPage = () => {
             <button onClick={handleBack} className="watch-page__btn-back">
               Retour
             </button>
-            <button onClick={() => navigate("/subscribe")} className="watch-page__btn-subscribe">
+            <button onClick={() => navigate('/subscribe')} className="watch-page__btn-subscribe">
               S'abonner
             </button>
           </div>
@@ -444,19 +521,12 @@ export const WatchPage = () => {
           controlsList="nodownload"
         >
           <source src={videoUrls.source} type="video/mp4" />
-          {/* Subtitles */}
-          {videoUrls.subtitles.map((subtitle, index) => (
-            <track
-              key={index}
-              kind="subtitles"
-              label={subtitle.language}
-              srcLang={subtitle.language}
-              src={subtitle.url}
-              default={index === 0}
-            />
-          ))}
+          {/* Subtitles tracks disabled - external display used */}
           Votre navigateur ne supporte pas la lecture vidéo.
         </video>
+
+        {/* Zone de sous-titres externe */}
+        <div className="watch-page__subtitles">{currentSubtitle && <p className="watch-page__subtitle-text">{currentSubtitle}</p>}</div>
       </div>
 
       {currentMedia && (
@@ -476,7 +546,7 @@ export const WatchPage = () => {
             <div className="watch-page__trailer-section">
               <h3>Bande-annonce</h3>
               <video className="watch-page__trailer-player" controls controlsList="nodownload">
-                <source src={videoUrls.trailerURL || videoUrls.trailer || ""} type="video/mp4" />
+                <source src={videoUrls.trailerURL || videoUrls.trailer || ''} type="video/mp4" />
               </video>
             </div>
           )}

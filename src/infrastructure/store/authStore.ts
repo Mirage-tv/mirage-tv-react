@@ -1,10 +1,10 @@
 // Authentication Store
 // Manages authentication state and user session using Zustand
 
-import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
-import type { CreateUserReq, LoginReq, UserDTO } from "../../core/domain/types";
-import { authService, subscriptionService, userService } from "../adapters/api";
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import type { CreateUserReq, LoginReq, UserDTO } from '../../core/domain/types';
+import { authService, subscriptionService, userService } from '../adapters/api';
 
 interface AuthState {
   user: UserDTO | null;
@@ -24,13 +24,13 @@ interface AuthState {
 
 // Helper pour extraire le message d'erreur
 const getErrorMessage = (error: unknown): string => {
-  if (error && typeof error === "object" && "message" in error) {
+  if (error && typeof error === 'object' && 'message' in error) {
     return String(error.message);
   }
-  if (typeof error === "string") {
+  if (typeof error === 'string') {
     return error;
   }
-  return "An unknown error occurred";
+  return 'An unknown error occurred';
 };
 
 export const useAuthStore = create<AuthState>()(
@@ -53,9 +53,9 @@ export const useAuthStore = create<AuthState>()(
         } catch (error: unknown) {
           const errorMessage = getErrorMessage(error);
           set({
-            error: errorMessage || "Sign up failed",
+            error: errorMessage || 'Sign up failed',
             isLoading: false,
-            isAuthenticated: false,
+            isAuthenticated: false
           });
           throw error;
         }
@@ -72,9 +72,9 @@ export const useAuthStore = create<AuthState>()(
         } catch (error: unknown) {
           const errorMessage = getErrorMessage(error);
           set({
-            error: errorMessage || "Login failed",
+            error: errorMessage || 'Login failed',
             isLoading: false,
-            isAuthenticated: false,
+            isAuthenticated: false
           });
           throw error;
         }
@@ -89,18 +89,18 @@ export const useAuthStore = create<AuthState>()(
             user: null,
             isAuthenticated: false,
             isLoading: false,
-            error: null,
+            error: null
           });
         } catch (error: unknown) {
           const errorMessage = getErrorMessage(error);
           set({
-            error: errorMessage || "Logout failed",
-            isLoading: false,
+            error: errorMessage || 'Logout failed',
+            isLoading: false
           });
           // Clear state anyway even if API call fails
           set({
             user: null,
-            isAuthenticated: false,
+            isAuthenticated: false
           });
         }
       },
@@ -114,10 +114,10 @@ export const useAuthStore = create<AuthState>()(
           // Patch: fetch subscription to get planName if missing or to confirm status
           try {
             const subscription = await subscriptionService.getSubscription();
-            if (subscription && (subscription.status === "active" || subscription.status === "gracePeriod")) {
+            if (subscription && (subscription.status === 'active' || subscription.status === 'gracePeriod')) {
               user = {
                 ...user,
-                planName: subscription.planName,
+                planName: subscription.planName
               };
             }
           } catch {
@@ -127,15 +127,15 @@ export const useAuthStore = create<AuthState>()(
           set({
             user,
             isAuthenticated: true,
-            isLoading: false,
+            isLoading: false
           });
         } catch (error: unknown) {
           const errorMessage = getErrorMessage(error);
           set({
-            error: errorMessage || "Failed to fetch user profile",
+            error: errorMessage || 'Failed to fetch user profile',
             isLoading: false,
             user: null,
-            isAuthenticated: false,
+            isAuthenticated: false
           });
           throw error;
         }
@@ -151,32 +151,28 @@ export const useAuthStore = create<AuthState>()(
         set({ user, isAuthenticated: user !== null });
       },
 
-      // Validate session with server
+      // Validate session with server and fetch subscription info
       validateSession: async () => {
         try {
-          const user = await userService.getProfile();
-          set({
-            user,
-            isAuthenticated: true,
-            isLoading: false,
-          });
+          // Use fetchUserProfile which also fetches subscription
+          await get().fetchUserProfile();
         } catch {
           // Session invalid, clear state
           set({
             user: null,
             isAuthenticated: false,
             isLoading: false,
-            error: null,
+            error: null
           });
         }
-      },
+      }
     }),
     {
-      name: "auth-storage",
+      name: 'auth-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
-        isAuthenticated: state.isAuthenticated,
+        isAuthenticated: state.isAuthenticated
       }),
       onRehydrateStorage: () => (state) => {
         // Après réhydratation, valider la session avec le serveur
@@ -186,7 +182,7 @@ export const useAuthStore = create<AuthState>()(
             state.setUser(null);
           });
         }
-      },
-    },
-  ),
+      }
+    }
+  )
 );
