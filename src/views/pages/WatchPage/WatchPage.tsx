@@ -308,7 +308,22 @@ export const WatchPage = () => {
 
   useEffect(() => {
     if (currentMedia?.videoURL) {
-      setVideoUrls(currentMedia.videoURL);
+      // Fix CORS issue by using local VTT file
+      const videoConfig = { ...currentMedia.videoURL };
+      if (videoConfig.subtitles && videoConfig.subtitles.length > 0) {
+        // Create a new subtitles array to avoid mutating readonly property
+        const newSubtitles = videoConfig.subtitles.map((sub) => {
+          // Replace specific problematic URL with local proxy file
+          if (sub.url.includes('app-soon.com')) {
+            return { ...sub, url: '/captions.vtt' };
+          }
+          return sub;
+        });
+        // Cast to any to bypass readonly constraint during dev fix
+        videoConfig.subtitles = newSubtitles;
+      }
+
+      setVideoUrls(videoConfig);
 
       if (mediaId && !hasInitializedRef.current) {
         hasInitializedRef.current = true;

@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
+import appStoreImg from '../../../assets/app-store.png';
 import logo from '../../../assets/logo.png';
+import playStoreImg from '../../../assets/playstore.png';
 import './Footer.css';
 
 export const Footer = () => {
@@ -131,17 +133,11 @@ export const Footer = () => {
           <div className="footer__section footer__apps">
             <h4 className="footer__section-title">Télécharger l'application</h4>
             <div className="footer__app-links">
-              <a href="#" className="app-store-link google-play">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M3 13.5v8.25A1.5 1.5 0 004.5 23h15a1.5 1.5 0 001.5-1.5V13.5M1 5.25C1 4.006 2.006 3 3.25 3h17.5C21.994 3 23 4.006 23 5.25v13.5C23 19.994 21.994 21 20.75 21H3.25C2.006 21 1 19.994 1 18.75V5.25z" />
-                </svg>
-                <span>Google Play</span>
+              <a href="#" className="app-store-image-link" aria-label="Disponible sur Google Play">
+                <img src={playStoreImg} alt="Disponible sur Google Play" />
               </a>
-              <a href="#" className="app-store-link app-store">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M17.05 13.5c-.73 0-1.38.35-1.79.88.79 1.16 1.3 2.53 1.3 4.02 0 1.5-.51 2.87-1.3 4.04.41.53 1.06.88 1.79.88 1.97 0 3.57-1.6 3.57-3.57S19.02 13.5 17.05 13.5zM6.95 13.5C4.98 13.5 3.4 15.1 3.4 17.07s1.58 3.57 3.55 3.57c.73 0 1.38-.35 1.79-.88-.79-1.16-1.3-2.53-1.3-4.04 0-1.5.51-2.87 1.3-4.04-.41-.54-1.06-.88-1.79-.88zm10.1-6.57c0-1.97-1.6-3.57-3.57-3.57-.73 0-1.38.35-1.79.88.79 1.16 1.3 2.53 1.3 4.02 0 1.5-.51 2.87-1.3 4.04.41.53 1.06.88 1.79.88 1.97 0 3.57-1.6 3.57-3.57z" />
-                </svg>
-                <span>App Store</span>
+              <a href="#" className="app-store-image-link" aria-label="Télécharger dans l'App Store">
+                <img src={appStoreImg} alt="Télécharger dans l'App Store" />
               </a>
             </div>
           </div>
