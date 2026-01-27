@@ -9,24 +9,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
   margin-bottom: 3rem;
 }
 
 .mirage-originals__logo {
-  height: 48px;
+  height: 100px;
   width: auto;
-  margin-bottom: 0.5rem;
-}
-
-.mirage-originals__brand {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  letter-spacing: -0.5px;
+  margin-bottom: 0;
 }
 
 .mirage-originals__badge {
+  margin-top: -30px;
   font-size: 1rem;
   font-weight: 500;
   color: var(--color-text-secondary);

@@ -21,7 +21,6 @@ export const MirageOriginals = () => {
     <section className="mirage-originals">
       <div className="mirage-originals__header">
         <img src={logo} alt="Mirage" className="mirage-originals__logo" />
-        <span className="mirage-originals__brand">mirage</span>
         <span className="mirage-originals__badge">ORIGINALS</span>
       </div>
 

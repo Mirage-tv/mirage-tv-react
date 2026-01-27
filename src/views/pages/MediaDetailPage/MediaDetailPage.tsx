@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import logo from "../../../assets/logo.png";
-import { useAuth } from "../../../core/hooks";
-import { useFavoritesStore } from "../../../infrastructure/store/favoritesStore";
-import { useMediaStore } from "../../../infrastructure/store/mediaStore";
-import { Carousel } from "../../components/Carousel/Carousel";
-import "../../components/MediaCard/MediaCard.css";
-import "./MediaDetailPage.css";
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import logo from '../../../assets/logo.png';
+import { useAuth } from '../../../core/hooks';
+import { useFavoritesStore } from '../../../infrastructure/store/favoritesStore';
+import { useMediaStore } from '../../../infrastructure/store/mediaStore';
+import { Carousel } from '../../components/Carousel/Carousel';
+import '../../components/MediaCard/MediaCard.css';
+import './MediaDetailPage.css';
 
 export const MediaDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -42,11 +42,11 @@ export const MediaDetailPage = () => {
 
   const handlePlay = () => {
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate('/login');
       return;
     }
     if (!isSubscriber) {
-      navigate("/subscribe");
+      navigate('/subscribe');
       return;
     }
     navigate(`/watch/${id}`);
@@ -55,7 +55,7 @@ export const MediaDetailPage = () => {
   const handleToggleFavorite = async (mediaId?: string) => {
     const targetId = mediaId || id;
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate('/login');
       return;
     }
     if (targetId) {
@@ -77,7 +77,7 @@ export const MediaDetailPage = () => {
   };
 
   const formatDuration = (duration: string | undefined): string => {
-    if (!duration) return "";
+    if (!duration) return '';
     return duration;
   };
 
@@ -129,7 +129,7 @@ export const MediaDetailPage = () => {
       <div
         className="media-detail-page__hero"
         style={{
-          backgroundImage: currentMedia.thunbailURL ? `url(${currentMedia.thunbailURL})` : undefined,
+          backgroundImage: currentMedia.thunbailURL ? `url(${currentMedia.thunbailURL})` : undefined
         }}
       >
         <div className="media-detail-page__hero-overlay">
@@ -166,25 +166,25 @@ export const MediaDetailPage = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M8 5v14l11-7z" />
                 </svg>
-                {currentMedia.progress && currentMedia.progress > 0 ? "Reprendre" : "Lecture"}
+                {currentMedia.progress && currentMedia.progress > 0 ? 'Reprendre' : 'Lecture'}
               </button>
 
               {isAuthenticated && (
                 <button
-                  className={`media-detail-page__btn media-detail-page__btn--icon ${isCurrentFavorite ? "media-detail-page__btn--favorite" : ""}`}
+                  className={`media-detail-page__btn media-detail-page__btn--icon ${isCurrentFavorite ? 'media-detail-page__btn--favorite' : ''}`}
                   onClick={() => handleToggleFavorite()}
                   disabled={likeLoading === id}
-                  title={isCurrentFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                  title={isCurrentFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
                 >
                   {likeLoading === id ? (
-                    "..."
+                    '...'
                   ) : (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
-                      fill={isCurrentFavorite ? "currentColor" : "none"}
+                      fill={isCurrentFavorite ? 'currentColor' : 'none'}
                       stroke="currentColor"
                       strokeWidth="2"
                       strokeLinecap="round"
@@ -243,7 +243,7 @@ export const MediaDetailPage = () => {
             {currentMedia.isFavorite !== undefined && (
               <div className="media-detail-page__info-item">
                 <span className="media-detail-page__info-label">Favoris</span>
-                <span className="media-detail-page__info-value">{currentMedia.isFavorite ? "Oui" : "Non"}</span>
+                <span className="media-detail-page__info-value">{currentMedia.isFavorite ? 'Oui' : 'Non'}</span>
               </div>
             )}
           </div>
@@ -252,7 +252,7 @@ export const MediaDetailPage = () => {
         {!isSubscriber && (
           <div className="media-detail-page__subscribe-cta">
             <p>Abonnez-vous pour accéder à ce contenu et à tout le catalogue Mirage.</p>
-            <button className="media-detail-page__btn media-detail-page__btn--primary" onClick={() => navigate("/subscribe")}>
+            <button className="media-detail-page__btn media-detail-page__btn--primary" onClick={() => navigate('/subscribe')}>
               S'abonner maintenant
             </button>
           </div>
@@ -263,7 +263,7 @@ export const MediaDetailPage = () => {
           <div className="media-detail-page__section">
             <Carousel title="Contenus similaires">
               {similarMedia.map((media) => (
-                <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
+                <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: 'pointer' }}>
                   <img
                     src={media.thumbnailUrl || logo}
                     alt={media.name}
@@ -281,9 +281,9 @@ export const MediaDetailPage = () => {
                           if (isAuthenticated && isSubscriber) {
                             navigate(`/watch/${media.id}`);
                           } else if (!isAuthenticated) {
-                            navigate("/login");
+                            navigate('/login');
                           } else {
-                            navigate("/subscribe");
+                            navigate('/subscribe');
                           }
                         }}
                       >
@@ -299,7 +299,7 @@ export const MediaDetailPage = () => {
                         }}
                         disabled={likeLoading === media.id}
                       >
-                        {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
+                        {likeLoading === media.id ? '...' : isFavorite(media.id!) ? '❤️' : '🤍'}
                       </button>
                     </div>
                   </div>

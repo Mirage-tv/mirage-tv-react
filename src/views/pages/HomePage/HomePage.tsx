@@ -104,7 +104,8 @@ export const HomePage = () => {
           heroBanner && (
             <div className="hero__content">
               <div className="hero__brand">
-                <img src={logo} alt="Mirage" /> <span>Originals</span>
+                <img src={logo} alt="Mirage" />
+                <span className="hero__brand-badge">ORIGINALS</span>
               </div>
               <h1 className="hero__title">{heroBanner.previewMedia.name}</h1>
               {heroBanner.label && <p className="hero__tagline">{heroBanner.label}</p>}
@@ -287,9 +288,8 @@ export const HomePage = () => {
         </section>
       )}
 
-      <MirageOriginals />
-
       <PromoSection />
+      <MirageOriginals />
     </div>
   );
 };
