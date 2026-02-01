@@ -1,7 +1,14 @@
 // Media Service
 // Handles all media-related API operations (movies, shows, categories, voting, search)
 
-import type { HTTPResponseStatus, MediaDTO, PageMediaThumbnail, PageSeriePreview, SerieDTO } from '../../../core/domain/types';
+import type {
+  HTTPResponseStatus,
+  MediaDTO,
+  MediaSearchResponse,
+  PageMediaThumbnail,
+  PageSeriePreview,
+  SerieDTO
+} from '../../../core/domain/types';
 import { API_ENDPOINTS, PAGINATION } from '../../config/api.config';
 import { httpClient } from '../http/HttpClient';
 
