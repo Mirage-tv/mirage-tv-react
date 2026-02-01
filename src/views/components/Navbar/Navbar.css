@@ -218,6 +218,11 @@
    Responsive
    ========================================================================== */
 
+/* Bouton recherche mobile - caché par défaut sur desktop */
+.navbar__search-btn-mobile {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .navbar__center {
     display: none;
@@ -227,5 +232,9 @@
   }
   .navbar__right {
     flex: 1;
+  }
+  /* Afficher le bouton recherche en mobile */
+  .navbar__search-btn-mobile {
+    display: flex;
   }
 }
