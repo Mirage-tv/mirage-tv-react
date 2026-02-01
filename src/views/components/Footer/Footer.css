@@ -267,6 +267,7 @@
 @media (max-width: 768px) {
   .footer {
     padding: 3rem 5% 1.5rem;
+    padding-bottom: 140px; /* Espace pour la barre de navigation mobile fixée en bas */
   }
 
   .footer__content {
@@ -302,6 +303,7 @@
   .footer__bottom-right {
     flex-direction: column;
     gap: 0.5rem;
+    margin-bottom: 60px; /* Espace pour ne pas être caché par la barre mobile */
   }
 
   .footer__divider {
