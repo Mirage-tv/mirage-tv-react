@@ -93,6 +93,26 @@
   color: var(--color-bg-dark, #0a0a0a);
 }
 
+.navbar__search-btn-inline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary, #a1a1aa);
+  padding: 0.6rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.navbar__search-btn-inline:hover {
+  color: var(--color-text-primary, #ffffff);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* =SA=======================================================================
    Right Section (Actions)
    ========================================================================== */

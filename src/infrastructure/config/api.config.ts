@@ -32,7 +32,8 @@ export const API_ENDPOINTS = {
     SHOWS: '/api/v1/media/shows',
     GET_SHOW_BY_ID: (id: string) => `/api/v1/media/shows/${id}`,
     CATEGORY: (category: string) => `/api/v1/media/category/${category}`,
-    UP_VOTE: (id: string) => `/api/v1/media/up-vote/${id}`
+    UP_VOTE: (id: string) => `/api/v1/media/up-vote/${id}`,
+    SEARCH: '/api/v1/media/search'
   },
 
   // Featured Media endpoints

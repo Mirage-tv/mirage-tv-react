@@ -330,10 +330,6 @@ export const WatchPage = () => {
     }
   }, []);
 
-  // ============================================================================
-  // Authentication Check
-  // ============================================================================
-
   useEffect(() => {
     if (authLoading) return;
 
@@ -342,10 +338,6 @@ export const WatchPage = () => {
       return;
     }
   }, [isAuthenticated, authLoading, navigate]);
-
-  // ============================================================================
-  // Load Media
-  // ============================================================================
 
   useEffect(() => {
     if (!mediaId || !isAuthenticated || authLoading) return;

@@ -4,144 +4,777 @@ trigger: always_on
 
 Vérifie bien la doc côté back
 {
-paths: {
-/api/v1/sub/config: {
-get: {
-operationId: "getApiV1SubConfig",
-responses: {
-200: {
-description: "Returns the configured publishable key.",
-content: {
-application/json: {
-schema: {
-$ref: "#/components/schemas/StripeConfigRes"
-}
-}
-}
+info: {**Breaking change** (V0.9.8 - 7/12/2025)
+
+- VideoURLs is now only returned when the user is subscribed.
+  _Before this patch, some endpoints systematically returned URLs._
+  "
+  },
+  components: {
+  schemas: {
+  AgeRange: {
+  type: "string",
+  description: "• 0+ → allAges
+  • 6+ → sixPlus
+  • 12+ → twelvePlus
+  • 16+ → sixteenPlus
+  • 18+ → eighteenPlus",
+  enum: [
+  "0+",
+  "6+",
+  "12+",
+  "16+",
+  "18+"
+  ]
+  },
+  PageSeriePreview: {
+  type: "object",
+  properties: {
+  items: {
+  type: "array",
+  items: {
+  $ref: "#/components/schemas/SeriePreview"
 }
 },
-description: "Provides the Stripe publishable key so the React app can initialise Stripe.js before redirecting to checkout.",
-summary: "Stripe publishable key",
-tags: [
-"Subscriptions"
+metadata: {
+$ref: "#/components/schemas/PageMetadata"
+  }
+  },
+  required: [
+  "items",
+  "metadata"
+  ]
+  },
+  VideoQuality: {
+  description: "• sd → sd
+  • hd → hd
+  • 2k → twok
+  • 4k → fourk",
+  enum: [
+  "sd",
+  "hd",
+  "2k",
+  "4k"
+  ],
+  type: "string"
+  },
+  UpdateUserMailReq: {
+  properties: {
+  mail: {
+  type: "string"
+  }
+  },
+  type: "object",
+  required: [
+  "mail"
+  ]
+  },
+  UpdateUserPasswordReq: {
+  properties: {
+  password: {
+  type: "string"
+  }
+  },
+  required: [
+  "password"
+  ],
+  type: "object"
+  },
+  Media: {
+  type: "object"
+  },
+  Subtitle: {
+  properties: {
+  language: {
+  type: "string"
+  },
+  url: {
+  type: "string"
+  }
+  },
+  required: [
+  "language",
+  "url"
+  ],
+  type: "object"
+  },
+  VideoURLsDTO: {
+  type: "object",
+  properties: {
+  trailer: {
+  nullable: true,
+  type: "string"
+  },
+  subtitles: {
+  type: "array",
+  items: {
+  $ref: "#/components/schemas/Subtitle"
+}
+},
+source: {
+type: "string"
+}
+},
+required: [
+"source",
+"subtitles"
 ]
-}
 },
-/api/v1/media/up-vote/{id}: {
-post: {
-responses: {
-200: {
-description: "Returns 200 OK when the vote is stored. Responds with 401 Unauthorized if the session is missing or the viewer is not a subscriber.",
-content: {
-application/json: {
-examples: {
-HTTPResponseStatus: {
-$ref: "#/components/examples/HTTPResponseStatus"
-}
-},
-schema: {
-type: "integer",
-format: "int64"
-}
-}
-}
-}
-},
-operationId: "postApiV1MediaUp-voteById",
-summary: "Up-vote a media",
-description: "Records a positive vote from a subscriber so engagement metrics stay in sync with the UI.",
-parameters: [
-{
-schema: {
+CheckoutSessionRes: {
+required: [
+"sessionId",
+"url"
+],
+properties: {
+url: {
 type: "string"
 },
-in: "path",
-name: "id",
-required: true
-}
-],
-tags: [
-"Media"
-]
+sessionId: {
+type: "string"
 }
 },
-/api/v1/user: {
-delete: {
-operationId: "deleteApiV1User",
-tags: [
-"User"
+type: "object"
+},
+SeriePreview: {
+type: "object",
+properties: {
+description: {
+nullable: true,
+type: "string"
+},
+title: {
+type: "string"
+},
+totalSeasons: {
+type: "integer",
+format: "int64"
+},
+numberOfmedias: {
+type: "integer",
+format: "int64"
+},
+posterURL: {
+type: "string",
+nullable: true
+},
+id: {
+type: "string",
+nullable: true,
+format: "uuid"
+}
+},
+required: [
+"numberOfmedias",
+"title",
+"totalSeasons"
+]
+},
+UserDTO: {
+required: [
+"mail",
+"name"
 ],
-responses: {
-200: {
-content: {
-application/json: {
-schema: {
+properties: {
+planName: {
+type: "string",
+nullable: true
+},
+name: {
+type: "string"
+},
+mail: {
+type: "string"
+}
+},
+type: "object"
+},
+Questions: {
+properties: {
+id: {
+format: "uuid",
+type: "string"
+},
+answers: {
+type: "string"
+},
+question: {
+type: "string"
+},
+updatedAt: {
+format: "date-time",
+nullable: true,
+type: "string"
+}
+},
+required: [
+"answers",
+"id",
+"question"
+],
+type: "object"
+},
+UpdateUserNameReq: {
+required: [
+"name"
+],
+properties: {
+name: {
+type: "string"
+}
+},
+type: "object"
+},
+MediaDTO: {
+required: [
+"ageRange",
+"duration",
+"episodeInfo",
+"isFavorite",
+"name",
+"quality",
+"synopsis",
+"thunbailURL"
+],
+type: "object",
+properties: {
+isFavorite: {
+type: "boolean"
+},
+episodeInfo: {
+$ref: "#/components/schemas/EpisodeInfo"
+  },
+  videoURL: {
+  $ref: "#/components/schemas/VideoURLsDTO"
+},
+duration: {
+type: "string"
+},
+thunbailURL: {
+type: "string"
+},
+name: {
+type: "string"
+},
+id: {
+type: "string",
+nullable: true,
+format: "uuid"
+},
+synopsis: {
+type: "string"
+},
+progress: {
+type: "number",
+nullable: true,
+format: "double"
+},
+ageRange: {
+$ref: "#/components/schemas/AgeRange"
+  },
+  quality: {
+  $ref: "#/components/schemas/VideoQuality"
+}
+}
+},
+StripeConfigRes: {
+type: "object",
+properties: {
+publishableKey: {
+type: "string"
+}
+},
+required: [
+"publishableKey"
+]
+},
+CheckoutSessionReq: {
+type: "object",
+properties: {
+planId: {
+type: "string",
+format: "uuid"
+}
+},
+required: [
+"planId"
+]
+},
+MediaThumbnail: {
+properties: {
+progress: {
+type: "number",
+format: "double",
+nullable: true
+},
+isFavorite: {
+type: "boolean"
+},
+thumbnailUrl: {
+type: "string"
+},
+id: {
+nullable: true,
+format: "uuid",
+type: "string"
+},
+videoURLs: {
+$ref: "#/components/schemas/VideoURLsDTO"
+  },
+  name: {
+  type: "string"
+  }
+  },
+  type: "object",
+  required: [
+  "isFavorite",
+  "name",
+  "thumbnailUrl"
+  ]
+  },
+  PageMediaThumbnail: {
+  properties: {
+  metadata: {
+  $ref: "#/components/schemas/PageMetadata"
+},
+items: {
+type: "array",
+items: {
+$ref: "#/components/schemas/MediaThumbnail"
+  }
+  }
+  },
+  type: "object",
+  required: [
+  "items",
+  "metadata"
+  ]
+  },
+  CreateViewingHistoryRequest: {
+  required: [
+  "mediaId",
+  "progress"
+  ],
+  properties: {
+  mediaId: {
+  type: "string",
+  format: "uuid"
+  },
+  progress: {
+  type: "number",
+  format: "double"
+  }
+  },
+  type: "object"
+  },
+  ToggleFavoriteReq: {
+  required: [
+  "mediaId"
+  ],
+  type: "object",
+  properties: {
+  mediaId: {
+  format: "uuid",
+  type: "string"
+  }
+  }
+  },
+  InvoiceDTO: {
+  type: "object",
+  properties: {
+  amountCents: {
+  format: "int64",
+  type: "integer"
+  },
+  id: {
+  type: "string",
+  format: "uuid",
+  nullable: true
+  },
+  paidAt: {
+  format: "date-time",
+  nullable: true,
+  type: "string"
+  },
+  status: {
+  $ref: "#/components/schemas/PaymentStatus"
+},
+stripeRef: {
+type: "string",
+nullable: true
+}
+},
+required: [
+"amountCents",
+"status"
+]
+},
+FeaturedMediaDTO: {
+properties: {
+label: {
+type: "string",
+nullable: true
+},
+id: {
+type: "string",
+format: "uuid",
+nullable: true
+},
+previewMedia: {
+$ref: "#/components/schemas/MediaPreview"
+  }
+  },
+  required: [
+  "previewMedia"
+  ],
+  type: "object"
+  },
+  ConfirmCheckoutReq: {
+  type: "object",
+  properties: {
+  sessionId: {
+  type: "string"
+  }
+  },
+  required: [
+  "sessionId"
+  ]
+  },
+  CreateUserReportReq: {
+  required: [
+  "mediaID"
+  ],
+  properties: {
+  mediaID: {
+  format: "uuid",
+  type: "string"
+  }
+  },
+  type: "object"
+  },
+  AvailableCategories: {
+  type: "object",
+  properties: {
+  list: {
+  items: {
+  type: "string"
+  },
+  type: "array"
+  }
+  },
+  required: [
+  "list"
+  ]
+  },
+  CreateUserReq: {
+  type: "object",
+  properties: {
+  name: {
+  type: "string"
+  },
+  password: {
+  type: "string"
+  },
+  mail: {
+  type: "string"
+  }
+  },
+  required: [
+  "mail",
+  "name",
+  "password"
+  ]
+  },
+  PaymentStatus: {
+  type: "string",
+  enum: [
+  "succeeded",
+  "failed",
+  "pending",
+  "refunded"
+  ]
+  },
+  SubscriptionStatus: {
+  type: "string",
+  enum: [
+  "active",
+  "cancelled",
+  "expired",
+  "gracePeriod"
+  ]
+  },
+  PlanDuration: {
+  enum: [
+  "weekly",
+  "monthly",
+  "yearly"
+  ],
+  type: "string"
+  },
+  EpisodeInfo: {
+  type: "object"
+  },
+  PageMetadata: {
+  required: [
+  "page",
+  "per",
+  "total"
+  ],
+  properties: {
+  total: {
+  type: "integer",
+  format: "int64"
+  },
+  page: {
+  type: "integer",
+  format: "int64"
+  },
+  per: {
+  format: "int64",
+  type: "integer"
+  }
+  },
+  type: "object"
+  },
+  PlanDTO: {
+  required: [
+  "duration",
+  "name",
+  "priceCents"
+  ],
+  properties: {
+  name: {
+  type: "string"
+  },
+  duration: {
+  $ref: "#/components/schemas/PlanDuration"
+},
+id: {
+format: "uuid",
+type: "string",
+nullable: true
+},
+priceCents: {
+format: "int64",
+type: "integer"
+}
+},
+type: "object"
+},
+MediaSearchResponse: {
+type: "object",
+required: [
+"movies",
+"series"
+],
+properties: {
+movies: {
+$ref: "#/components/schemas/PageMediaThumbnail"
+  },
+  series: {
+  $ref: "#/components/schemas/PageSeriePreview"
+}
+}
+},
+MediaPreview: {
+properties: {
+duration: {
+type: "string"
+},
+posterURL: {
+type: "string",
+nullable: true
+},
+name: {
+type: "string"
+},
+synopsis: {
+type: "string"
+},
+id: {
+type: "string",
+nullable: true,
+format: "uuid"
+},
+quality: {
+$ref: "#/components/schemas/VideoQuality"
+  },
+  ageRange: {
+  $ref: "#/components/schemas/AgeRange"
+},
+videoURLs: {
+$ref: "#/components/schemas/VideoURLsDTO"
+  }
+  },
+  type: "object",
+  required: [
+  "ageRange",
+  "duration",
+  "name",
+  "quality",
+  "synopsis"
+  ]
+  },
+  SerieDTO: {
+  properties: {
+  totalSeasons: {
+  format: "int64",
+  type: "integer"
+  },
+  medias: {
+  type: "array",
+  items: {
+  $ref: "#/components/schemas/Media"
+}
+},
+id: {
+format: "uuid",
+nullable: true,
+type: "string"
+},
+title: {
+type: "string"
+},
+posterURL: {
+type: "string",
+nullable: true
+},
+description: {
+nullable: true,
+type: "string"
+}
+},
+required: [
+"medias",
+"title",
+"totalSeasons"
+],
+type: "object"
+},
+SubscriptionDTO: {
+properties: {
+endDate: {
+type: "string",
+format: "date-time",
+nullable: true
+},
+status: {
+$ref: "#/components/schemas/SubscriptionStatus"
+  },
+  startDate: {
+  type: "string",
+  format: "date-time"
+  },
+  invoices: {
+  type: "array",
+  items: {
+  $ref: "#/components/schemas/InvoiceDTO"
+}},
+price: {
 format: "int64",
 type: "integer"
 },
+id: {
+type: "string",
+format: "uuid",
+nullable: true
+},
+planName: {
+type: "string"
+}
+},
+type: "object",
+required: [
+"invoices",
+"planName",
+"price",
+"startDate",
+"status"
+]
+},
+LoginReq: {
+properties: {
+password: {
+type: "string"
+},
+mail: {
+type: "string"
+}
+},
+required: [
+"mail",
+"password"
+],
+type: "object"
+}
+},
 examples: {
 HTTPResponseStatus: {
-$ref: "#/components/examples/HTTPResponseStatus"
-}
-}
-}
+value: 204
 },
-description: "Returns 200 OK when the account is deleted. The client should clear cached state and redirect to onboarding."
+Bool: {
+value: true
 }
-},
-description: "Permanently removes the authenticated viewer's account and related data.",
-summary: "Delete the current user account"
-},
-get: {
-description: "Returns the authenticated viewer's profile for populating account and navigation UI.",
-operationId: "getApiV1User",
-tags: [
-"User"
-],
-responses: {
-200: {
-content: {
-application/json: {
-schema: {
-$ref: "#/components/schemas/UserDTO"
-}
-}
-},
-description: "Provides the viewer's name, email, and subscription highlights when a session cookie is present."
-}
-},
-summary: "Get current user profile"
-}
-},
-/api/v1/sub: {
-get: {
-summary: "Get current subscription",
-responses: {
-200: {
-content: {
-application/json: {
-schema: {
-$ref: "#/components/schemas/SubscriptionDTO"
-}
-}
-},
-description: "OK"
 }
 },
 tags: [
-"Subscriptions"
-],
-description: "Retrieves the authenticated viewer's subscription so the billing screen can display status and renewal details. Returns 204 No Content when the user has no active subscription.",
-operationId: "getApiV1Sub"
-}
+{
+name: "User"
 },
+{
+name: "Auth"
+},
+{
+name: "Featured Media"
+},
+{
+name: "Media"
+},
+{
+name: "Categories"
+},
+{
+name: "Video"
+},
+{
+name: "Viewing History"
+},
+{
+name: "Favorites"
+},
+{
+name: "Subscriptions"
+},
+{
+name: "FAQ"
+},
+{
+name: "Report"
+},
+{
+name: "index"
+}
+],
+openapi: "3.0.1",
+paths: {
 /api/v1/media/shows: {
 get: {
-tags: [
-"Media"
-],
-summary: "List available shows",
-description: "Returns lightweight previews for shows to populate browse rails and selectors.
+operationId: "getApiV1MediaShows",
+responses: {
+200: {
+content: {
+application/json: {
+schema: {
+$ref: "#/components/schemas/PageSeriePreview"
+  }
+  }
+  },
+  description: "Paginated list of show previews with poster art and names, including pagination metadata."
+  }
+  },
+  tags: [
+  "Media"
+  ],
+  description: "Returns lightweight previews for shows to populate browse rails and selectors.
 
 Pagination:
 
@@ -149,302 +782,64 @@ Pagination:
 - Query `per` (Int, default 20, max 100): Number of items per page.
 
 The response is a paginated object containing items and pagination metadata.",
+summary: "List available shows"
+}
+},
+/api/v1/sub/cancel: {
+post: {
+tags: [
+"Subscriptions"
+],
+description: "Schedules the viewer's subscription for cancellation at the end of the current billing period.",
+summary: "Cancel subscription",
+operationId: "postApiV1SubCancel",
 responses: {
 200: {
-description: "Paginated list of show previews with poster art and names, including pagination metadata.",
 content: {
 application/json: {
 schema: {
-$ref: "#/components/schemas/PageSeriePreview"
-}
+format: "int64",
+type: "integer"
+},
+examples: {
+HTTPResponseStatus: {
+$ref: "#/components/examples/HTTPResponseStatus"
 }
 }
 }
 },
-operationId: "getApiV1MediaShows"
+description: "Returns 200 OK when the cancellation is registered. Future reads of the subscription endpoint will reflect the pending cancellation."
+}
+}
 }
 },
 /index: {
 get: {
-operationId: "getIndex",
-tags: [
-"index"
-],
-summary: "index",
-description: "Renders a server-side view that showcases the app's color palette for design reference and QA. The page is styled using TailwindCSS.",
 responses: {
 200: {
 description: "OK",
 content: {
 application/json: {
 schema: {
-type: "integer",
-format: "int64"
-}
-}
-}
-}
-}
-}
-},
-/api/v1/categories: {
-get: {
-tags: [
-"Categories"
-],
-summary: "List available categories",
-operationId: "getApiV1Categories",
-responses: {
-200: {
-description: "Returns every supported category identifier.",
-content: {
-application/json: {
-schema: {
-$ref: "#/components/schemas/AvailableCategories"
-}
-}
-}
-}
-},
-description: "Provides the category slugs React should display in browse filters and link to when calling `/api/v1/media/category/{category}`."
-}
-},
-/api/v1/featured-media/hero-banner: {
-get: {
-description: "Fetches the featured media entry that powers the home hero section.",
-responses: {
-200: {
-content: {
-application/json: {
-schema: {
-$ref: "#/components/schemas/FeaturedMediaDTO"
-}
-}
-},
-description: "Returns the highlighted media with `previewMedia`, marketing label, and artwork needed for the hero layout."
-}
-},
-summary: "Get hero banner",
-operationId: "getApiV1Featured-mediaHero-banner",
-tags: [
-"Featured Media"
-]
-}
-},
-/api/v1/auth/forgot-password: {
-post: {
-summary: "Trigger a password reset",
-tags: [
-"Auth"
-],
-description: "Accepts the user's email and triggers the password reset workflow. The response is intentionally neutral so attackers cannot guess whether an address exists.
-
-Request body:
-
-```json
-{
-  "mail": "viewer@example.com"
-}
-```
-
-",
-operationId: "postApiV1AuthForgot-password",
-responses: {
-200: {
-content: {
-application/json: {
-schema: {
 format: "int64",
 type: "integer"
-},
-examples: {
-HTTPResponseStatus: {
-$ref: "#/components/examples/HTTPResponseStatus"
-}
-}
-}
-},
-description: "Always returns **200 OK**."
-}
-}
-}
-},
-/api/v1/user/update-mail: {
-post: {
-description: "Updates the email address used for login once the viewer confirms the change in the settings UI.",
-responses: {
-200: {
-description: "Returns 204 No Content on success. Responds with 401 Unauthorized when the session cookie is missing.",
-content: {
-application/json: {
-schema: {
-format: "int64",
-type: "integer"
-},
-examples: {
-HTTPResponseStatus: {
-$ref: "#/components/examples/HTTPResponseStatus"
-}
 }
 }
 }
 }
 },
-requestBody: {
-content: {
-application/json: {
-schema: {
-$ref: "#/components/schemas/UpdateUserMailReq"
-}
-}
-},
-required: true
-},
+description: "Renders a server-side view that showcases the app's color palette for design reference and QA. The page is styled using TailwindCSS.",
+operationId: "getIndex",
 tags: [
-"User"
+"index"
 ],
-summary: "Update the login email",
-operationId: "postApiV1UserUpdate-mail"
-}
-},
-/api/v1/sub/cancel: {
-post: {
-description: "Schedules the viewer's subscription for cancellation at the end of the current billing period.",
-tags: [
-"Subscriptions"
-],
-operationId: "postApiV1SubCancel",
-summary: "Cancel subscription",
-responses: {
-200: {
-description: "Returns 200 OK when the cancellation is registered. Future reads of the subscription endpoint will reflect the pending cancellation.",
-content: {
-application/json: {
-schema: {
-type: "integer",
-format: "int64"
-},
-examples: {
-HTTPResponseStatus: {
-$ref: "#/components/examples/HTTPResponseStatus"
-}
-}
-}
-}
-}
-}
-}
-},
-/api/v1/history: {
-post: {
-operationId: "postApiV1History",
-description: "Seeds the continue-watching rail when playback starts for a subscriber.",
-summary: "Create / update a viewing history entry",
-requestBody: {
-content: {
-application/json: {
-schema: {
-$ref: "#/components/schemas/CreateViewingHistoryRequest"
-}
-}
-},
-required: true
-},
-responses: {
-200: {
-description: "Returns 201 Created when the entry is stored. Use the update endpoint to refresh progress as playback continues.",
-content: {
-application/json: {
-schema: {
-type: "integer",
-format: "int64"
-},
-examples: {
-HTTPResponseStatus: {
-$ref: "#/components/examples/HTTPResponseStatus"
-}
-}
-}
-}
-}
-},
-tags: [
-"Viewing History"
-]
-}
-},
-/api/v1/user/update-name: {
-post: {
-description: "Updates the authenticated viewer's display name from the profile settings form.",
-operationId: "postApiV1UserUpdate-name",
-responses: {
-200: {
-description: "Returns 204 No Content when the name is saved. Replies with 401 Unauthorized if the session expired.",
-content: {
-application/json: {
-schema: {
-type: "integer",
-format: "int64"
-},
-examples: {
-HTTPResponseStatus: {
-$ref: "#/components/examples/HTTPResponseStatus"
-}
-}
-}
-}
-}
-},
-summary: "Update the display name",
-tags: [
-"User"
-],
-requestBody: {
-required: true,
-content: {
-application/json: {
-schema: {
-$ref: "#/components/schemas/UpdateUserNameReq"
-}
-}
-}
-}
-}
-},
-/api/v1/sub/checkout: {
-post: {
-requestBody: {
-required: true,
-content: {
-application/json: {
-schema: {
-$ref: "#/components/schemas/CheckoutSessionReq"
-}
-}
-}
-},
-tags: [
-"Subscriptions"
-],
-operationId: "postApiV1SubCheckout",
-responses: {
-200: {
-content: {
-application/json: {
-schema: {
-$ref: "#/components/schemas/CheckoutSessionRes"
-}
-}
-},
-description: "Stripe session id and URL to redirect the viewer to."
-}
-},
-summary: "Create Stripe checkout session",
-description: "Initialises a Stripe Checkout session for the selected plan and returns the redirect URL."
+summary: "index"
 }
 },
 /api/v1/auth/sign-up: {
 post: {
+description: "Registers a brand-new viewer and immediately authenticates them so the client can persist the session cookie.",
+summary: "Create an account",
 responses: {
 200: {
 content: {
@@ -463,145 +858,55 @@ format: "int64"
 description: "Returns 201 Created with the session cookie set. Sends 400 Bad Request when validation fails and 429 Too Many Requests if the signup rate limiter is exceeded."
 }
 },
+tags: [
+"Auth"
+],
 operationId: "postApiV1AuthSign-up",
 requestBody: {
+required: true,
 content: {
 application/json: {
 schema: {
 $ref: "#/components/schemas/CreateUserReq"
 }
 }
-},
-required: true
-},
-summary: "Create an account",
-description: "Registers a brand-new viewer and immediately authenticates them so the client can persist the session cookie.",
-tags: [
-"Auth"
-]
 }
-},
-/api/v1/media/{id}: {
-get: {
-tags: [
-"Media"
-],
-summary: "Get media details",
-parameters: [
-{
-name: "id",
-schema: {
-type: "string"
-},
-required: true,
-in: "path"
-}
-],
-responses: {
-200: {
-content: {
-application/json: {
-schema: {
-$ref: "#/components/schemas/MediaDTO"
 }
 }
 },
-description: "Returns media details including artwork, parental guidance, playback progress, and subscriber-only streaming URLs."
-}
-},
-description: "Loads the full metadata for a movie or episode so the React detail view can render synopsis, artwork, and playback controls.",
-operationId: "getApiV1MediaById"}},
-/api/v1/report: {
+/api/v1/user/update-name: {
 post: {
-description: "Creates a report for the specified media.",
-responses: {
-200: {
-description: "201 Created",
-content: {
-application/json: {
-schema: {
-format: "int64",
-type: "integer"}}}}},
-tags: [
-"Report"],
-operationId: "postApiV1Report",
 requestBody: {
 required: true,
 content: {
 application/json: {
 schema: {
-$ref: "#/components/schemas/CreateUserReportReq"}}}},
-summary: "Create a user report"}},
-/api/v1/faq: {
-get: {
-summary: "List all frequently asked questions",
-operationId: "getApiV1Faq",
+$ref: "#/components/schemas/UpdateUserNameReq"
+}}}},
+description: "Updates the authenticated viewer's display name from the profile settings form.",
+summary: "Update the display name",
 tags: [
-"FAQ"
+"User"
 ],
 responses: {
 200: {
 content: {
 application/json: {
 schema: {
-items: {
-$ref: "#/components/schemas/Questions"},
-type: "array}}},
-description: "OK"}},
-description: "Returns the complete list of FAQ questions and answers."}},
-/api/v1/history/continue-watching: {
-get: {
-tags: [
-"Viewing History"],
-summary: "Get continue-watching rail",
-operationId: "getApiV1HistoryContinue-watching",
-responses: {
-200: {
-description: "Provides thumbnails with playback progress and favorite state for the authenticated viewer. Responds with 401 Unauthorized if no session is present.",
-content: {
-application/json: {
-schema: {
-type: "array",
-items: {
-$ref: "#/components/schemas/MediaThumbnail"}}}}}
-,
-description: "Returns the last 25 partially watched items so that the home screen can display the “Continue watching” list."
+format: "int64",
+type: "integer"
+},
+examples: {
+HTTPResponseStatus: {
+$ref: "#/components/examples/HTTPResponseStatus"
+}
+}
 }
 },
-/api/v1/media/category/{category}: {
-get: {
-operationId: "getApiV1MediaCategoryByCategory",
-tags: [
-"Media"
-],
-summary: "Browse media by category",
-description: "Lists movies and episodes for a given category slug. Use `/api/v1/categories` to build the filter menu, then pass the selected `category` path parameter.
-
-Path parameters:
-
-- `category`: Category slug validated server-side. Invalid values return **400 Bad Request**.
-
-Pagination:
-
-- Query `page` (Int, default 1): The page index starting at 1.
-- Query `per` (Int, default 20, max 100): Number of items per page.
-  ",
-  parameters: [
-  {
-  name: "category",
-  schema: {
-  type: "string"
-  },
-  required: true,
-  in: "path"
-  }
-  ],
-  responses: {
-  200: {
-  description: "OK",
-  content: {
-  application/json: {
-  schema: {$ref: "#/components/schemas/PageMediaThumbnail"}}}}}}},
-  /api/v1/featured-media/trending-now: {
-  get: {
-  description: "Provides the "Trending now" rail. The payload merges trending titles with the caller's favorites to pre-toggle heart icons.
+description: "Returns 204 No Content when the name is saved. Replies with 401 Unauthorized if the session expired."
+}
+},
+operationId: "postApiV1UserUpdate-name"
+}
+},
+/api/v1/media/shows/

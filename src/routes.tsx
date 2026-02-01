@@ -16,6 +16,7 @@ const ProfilePage = lazy(() => import('./views/pages/ProfilePage/ProfilePage').t
 const SubscribePage = lazy(() => import('./views/pages/SubscribePage/SubscribePage').then((m) => ({ default: m.SubscribePage })));
 const AccountPage = lazy(() => import('./views/pages/AccountPage/AccountPage').then((m) => ({ default: m.AccountPage })));
 const FaqPage = lazy(() => import('./views/pages/FaqPage/FaqPage').then((m) => ({ default: m.FaqPage })));
+const SearchPage = lazy(() => import('./views/pages/SearchPage/SearchPage').then((m) => ({ default: m.SearchPage })));
 
 export const routes: RouteObject[] = [
   {
@@ -171,6 +172,14 @@ export const routes: RouteObject[] = [
         element: (
           <Suspense fallback={<LoadingFallback />}>
             <FaqPage />
+          </Suspense>
+        )
+      },
+      {
+        path: 'search',
+        element: (
+          <Suspense fallback={<LoadingFallback />}>
+            <SearchPage />
           </Suspense>
         )
       },

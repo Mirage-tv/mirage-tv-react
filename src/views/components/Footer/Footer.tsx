@@ -105,7 +105,7 @@ export const Footer = () => {
                 <Link to="/faq">FAQ</Link>
               </li>
               <li>
-                <a href="mailto:admin@mirage-tv.com">admin@mirage-tv.com</a>
+                <a href="mailto:admin@mirage-tv.com">Contactez-nous</a>
               </li>
             </ul>
           </div>
