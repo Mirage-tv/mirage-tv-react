@@ -23,20 +23,27 @@ export const SearchPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Debounce de la recherche
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (inputValue.trim()) {
-        search(inputValue);
-        setSearchParams({ q: inputValue });
-      } else {
-        clearSearch();
-        setSearchParams({});
-      }
-    }, 400);
-
-    return () => clearTimeout(timer);
+  // Fonction de recherche déclenchée par le bouton ou Entrée
+  const handleSearch = useCallback(() => {
+    if (inputValue.trim()) {
+      search(inputValue);
+      setSearchParams({ q: inputValue });
+    } else {
+      clearSearch();
+      setSearchParams({});
+    }
   }, [inputValue, search, clearSearch, setSearchParams]);
+
+  // Gestion de la touche Entrée
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSearch();
+      }
+    },
+    [handleSearch]
+  );
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -57,7 +64,13 @@ export const SearchPage = () => {
       {/* Header avec recherche */}
       <header className="search-page__header">
         <h1 className="search-page__title">Rechercher</h1>
-        <form className="search-page__form" onSubmit={(e) => e.preventDefault()}>
+        <form
+          className="search-page__form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSearch();
+          }}
+        >
           <div className="search-page__input-wrapper">
             <svg
               className="search-page__icon"
@@ -80,10 +93,14 @@ export const SearchPage = () => {
               placeholder="Films, séries, acteurs..."
               value={inputValue}
               onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
               autoFocus
               aria-label="Rechercher des contenus"
             />
           </div>
+          <button type="submit" className="search-page__button" disabled={isLoading || !inputValue.trim()} aria-label="Lancer la recherche">
+            Rechercher
+          </button>
         </form>
       </header>
 
