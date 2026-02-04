@@ -1,20 +1,44 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import logo from '../../../assets/logo.png';
-import { useFeaturedStore } from '../../../infrastructure/store/featuredStore';
-import './MirageOriginals.css';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import logo from "../../../assets/logo.png";
+import { mediaService } from "../../../infrastructure/adapters/api";
+import "./MirageOriginals.css";
+
+interface OriginalMedia {
+  id: string;
+  name: string;
+  thumbnailUrl: string;
+}
 
 export const MirageOriginals = () => {
   const navigate = useNavigate();
-  const { trendingMedia, fetchTrendingNow } = useFeaturedStore();
+  const [originals, setOriginals] = useState<OriginalMedia[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchTrendingNow().catch(() => {});
-  }, [fetchTrendingNow]);
+    const fetchOriginals = async () => {
+      try {
+        const data = await mediaService.getMediaByCategory("originals", { page: 1, per: 3 });
+        const validItems: OriginalMedia[] = data.items
+          .filter((item) => item.id != null)
+          .slice(0, 3)
+          .map((item) => ({
+            id: item.id!,
+            name: item.name ?? "Sans titre",
+            thumbnailUrl: item.thumbnailUrl ?? "",
+          }));
+        setOriginals(validItems);
+      } catch {
+        // En cas d'erreur, on laisse la liste vide
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Prendre les 3 premiers pour l'affichage Originals
-  const originals = trendingMedia?.slice(0, 3) || [];
+    fetchOriginals();
+  }, []);
 
+  if (loading) return null;
   if (originals.length === 0) return null;
 
   return (

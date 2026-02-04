@@ -336,7 +336,7 @@ export const HomePage = () => {
           <h2 className="section-title">Parcourir par catégorie</h2>
           <div className="categories-list">
             {categories.map((category) => (
-              <div key={category} className="category-chip" onClick={() => navigate(`/browse/${category}`)}>
+              <div key={category} className="category-chip" onClick={() => navigate(`/browse/category/${category}`)}>
                 <span className="category-name">{category}</span>
                 <span className="category-arrow">
                   <svg
