@@ -86,6 +86,21 @@ export const HomePage = () => {
     }
   };
 
+  const handleUpVote = async (mediaId: string) => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+
+    if (!isSubscriber) {
+      navigate("/subscribe");
+      return;
+    }
+
+    // TODO: Implémenter l'appel API up-vote
+    console.log("Up-vote media:", mediaId);
+  };
+
   return (
     <div className="home-page">
       <section
@@ -126,11 +141,11 @@ export const HomePage = () => {
         {error && <div className="hero__error">Erreur de chargement: {error}</div>}
       </section>
 
-      {/* Trending Now Section */}
+      {/* Trending Now Section - Avec boutons play, +, like */}
       <Carousel title="Tendances actuelles">
         {trendingMedia?.map((media) => (
-          <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
-            <div className="media-card__image-container">
+          <div key={media.id} className="media-card" style={{ cursor: "pointer" }}>
+            <div className="media-card__image-container" onClick={() => handleViewDetail(media.id!)}>
               <img
                 className="media-card__img"
                 src={media.thumbnailUrl || logo}
@@ -139,27 +154,65 @@ export const HomePage = () => {
                   e.currentTarget.src = logo;
                 }}
               />
-              <div className="media-card__actions">
+              <div className="media-card__buttons-container">
                 <button
-                  className="media-card__action-btn"
+                  className="media-card__play-btn"
                   onClick={(e) => {
                     e.stopPropagation();
                     handlePlayMedia(media.id!);
                   }}
+                  aria-label="Lire"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8 5v14l11-7z" />
                   </svg>
+                  <span>play</span>
                 </button>
                 <button
-                  className="media-card__action-btn"
+                  className={`media-card__icon-btn ${isFavorite(media.id!) ? "media-card__icon-btn--active" : ""}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleToggleFavorite(media.id!);
                   }}
                   disabled={likeLoading === media.id}
+                  aria-label="Ajouter à ma liste"
                 >
-                  {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </button>
+                <button
+                  className="media-card__icon-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUpVote(media.id!);
+                  }}
+                  aria-label="J'aime"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                  </svg>
                 </button>
               </div>
             </div>
@@ -168,11 +221,16 @@ export const HomePage = () => {
         ))}
       </Carousel>
 
-      {/* Continue Watching Section */}
+      {/* Continue Watching Section - SANS boutons, juste image + progress + titre */}
       {isAuthenticated && continueWatching.length > 0 && (
         <Carousel title="Reprendre la lecture">
           {continueWatching.map((media) => (
-            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
+            <div
+              key={media.id}
+              className="media-card media-card--continue"
+              onClick={() => handlePlayMedia(media.id!)}
+              style={{ cursor: "pointer" }}
+            >
               <div className="media-card__image-container">
                 <img
                   src={media.thumbnailUrl || logo}
@@ -181,34 +239,9 @@ export const HomePage = () => {
                     e.currentTarget.src = logo;
                   }}
                 />
-                {media.progress !== undefined && media.progress !== null && media.progress > 0 && (
-                  <div className="media-card__progress-bar">
-                    <div className="media-card__progress-fill" style={{ width: `${media.progress * 100}%` }}></div>
-                  </div>
-                )}
-                <div className="media-card__actions">
-                  <button
-                    className="media-card__action-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePlayMedia(media.id!);
-                    }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </button>
-                  <button
-                    className="media-card__action-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleToggleFavorite(media.id!);
-                    }}
-                    disabled={likeLoading === media.id}
-                  >
-                    {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
-                  </button>
-                </div>
+              </div>
+              <div className="media-card__progress-bar">
+                <div className="media-card__progress-fill" style={{ width: `${(media.progress ?? 0) * 100}%` }}></div>
               </div>
               <h3 className="media-card__title">{media.name}</h3>
             </div>
@@ -216,12 +249,12 @@ export const HomePage = () => {
         </Carousel>
       )}
 
-      {/* My List Section */}
+      {/* My List Section - Avec boutons play, +, like */}
       {isAuthenticated && favorites.length > 0 && (
         <Carousel title="Ma Liste">
           {favorites.map((media) => (
-            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
-              <div className="media-card__image-container">
+            <div key={media.id} className="media-card" style={{ cursor: "pointer" }}>
+              <div className="media-card__image-container" onClick={() => handleViewDetail(media.id!)}>
                 <img
                   src={media.thumbnailUrl || logo}
                   alt={media.name}
@@ -229,27 +262,65 @@ export const HomePage = () => {
                     e.currentTarget.src = logo;
                   }}
                 />
-                <div className="media-card__actions">
+                <div className="media-card__buttons-container">
                   <button
-                    className="media-card__action-btn"
+                    className="media-card__play-btn"
                     onClick={(e) => {
                       e.stopPropagation();
                       handlePlayMedia(media.id!);
                     }}
+                    aria-label="Lire"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M8 5v14l11-7z" />
                     </svg>
+                    <span>play</span>
                   </button>
                   <button
-                    className="media-card__action-btn"
+                    className={`media-card__icon-btn ${isFavorite(media.id!) ? "media-card__icon-btn--active" : ""}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleToggleFavorite(media.id!);
                     }}
                     disabled={likeLoading === media.id}
+                    aria-label="Retirer de ma liste"
                   >
-                    {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                  </button>
+                  <button
+                    className="media-card__icon-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleUpVote(media.id!);
+                    }}
+                    aria-label="J'aime"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                    </svg>
                   </button>
                 </div>
               </div>
