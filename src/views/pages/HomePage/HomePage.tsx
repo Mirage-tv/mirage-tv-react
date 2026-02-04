@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../../assets/logo.png";
 import { useAuth } from "../../../core/hooks";
+import { mediaService } from "../../../infrastructure/adapters/api";
 import { useCategoryStore } from "../../../infrastructure/store/categoryStore";
 import { useFavoritesStore } from "../../../infrastructure/store/favoritesStore";
 import { useFeaturedStore } from "../../../infrastructure/store/featuredStore";
@@ -97,8 +98,11 @@ export const HomePage = () => {
       return;
     }
 
-    // TODO: Implémenter l'appel API up-vote
-    console.log("Up-vote media:", mediaId);
+    try {
+      await mediaService.upVoteMedia(mediaId);
+    } catch (error) {
+      console.error("Erreur lors du vote:", error);
+    }
   };
 
   return (
