@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import logo from '../../../assets/logo.png';
-import { useAuth } from '../../../core/hooks';
-import { useCategoryStore } from '../../../infrastructure/store/categoryStore';
-import { useFavoritesStore } from '../../../infrastructure/store/favoritesStore';
-import { useFeaturedStore } from '../../../infrastructure/store/featuredStore';
-import { useViewingHistoryStore } from '../../../infrastructure/store/viewingHistoryStore';
-import { Carousel } from '../../components/Carousel/Carousel';
-import '../../components/MediaCard/MediaCard.css';
-import { MirageOriginals } from '../../components/MirageOriginals/MirageOriginals';
-import { PromoSection } from '../../components/PromoSection/PromoSection';
-import './HomePage.css';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import logo from "../../../assets/logo.png";
+import { useAuth } from "../../../core/hooks";
+import { useCategoryStore } from "../../../infrastructure/store/categoryStore";
+import { useFavoritesStore } from "../../../infrastructure/store/favoritesStore";
+import { useFeaturedStore } from "../../../infrastructure/store/featuredStore";
+import { useViewingHistoryStore } from "../../../infrastructure/store/viewingHistoryStore";
+import { Carousel } from "../../components/Carousel/Carousel";
+import "../../components/MediaCard/MediaCard.css";
+import { MirageOriginals } from "../../components/MirageOriginals/MirageOriginals";
+import { PromoSection } from "../../components/PromoSection/PromoSection";
+import "./HomePage.css";
 
 export const HomePage = () => {
   const navigate = useNavigate();
@@ -54,12 +54,12 @@ export const HomePage = () => {
 
   const handlePlayMedia = (mediaId: string) => {
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     if (!isSubscriber) {
-      navigate('/subscribe');
+      navigate("/subscribe");
       return;
     }
 
@@ -72,7 +72,7 @@ export const HomePage = () => {
 
   const handleToggleFavorite = async (mediaId: string) => {
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
@@ -80,7 +80,7 @@ export const HomePage = () => {
     try {
       await toggleFavorite(mediaId);
     } catch (error) {
-      console.error('Failed to toggle favorite:', error);
+      console.error("Failed to toggle favorite:", error);
     } finally {
       setLikeLoading(null);
     }
@@ -93,7 +93,7 @@ export const HomePage = () => {
         style={{
           backgroundImage: heroBanner
             ? `linear-gradient(to top, rgba(18,18,18,1) 0%, rgba(18,18,18,0.2) 50%), url(${heroBanner.previewMedia.posterURL})`
-            : 'none'
+            : "none",
         }}
       >
         {isLoadingHero ? (
@@ -126,11 +126,53 @@ export const HomePage = () => {
         {error && <div className="hero__error">Erreur de chargement: {error}</div>}
       </section>
 
+      {/* Trending Now Section */}
+      <Carousel title="Tendances actuelles">
+        {trendingMedia?.map((media) => (
+          <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
+            <div className="media-card__image-container">
+              <img
+                className="media-card__img"
+                src={media.thumbnailUrl || logo}
+                alt={media.name}
+                onError={(e) => {
+                  e.currentTarget.src = logo;
+                }}
+              />
+              <div className="media-card__actions">
+                <button
+                  className="media-card__action-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePlayMedia(media.id!);
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </button>
+                <button
+                  className="media-card__action-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleFavorite(media.id!);
+                  }}
+                  disabled={likeLoading === media.id}
+                >
+                  {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
+                </button>
+              </div>
+            </div>
+            <h3 className="media-card__title">{media.name}</h3>
+          </div>
+        ))}
+      </Carousel>
+
       {/* Continue Watching Section */}
       {isAuthenticated && continueWatching.length > 0 && (
         <Carousel title="Reprendre la lecture">
           {continueWatching.map((media) => (
-            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: 'pointer' }}>
+            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
               <div className="media-card__image-container">
                 <img
                   src={media.thumbnailUrl || logo}
@@ -164,7 +206,7 @@ export const HomePage = () => {
                     }}
                     disabled={likeLoading === media.id}
                   >
-                    {likeLoading === media.id ? '...' : isFavorite(media.id!) ? '❤️' : '🤍'}
+                    {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
                   </button>
                 </div>
               </div>
@@ -178,7 +220,7 @@ export const HomePage = () => {
       {isAuthenticated && favorites.length > 0 && (
         <Carousel title="Ma Liste">
           {favorites.map((media) => (
-            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: 'pointer' }}>
+            <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: "pointer" }}>
               <div className="media-card__image-container">
                 <img
                   src={media.thumbnailUrl || logo}
@@ -207,7 +249,7 @@ export const HomePage = () => {
                     }}
                     disabled={likeLoading === media.id}
                   >
-                    {likeLoading === media.id ? '...' : isFavorite(media.id!) ? '❤️' : '🤍'}
+                    {likeLoading === media.id ? "..." : isFavorite(media.id!) ? "❤️" : "🤍"}
                   </button>
                 </div>
               </div>
@@ -216,48 +258,6 @@ export const HomePage = () => {
           ))}
         </Carousel>
       )}
-
-      {/* Trending Now Section */}
-      <Carousel title="Tendances actuelles">
-        {trendingMedia?.map((media) => (
-          <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: 'pointer' }}>
-            <div className="media-card__image-container">
-              <img
-                className="media-card__img"
-                src={media.thumbnailUrl || logo}
-                alt={media.name}
-                onError={(e) => {
-                  e.currentTarget.src = logo;
-                }}
-              />
-              <div className="media-card__actions">
-                <button
-                  className="media-card__action-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePlayMedia(media.id!);
-                  }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </button>
-                <button
-                  className="media-card__action-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleToggleFavorite(media.id!);
-                  }}
-                  disabled={likeLoading === media.id}
-                >
-                  {likeLoading === media.id ? '...' : isFavorite(media.id!) ? '❤️' : '🤍'}
-                </button>
-              </div>
-            </div>
-            <h3 className="media-card__title">{media.name}</h3>
-          </div>
-        ))}
-      </Carousel>
 
       {/* Categories Section */}
       {categories.length > 0 && (
