@@ -242,6 +242,10 @@ img.media-card__img {
     flex: 0 0 140px;
   }
 
+  .media-card__play-btn span {
+    display: none;
+  }
+
   .media-card__actions {
     opacity: 1;
     top: 0.25rem;
@@ -265,30 +269,36 @@ img.media-card__img {
   }
 
   .media-card__buttons-container {
-    bottom: 8px;
+    bottom: 6px;
     padding: 8px 12px;
     gap: 8px;
+    border-radius: 10px;
+    background-color: rgba(30, 30, 30, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 
   .media-card__play-btn {
-    padding: 6px 14px;
-    font-size: 0.75rem;
-    border-radius: 16px;
+    padding: 8px;
+    font-size: 0;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
   }
 
   .media-card__play-btn svg {
-    width: 10px;
-    height: 10px;
+    width: 16px;
+    height: 16px;
   }
 
   .media-card__icon-btn {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
   }
 
   .media-card__icon-btn svg {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
   }
 
   .media-card__progress-bar {
