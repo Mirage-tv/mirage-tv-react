@@ -42,6 +42,7 @@ img.media-card__img {
 
 /* ===========================================
    CONTAINER DES BOUTONS - Intégré en bas de l'image
+   Caché par défaut, visible au hover sur desktop
    =========================================== */
 .media-card__buttons-container {
   position: absolute;
@@ -58,6 +59,17 @@ img.media-card__img {
   border-radius: 12px;
   border: none;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+/* Afficher les boutons au hover sur desktop */
+.media-card:hover .media-card__buttons-container {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Bouton Play principal - fond sombre avec bordure dorée */
@@ -99,7 +111,7 @@ img.media-card__img {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
+  width: 44px;
   height: 36px;
   background-color: transparent;
   border: 1.5px solid rgba(255, 255, 255, 0.35);
@@ -131,23 +143,26 @@ img.media-card__img {
 }
 
 /* ===========================================
-   BARRE DE PROGRESSION - Entre l'image et le titre
+   BARRE DE PROGRESSION - En bas de l'image
    Pour "Reprendre la lecture" uniquement
    =========================================== */
 .media-card__progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   width: 100%;
   height: 4px;
-  background-color: rgba(60, 60, 60, 0.9);
-  margin-top: 8px;
-  border-radius: 2px;
+  background-color: rgba(80, 80, 80, 0.8);
+  border-radius: 0 0 var(--radius-lg, 12px) var(--radius-lg, 12px);
   overflow: hidden;
 }
 
 .media-card__progress-fill {
   height: 100%;
-  background-color: #d4d4d4;
-  border-radius: 2px;
+  background: linear-gradient(90deg, #c9a227, #d4af37);
   transition: width 0.3s ease;
+  min-width: 4px;
 }
 
 /* ===========================================
@@ -242,63 +257,18 @@ img.media-card__img {
     flex: 0 0 140px;
   }
 
-  .media-card__play-btn span {
-    display: none;
+  /* Masquer complètement les boutons sur mobile */
+  .media-card__buttons-container {
+    display: none !important;
   }
 
   .media-card__actions {
-    opacity: 1;
-    top: 0.25rem;
-    right: 0.25rem;
-  }
-
-  .media-card__action-btn {
-    width: 28px;
-    height: 28px;
-    background-color: rgba(0, 0, 0, 0.6);
-  }
-
-  .media-card__action-btn svg {
-    width: 14px;
-    height: 14px;
+    display: none;
   }
 
   .media-card__title {
     font-size: 0.8125rem;
     margin-top: 0.5rem;
-  }
-
-  .media-card__buttons-container {
-    bottom: 6px;
-    padding: 8px 12px;
-    gap: 8px;
-    border-radius: 10px;
-    background-color: rgba(30, 30, 30, 0.6);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-
-  .media-card__play-btn {
-    padding: 8px;
-    font-size: 0;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-  }
-
-  .media-card__play-btn svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  .media-card__icon-btn {
-    width: 30px;
-    height: 30px;
-  }
-
-  .media-card__icon-btn svg {
-    width: 14px;
-    height: 14px;
   }
 
   .media-card__progress-bar {

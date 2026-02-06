@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import logo from '../../../assets/logo.png';
-import { useAuth } from '../../../core/hooks';
-import { useFavoritesStore } from '../../../infrastructure/store/favoritesStore';
-import { useMediaStore } from '../../../infrastructure/store/mediaStore';
-import { Carousel } from '../../components/Carousel/Carousel';
-import '../../components/MediaCard/MediaCard.css';
-import './MediaDetailPage.css';
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import logo from "../../../assets/logo.png";
+import { useAuth } from "../../../core/hooks";
+import { mediaService } from "../../../infrastructure/adapters/api";
+import { useFavoritesStore } from "../../../infrastructure/store/favoritesStore";
+import { useMediaStore } from "../../../infrastructure/store/mediaStore";
+import "./MediaDetailPage.css";
 
 export const MediaDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,7 +13,7 @@ export const MediaDetailPage = () => {
   const { isAuthenticated, isSubscriber } = useAuth();
 
   const { currentMedia, isLoadingCurrentMedia, error, fetchMediaById, clearCurrentMedia, movies, fetchMovies } = useMediaStore();
-  const { favorites, toggleFavorite, fetchFavorites, isFavorite } = useFavoritesStore();
+  const { favorites, toggleFavorite, fetchFavorites } = useFavoritesStore();
   const [likeLoading, setLikeLoading] = useState<string | null>(null);
 
   const isCurrentFavorite = favorites.some((fav) => fav.id === id);
@@ -23,7 +22,6 @@ export const MediaDetailPage = () => {
     if (id) {
       fetchMediaById(id);
     }
-    // Charger les films similaires
     fetchMovies({ per: 10 });
 
     return () => {
@@ -37,16 +35,15 @@ export const MediaDetailPage = () => {
     }
   }, [isAuthenticated, fetchFavorites]);
 
-  // Filtrer les films similaires (exclure le média actuel)
-  const similarMedia = movies.filter((movie) => movie.id !== id).slice(0, 8);
+  const similarMedia = movies.filter((movie) => movie.id !== id).slice(0, 6);
 
   const handlePlay = () => {
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
     if (!isSubscriber) {
-      navigate('/subscribe');
+      navigate("/subscribe");
       return;
     }
     navigate(`/watch/${id}`);
@@ -55,7 +52,7 @@ export const MediaDetailPage = () => {
   const handleToggleFavorite = async (mediaId?: string) => {
     const targetId = mediaId || id;
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
     if (targetId) {
@@ -68,24 +65,33 @@ export const MediaDetailPage = () => {
     }
   };
 
+  const handleUpVote = async () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    if (!isSubscriber) {
+      navigate("/subscribe");
+      return;
+    }
+    if (id) {
+      try {
+        await mediaService.upVoteMedia(id);
+      } catch (error) {
+        console.error("Erreur lors du vote:", error);
+      }
+    }
+  };
+
   const handleViewDetail = (mediaId: string) => {
     navigate(`/media/${mediaId}`);
   };
 
-  const handleBack = () => {
-    navigate(-1);
-  };
-
-  const formatDuration = (duration: string | undefined): string => {
-    if (!duration) return '';
-    return duration;
-  };
-
   if (isLoadingCurrentMedia) {
     return (
-      <div className="media-detail-page">
-        <div className="media-detail-page__loading">
-          <div className="media-detail-page__spinner"></div>
+      <div className="media-detail">
+        <div className="media-detail__loading">
+          <div className="media-detail__spinner"></div>
           <p>Chargement...</p>
         </div>
       </div>
@@ -94,28 +100,11 @@ export const MediaDetailPage = () => {
 
   if (error || !currentMedia) {
     return (
-      <div className="media-detail-page">
-        <div className="media-detail-page__error">
-          <div className="media-detail-page__error-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="64"
-              height="64"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-          </div>
+      <div className="media-detail">
+        <div className="media-detail__error">
           <h2>Média introuvable</h2>
           <p>{error || "Ce contenu n'existe pas ou n'est plus disponible."}</p>
-          <button className="media-detail-page__btn media-detail-page__btn--secondary" onClick={handleBack}>
+          <button className="media-detail__btn-back" onClick={() => navigate(-1)}>
             Retour
           </button>
         </div>
@@ -124,146 +113,138 @@ export const MediaDetailPage = () => {
   }
 
   return (
-    <div className="media-detail-page">
-      {/* Hero section with backdrop */}
-      <div
-        className="media-detail-page__hero"
+    <div className="media-detail">
+      {/* Hero Section - Image en fond pleine largeur */}
+      <section
+        className="media-detail__hero"
         style={{
-          backgroundImage: currentMedia.thunbailURL ? `url(${currentMedia.thunbailURL})` : undefined
+          backgroundImage: currentMedia.thunbailURL
+            ? `linear-gradient(to top, rgba(18,18,18,1) 0%, rgba(18,18,18,0.2) 50%), url(${currentMedia.thunbailURL})`
+            : "none",
         }}
       >
-        <div className="media-detail-page__hero-overlay">
-          <button className="media-detail-page__btn-back" onClick={handleBack}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-            Retour
-          </button>
-
-          <div className="media-detail-page__hero-content">
-            <h1 className="media-detail-page__title">{currentMedia.name}</h1>
-
-            <div className="media-detail-page__meta">
-              {currentMedia.ageRange && (
-                <span className="media-detail-page__meta-item media-detail-page__age-rating">{currentMedia.ageRange}</span>
-              )}
-              {currentMedia.duration && <span className="media-detail-page__meta-item">{formatDuration(currentMedia.duration)}</span>}
-              {currentMedia.quality && <span className="media-detail-page__meta-item">{currentMedia.quality.toUpperCase()}</span>}
-            </div>
-
-            <div className="media-detail-page__actions">
-              <button className="media-detail-page__btn media-detail-page__btn--primary" onClick={handlePlay}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <div className="media-detail__hero-content">
+          <h1 className="media-detail__hero-title">{currentMedia.name}</h1>
+          <div className="media-detail__hero-actions">
+            <div className="media-detail__buttons-container">
+              <button className="media-detail__play-btn" onClick={handlePlay}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M8 5v14l11-7z" />
                 </svg>
-                {currentMedia.progress && currentMedia.progress > 0 ? 'Reprendre' : 'Lecture'}
+                <span>play</span>
               </button>
-
-              {isAuthenticated && (
-                <button
-                  className={`media-detail-page__btn media-detail-page__btn--icon ${isCurrentFavorite ? 'media-detail-page__btn--favorite' : ''}`}
-                  onClick={() => handleToggleFavorite()}
-                  disabled={likeLoading === id}
-                  title={isCurrentFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+              <button
+                className={`media-detail__icon-btn ${isCurrentFavorite ? "media-detail__icon-btn--active" : ""}`}
+                onClick={() => handleToggleFavorite()}
+                disabled={likeLoading === id}
+                aria-label="Ajouter à ma liste"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
                 >
-                  {likeLoading === id ? (
-                    '...'
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill={isCurrentFavorite ? 'currentColor' : 'none'}
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                    </svg>
-                  )}
-                </button>
-              )}
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+              <button className="media-detail__icon-btn" onClick={handleUpVote} aria-label="J'aime">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                </svg>
+              </button>
             </div>
-
-            {currentMedia.progress && currentMedia.progress > 0 && (
-              <div className="media-detail-page__progress">
-                <div className="media-detail-page__progress-bar">
-                  <div className="media-detail-page__progress-fill" style={{ width: `${Math.min(currentMedia.progress * 100, 100)}%` }} />
-                </div>
-                <span className="media-detail-page__progress-text">{Math.round(currentMedia.progress * 100)}% regardé</span>
-              </div>
-            )}
           </div>
         </div>
-      </div>
 
-      {/* Content section */}
-      <div className="media-detail-page__content">
-        {currentMedia.synopsis && (
-          <div className="media-detail-page__section">
-            <h2 className="media-detail-page__section-title">Synopsis</h2>
-            <p className="media-detail-page__synopsis">{currentMedia.synopsis}</p>
-          </div>
-        )}
+        {/* Badge Mirage Originals */}
+        <div className="media-detail__hero-brand">
+          <img src={logo} alt="Mirage" className="media-detail__hero-logo" />
+          <span className="media-detail__hero-brand-badge">ORIGINALS</span>
+        </div>
+      </section>
 
-        {/* Additional info */}
-        <div className="media-detail-page__section">
-          <h2 className="media-detail-page__section-title">Informations</h2>
-          <div className="media-detail-page__info-grid">
+      {/* Info Section - 2 colonnes */}
+      <section className="media-detail__info">
+        <div className="media-detail__info-left">
+          {(() => {
+            const season = currentMedia.episodeInfo?.season as number | null | undefined;
+            const episodeNbr = currentMedia.episodeInfo?.episodeNbr as number | null | undefined;
+            if (season || episodeNbr) {
+              return (
+                <div className="media-detail__info-header">
+                  {season && <span className="media-detail__year">Saison {season}</span>}
+                  {episodeNbr && <span className="media-detail__episodes"> – {episodeNbr} épisodes</span>}
+                </div>
+              );
+            }
+            return null;
+          })()}
+          <h2 className="media-detail__info-title">{currentMedia.name}</h2>
+
+          <div className="media-detail__badges">
             {currentMedia.duration && (
-              <div className="media-detail-page__info-item">
-                <span className="media-detail-page__info-label">Durée</span>
-                <span className="media-detail-page__info-value">{currentMedia.duration}</span>
-              </div>
+              <span className="media-detail__badge">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                {currentMedia.duration}
+              </span>
             )}
             {currentMedia.quality && (
-              <div className="media-detail-page__info-item">
-                <span className="media-detail-page__info-label">Qualité</span>
-                <span className="media-detail-page__info-value">{currentMedia.quality.toUpperCase()}</span>
-              </div>
+              <span className="media-detail__badge">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                {currentMedia.quality.toUpperCase()} Quality
+              </span>
             )}
-            {currentMedia.ageRange && (
-              <div className="media-detail-page__info-item">
-                <span className="media-detail-page__info-label">Classification</span>
-                <span className="media-detail-page__info-value">{currentMedia.ageRange}</span>
-              </div>
-            )}
-            {currentMedia.isFavorite !== undefined && (
-              <div className="media-detail-page__info-item">
-                <span className="media-detail-page__info-label">Favoris</span>
-                <span className="media-detail-page__info-value">{currentMedia.isFavorite ? 'Oui' : 'Non'}</span>
-              </div>
-            )}
+            {currentMedia.ageRange && <span className="media-detail__badge">+{currentMedia.ageRange.replace("+", "")}</span>}
           </div>
+
+          {currentMedia.synopsis && <p className="media-detail__synopsis">{currentMedia.synopsis}</p>}
         </div>
+      </section>
 
-        {!isSubscriber && (
-          <div className="media-detail-page__subscribe-cta">
-            <p>Abonnez-vous pour accéder à ce contenu et à tout le catalogue Mirage.</p>
-            <button className="media-detail-page__btn media-detail-page__btn--primary" onClick={() => navigate('/subscribe')}>
-              S'abonner maintenant
-            </button>
-          </div>
-        )}
-
-        {/* Contenus similaires */}
-        {similarMedia.length > 0 && (
-          <div className="media-detail-page__section">
-            <Carousel title="Contenus similaires">
-              {similarMedia.map((media) => (
-                <div key={media.id} className="media-card" onClick={() => handleViewDetail(media.id!)} style={{ cursor: 'pointer' }}>
+      {/* Similar Content */}
+      {similarMedia.length > 0 && (
+        <section className="media-detail__similar">
+          <h2 className="media-detail__similar-title">similar content</h2>
+          <div className="media-detail__similar-grid">
+            {similarMedia.map((media) => (
+              <div key={media.id} className="media-detail__similar-card" onClick={() => handleViewDetail(media.id!)}>
+                <div className="media-detail__similar-image">
                   <img
                     src={media.thumbnailUrl || logo}
                     alt={media.name}
@@ -271,44 +252,23 @@ export const MediaDetailPage = () => {
                       e.currentTarget.src = logo;
                     }}
                   />
-                  <div className="media-card__overlay">
-                    <h3 className="media-card__title">{media.name}</h3>
-                    <div className="media-card__actions">
-                      <button
-                        className="media-card__action-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (isAuthenticated && isSubscriber) {
-                            navigate(`/watch/${media.id}`);
-                          } else if (!isAuthenticated) {
-                            navigate('/login');
-                          } else {
-                            navigate('/subscribe');
-                          }
-                        }}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M8 5v14l11-7z" />
-                        </svg>
-                      </button>
-                      <button
-                        className="media-card__action-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleToggleFavorite(media.id!);
-                        }}
-                        disabled={likeLoading === media.id}
-                      >
-                        {likeLoading === media.id ? '...' : isFavorite(media.id!) ? '❤️' : '🤍'}
-                      </button>
-                    </div>
-                  </div>
                 </div>
-              ))}
-            </Carousel>
+                <h3 className="media-detail__similar-name">{media.name}</h3>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+        </section>
+      )}
+
+      {/* Subscribe CTA */}
+      {!isSubscriber && (
+        <section className="media-detail__subscribe">
+          <p>Abonnez-vous pour accéder à ce contenu et à tout le catalogue Mirage.</p>
+          <button className="media-detail__btn-play" onClick={() => navigate("/subscribe")}>
+            S'abonner maintenant
+          </button>
+        </section>
+      )}
     </div>
   );
 };

@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import logo from '../../../assets/logo.png';
-import { useSearchStore } from '../../../infrastructure/store/searchStore';
-import './SearchPage.css';
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import logo from "../../../assets/logo.png";
+import { useSearchStore } from "../../../infrastructure/store/searchStore";
+import "./SearchPage.css";
 
 export const SearchPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialQuery = searchParams.get('q') || '';
+  const initialQuery = searchParams.get("q") || "";
 
   const [inputValue, setInputValue] = useState(initialQuery);
   const { movies, series, isLoading, error, hasSearched, search, clearSearch } = useSearchStore();
@@ -37,12 +37,12 @@ export const SearchPage = () => {
   // Gestion de la touche Entrée
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
+      if (e.key === "Enter") {
         e.preventDefault();
         handleSearch();
       }
     },
-    [handleSearch]
+    [handleSearch],
   );
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +90,7 @@ export const SearchPage = () => {
             <input
               type="text"
               className="search-page__input"
-              placeholder="Films, séries, acteurs..."
+              placeholder="Films, séries..."
               value={inputValue}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
@@ -125,27 +125,13 @@ export const SearchPage = () => {
         {!isLoading && !hasSearched && !inputValue && (
           <div className="search-page__empty">
             <h2 className="search-page__empty-title">Explorez notre catalogue</h2>
-            <p className="search-page__empty-text">Tapez le nom d'un film, d'une série ou d'un acteur pour commencer.</p>
+            <p className="search-page__empty-text">Tapez le nom d'un film ou d'une série pour commencer.</p>
           </div>
         )}
 
         {/* Aucun résultat */}
         {!isLoading && hasSearched && !hasResults && inputValue && (
           <div className="search-page__empty">
-            <svg
-              className="search-page__empty-icon"
-              xmlns="http://www.w3.org/2000/svg"
-              width="64"
-              height="64"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="15" y1="9" x2="9" y2="15"></line>
-              <line x1="9" y1="9" x2="15" y2="15"></line>
-            </svg>
             <h2 className="search-page__empty-title">Aucun résultat</h2>
             <p className="search-page__empty-text">Aucun contenu ne correspond à "{inputValue}". Essayez avec d'autres mots-clés.</p>
           </div>
@@ -166,7 +152,7 @@ export const SearchPage = () => {
                   onClick={() => movie.id && handleMediaClick(movie.id)}
                   role="button"
                   tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && movie.id && handleMediaClick(movie.id)}
+                  onKeyDown={(e) => e.key === "Enter" && movie.id && handleMediaClick(movie.id)}
                 >
                   <img
                     src={movie.thumbnailUrl || logo}
@@ -200,7 +186,7 @@ export const SearchPage = () => {
                   onClick={() => serie.id && handleSerieClick(serie.id)}
                   role="button"
                   tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && serie.id && handleSerieClick(serie.id)}
+                  onKeyDown={(e) => e.key === "Enter" && serie.id && handleSerieClick(serie.id)}
                 >
                   <img
                     src={serie.posterURL || logo}

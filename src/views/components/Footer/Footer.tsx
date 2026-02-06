@@ -1,11 +1,13 @@
-import { Link } from 'react-router-dom';
-import appStoreImg from '../../../assets/app-store.png';
-import logo from '../../../assets/logo.png';
-import playStoreImg from '../../../assets/playstore.png';
-import './Footer.css';
+import { Link } from "react-router-dom";
+import appStoreImg from "../../../assets/app-store.png";
+import logo from "../../../assets/logo.png";
+import playStoreImg from "../../../assets/playstore.png";
+import { useAuth } from "../../../core/hooks";
+import "./Footer.css";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { isAuthenticated } = useAuth();
 
   return (
     <footer className="footer">
@@ -115,16 +117,16 @@ export const Footer = () => {
             <h4 className="footer__section-title">Compte</h4>
             <ul className="footer__links-list">
               <li>
-                <Link to="/account">Paramètres du compte</Link>
+                <Link to={isAuthenticated ? "/account" : "/login"}>Paramètres du compte</Link>
               </li>
               <li>
-                <Link to="/billing">Facturation & Paiements</Link>
+                <Link to={isAuthenticated ? "/billing" : "/login"}>Facturation & Paiements</Link>
               </li>
               <li>
                 <Link to="/help">Centre d'aide</Link>
               </li>
               <li>
-                <Link to="/preferences">Préférences</Link>
+                <Link to={isAuthenticated ? "/preferences" : "/login"}>Préférences</Link>
               </li>
             </ul>
           </div>
