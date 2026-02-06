@@ -243,20 +243,20 @@ export const HomePage = () => {
                     e.currentTarget.src = logo;
                   }}
                 />
-                <div className="media-card__progress-bar">
-                  <div
-                    className="media-card__progress-fill"
-                    style={{
-                      width: `${
-                        media.progress
-                          ? media.progress > 1
-                            ? media.progress // Déjà en pourcentage (0-100)
-                            : media.progress * 100 // Décimal (0-1) → pourcentage
-                          : 0
-                      }%`,
-                    }}
-                  ></div>
-                </div>
+              </div>
+              <div className="media-card__progress-bar">
+                <div
+                  className="media-card__progress-fill"
+                  style={{
+                    width: `${
+                      media.progress
+                        ? media.progress > 1
+                          ? media.progress // Déjà en pourcentage (0-100)
+                          : media.progress * 100 // Décimal (0-1) → pourcentage
+                        : 0
+                    }%`,
+                  }}
+                ></div>
               </div>
               <h3 className="media-card__title">{media.name}</h3>
             </div>
