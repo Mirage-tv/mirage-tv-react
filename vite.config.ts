@@ -11,7 +11,7 @@ export default defineConfig({
     },
     proxy: {
       "/api": {
-        target: "https://mirage-divine-moon-57.fly.dev",
+        target: "https://api.mirage-tv.com",
         changeOrigin: true,
         secure: true,
         cookieDomainRewrite: "localhost",
