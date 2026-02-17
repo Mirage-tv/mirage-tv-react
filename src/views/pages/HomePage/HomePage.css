@@ -366,8 +366,17 @@
     width: 16px;
     height: 16px;
   }
+
+  /* Décalage en quinconce */
 }
 
+.categories-carousel__row:first-child {
+  padding-left: 5%;
+}
+
+.categories-carousel__row:last-child {
+  padding-left: 10%;
+}
 .home-page__subscription-banner {
   margin: 4rem 5% 2rem;
   padding: 3rem;

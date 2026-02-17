@@ -4,7 +4,10 @@
 import { type APIError } from "../../../core/domain/types";
 
 // Default base URL for API requests
-const DEFAULT_BASE_URL = "https://api.mirage-tv.com";
+// En développement (localhost), on utilise des URLs relatives pour passer par le proxy Vite
+// En production, on utilise l'URL absolue de l'API
+const isDev = typeof window !== "undefined" && window.location.hostname === "localhost";
+const DEFAULT_BASE_URL = isDev ? "" : "https://api.mirage-tv.com";
 
 export interface RequestConfig {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -28,7 +31,9 @@ export class HttpClient {
    * Build URL with query parameters
    */
   private buildURL(endpoint: string, params?: Record<string, string | number | boolean>): string {
-    const url = new URL(endpoint, this.baseURL);
+    // Si baseURL est vide (mode dev avec proxy), on utilise l'origine actuelle
+    const base = this.baseURL || window.location.origin;
+    const url = new URL(endpoint, base);
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
