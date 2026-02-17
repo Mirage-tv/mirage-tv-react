@@ -66,7 +66,7 @@ export default {
 
       // API proxy - forward to backend
       if (pathname.startsWith("/api/")) {
-        const backendUrl = `${env.API_URL || "https://mirage-divine-moon-57.fly.dev"}${pathname}${url.search}`;
+        const backendUrl = `${env.API_URL || "https://api.mirage-tv.com"}${pathname}${url.search}`;
 
         // Create new headers, preserving cookies
         const headers = new Headers();

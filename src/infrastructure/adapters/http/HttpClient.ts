@@ -4,9 +4,7 @@
 import { type APIError } from "../../../core/domain/types";
 
 // Default base URL for API requests
-// Toujours utiliser des URLs relatives pour passer par le worker Cloudflare en production
-// ou par le proxy Vite en développement
-const DEFAULT_BASE_URL = "";
+const DEFAULT_BASE_URL = "https://api.mirage-tv.com";
 
 export interface RequestConfig {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -30,9 +28,7 @@ export class HttpClient {
    * Build URL with query parameters
    */
   private buildURL(endpoint: string, params?: Record<string, string | number | boolean>): string {
-    // Si baseURL est vide (mode dev avec proxy), on utilise juste l'endpoint
-    // Sinon on construit une URL complète
-    const url = this.baseURL ? new URL(endpoint, this.baseURL) : new URL(endpoint, window.location.origin);
+    const url = new URL(endpoint, this.baseURL);
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
