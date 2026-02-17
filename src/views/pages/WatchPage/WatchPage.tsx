@@ -162,6 +162,17 @@ export const WatchPage = () => {
     return () => video.removeEventListener("timeupdate", handleTimeUpdate);
   }, [subtitleCues]);
 
+  // Synchroniser les tracks natifs avec l'état showSubtitles (pour iOS fullscreen)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const tracks = video.textTracks;
+    for (let i = 0; i < tracks.length; i++) {
+      tracks[i].mode = showSubtitles ? "showing" : "hidden";
+    }
+  }, [showSubtitles]);
+
   const updateLocalProgress = useCallback(() => {
     if (!mediaId) return;
 
@@ -624,13 +635,26 @@ export const WatchPage = () => {
           ref={videoRef}
           className="watch-page__video-player"
           onDoubleClick={toggleFullscreen}
+          onContextMenu={(e) => e.preventDefault()}
           autoPlay
           playsInline
           controls
           preload="metadata"
-          controlsList="nodownload nofullscreen"
+          controlsList="nodownload noplaybackrate nofullscreen"
+          disablePictureInPicture
         >
           <source src={videoUrls.source} type="video/mp4" />
+          {/* Track natif pour les sous-titres (nécessaire pour iOS fullscreen) */}
+          {videoUrls.subtitles?.map((sub, index) => (
+            <track
+              key={index}
+              kind="subtitles"
+              src={sub.url}
+              srcLang={sub.language === "Francais" ? "fr" : "en"}
+              label={sub.language}
+              default={showSubtitles && index === 0}
+            />
+          ))}
           Votre navigateur ne supporte pas la lecture vidéo.
         </video>
 
