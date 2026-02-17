@@ -623,12 +623,12 @@ export const WatchPage = () => {
         <video
           ref={videoRef}
           className="watch-page__video-player"
-          onClick={handlePlayPause}
           onDoubleClick={toggleFullscreen}
           autoPlay
           playsInline
+          controls
           preload="metadata"
-          controlsList="nodownload"
+          controlsList="nodownload nofullscreen"
         >
           <source src={videoUrls.source} type="video/mp4" />
           Votre navigateur ne supporte pas la lecture vidéo.
