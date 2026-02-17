@@ -443,4 +443,11 @@
     padding: 0.75rem 1.25rem;
     font-size: 0.85rem;
   }
+  .categories-carousel__row:first-child {
+    padding-left: 5%;
+  }
+
+  .categories-carousel__row:last-child {
+    padding-left: 20%;
+  }
 }
