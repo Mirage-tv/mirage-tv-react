@@ -345,31 +345,61 @@ export const HomePage = () => {
         </Carousel>
       )}
 
-      {/* Categories Section */}
+      {/* Categories Section - Carousel horizontal avec 2 rangées */}
       {categories.length > 0 && (
         <section className="categories-section">
           <h2 className="section-title">Parcourir par catégorie</h2>
-          <div className="categories-list">
-            {categories.map((category) => (
-              <div key={category} className="category-chip" onClick={() => navigate(`/browse/category/${category}`)}>
-                <span className="category-name">{category}</span>
-                <span className="category-arrow">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </span>
-              </div>
-            ))}
+          <div className="categories-carousel">
+            <div className="categories-carousel__row">
+              {categories
+                .filter((_, index) => index % 2 === 0)
+                .map((category) => (
+                  <button key={category} className="category-chip" onClick={() => navigate(`/browse/category/${category}`)} type="button">
+                    <span className="category-name">{category}</span>
+                    <span className="category-arrow">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </span>
+                  </button>
+                ))}
+            </div>
+            <div className="categories-carousel__row">
+              {categories
+                .filter((_, index) => index % 2 === 1)
+                .map((category) => (
+                  <button key={category} className="category-chip" onClick={() => navigate(`/browse/category/${category}`)} type="button">
+                    <span className="category-name">{category}</span>
+                    <span className="category-arrow">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </span>
+                  </button>
+                ))}
+            </div>
           </div>
         </section>
       )}
