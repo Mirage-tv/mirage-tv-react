@@ -64,6 +64,29 @@ export default {
         return await env.ASSETS.fetch(request);
       }
 
+      // Proxy pour les sous-titres VTT (évite les problèmes CORS)
+      if (pathname.startsWith("/proxy-vtt/")) {
+        const vttUrl = decodeURIComponent(pathname.replace("/proxy-vtt/", ""));
+
+        try {
+          const response = await fetch(vttUrl);
+          const corsHeaders = getCorsHeaders(request);
+
+          return new Response(response.body, {
+            status: response.status,
+            headers: {
+              "Content-Type": "text/vtt; charset=utf-8",
+              ...corsHeaders,
+            },
+          });
+        } catch (err) {
+          return new Response("Failed to fetch VTT file", {
+            status: 502,
+            headers: getCorsHeaders(request),
+          });
+        }
+      }
+
       // API proxy - forward to backend
       if (pathname.startsWith("/api/")) {
         const backendUrl = `${env.API_URL || "https://api.mirage-tv.com"}${pathname}${url.search}`;

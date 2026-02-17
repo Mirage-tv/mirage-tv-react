@@ -157,9 +157,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* Center video vertically */
-  position: relative; /* Pour positionner l'overlay */
-  overflow: hidden; /* Ensure nothing spills out */
+  position: relative;
 }
 
 .watch-page__video-container:fullscreen {
@@ -224,34 +222,44 @@
   display: none;
 }
 
-/* Zone de sous-titres externe - Position absolue pour overlay */
+/* Zone de sous-titres externe - En dessous de la vidéo */
 .watch-page__subtitles {
-  position: absolute;
-  bottom: 60px; /* Au-dessus des contrôles ou du bas de l'écran */
-  left: 50%;
-  transform: translateX(-50%);
-  width: auto;
-  min-width: 60%;
-  max-width: 90%;
-  padding: 0.5rem 1rem;
-  background-color: rgba(0, 0, 0, 0.6); /* Fond semi-transparent */
+  width: 100%;
+  min-height: 60px;
+  padding: 1rem 2rem;
+  background-color: #000000;
   text-align: center;
-  border-radius: 8px;
-  z-index: 10;
-  pointer-events: none; /* Permet de cliquer à travers */
-}
-
-.watch-page__subtitles:empty,
-.watch-page__subtitles:not(:has(p)) {
-  display: none;
 }
 
 .watch-page__subtitle-text {
-  font-size: 1.25rem; /* Un peu plus grand */
-  color: #fff;
-  line-height: 1.4;
+  font-size: 1.1rem;
+  color: #ffffff;
+  line-height: 1.5;
   margin: 0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* En fullscreen, les sous-titres passent en overlay */
+.watch-page__video-container:fullscreen .watch-page__subtitles,
+.watch-page__video-container:-webkit-full-screen .watch-page__subtitles {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  min-width: 50%;
+  max-width: 90%;
+  min-height: auto;
+  padding: 0.75rem 1.5rem;
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.watch-page__video-container:fullscreen .watch-page__subtitle-text,
+.watch-page__video-container:-webkit-full-screen .watch-page__subtitle-text {
+  font-size: 1.5rem;
 }
 
 .watch-page__video-info {
@@ -433,12 +441,10 @@ video::-webkit-media-controls-fullscreen-button {
 
   .watch-page__video-container {
     margin-top: 70px;
-    min-height: 40vh;
-    max-height: 50vh;
   }
 
   .watch-page__video-player {
-    max-height: 45vh;
+    max-height: 35vh;
   }
 
   .watch-page__subtitles {
@@ -447,7 +453,7 @@ video::-webkit-media-controls-fullscreen-button {
   }
 
   .watch-page__subtitle-text {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .watch-page__video-info {
