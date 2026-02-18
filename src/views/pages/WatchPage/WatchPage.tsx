@@ -212,16 +212,16 @@ export const WatchPage = () => {
   // Video Event Handlers
   // ============================================================================
 
-  const handlePlayPause = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
+  // const handlePlayPause = useCallback(() => {
+  //   const video = videoRef.current;
+  //   if (!video) return;
 
-    if (video.paused) {
-      video.play().catch(console.error);
-    } else {
-      video.pause();
-    }
-  }, []);
+  //   if (video.paused) {
+  //     video.play().catch(console.error);
+  //   } else {
+  //     video.pause();
+  //   }
+  // }, []);
 
   const handlePlay = useCallback(() => {
     isPlayingRef.current = true;
