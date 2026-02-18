@@ -5,42 +5,42 @@
 // ============================================================================
 
 export const AgeRange = {
-  AllAges: '0+',
-  SixPlus: '6+',
-  TwelvePlus: '12+',
-  SixteenPlus: '16+',
-  EighteenPlus: '18+'
+  AllAges: "0+",
+  SixPlus: "6+",
+  TwelvePlus: "12+",
+  SixteenPlus: "16+",
+  EighteenPlus: "18+",
 } as const;
 export type AgeRange = (typeof AgeRange)[keyof typeof AgeRange];
 
 export const VideoQuality = {
-  SD: 'sd',
-  HD: 'hd',
-  TwoK: '2k',
-  FourK: '4k'
+  SD: "sd",
+  HD: "hd",
+  TwoK: "2k",
+  FourK: "4k",
 } as const;
 export type VideoQuality = (typeof VideoQuality)[keyof typeof VideoQuality];
 
 export const SubscriptionStatus = {
-  Active: 'active',
-  Cancelled: 'cancelled',
-  Expired: 'expired',
-  GracePeriod: 'gracePeriod'
+  Active: "active",
+  Cancelled: "cancelled",
+  Expired: "expired",
+  GracePeriod: "gracePeriod",
 } as const;
 export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus];
 
 export const PaymentStatus = {
-  Succeeded: 'succeeded',
-  Failed: 'failed',
-  Pending: 'pending',
-  Refunded: 'refunded'
+  Succeeded: "succeeded",
+  Failed: "failed",
+  Pending: "pending",
+  Refunded: "refunded",
 } as const;
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus];
 
 export const PlanDuration = {
-  Weekly: 'weekly',
-  Monthly: 'monthly',
-  Yearly: 'yearly'
+  Weekly: "weekly",
+  Monthly: "monthly",
+  Yearly: "yearly",
 } as const;
 export type PlanDuration = (typeof PlanDuration)[keyof typeof PlanDuration];
 
@@ -247,7 +247,7 @@ export type CreateViewingHistoryRequest = {
 };
 
 export type UpdateViewingHistoryRequest = {
-  readonly id: string;
+  readonly mediaId: string;
   readonly progress: number;
 };
 

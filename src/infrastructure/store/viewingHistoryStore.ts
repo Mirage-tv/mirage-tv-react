@@ -58,10 +58,10 @@ export const useViewingHistoryStore = create<ViewingHistoryState>((set, get) => 
     }
   },
 
-  updateProgress: async (id: string, progress: number) => {
+  updateProgress: async (mediaId: string, progress: number) => {
     try {
       await viewingHistoryService.updateProgress({
-        id,
+        mediaId,
         progress,
       });
 
