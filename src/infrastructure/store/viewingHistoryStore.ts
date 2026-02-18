@@ -15,7 +15,7 @@ interface ViewingHistoryState {
 
   fetchContinueWatching: () => Promise<void>;
   createHistoryEntry: (mediaId: string, progress: number) => Promise<void>;
-  updateProgress: (id: string, progress: number) => Promise<void>;
+  updateProgress: (mediaId: string, progress: number) => Promise<void>;
   clearError: () => void;
 }
 
@@ -67,7 +67,7 @@ export const useViewingHistoryStore = create<ViewingHistoryState>((set, get) => 
 
       const currentList = get().continueWatching;
       set({
-        continueWatching: currentList.map((item) => (item.id === id ? { ...item, progress } : item)),
+        continueWatching: currentList.map((item) => (item.id === mediaId ? { ...item, progress } : item)),
       });
     } catch (error) {
       const errorMessage = getErrorMessage(error);

@@ -246,11 +246,6 @@ export type CreateViewingHistoryRequest = {
   readonly progress: number;
 };
 
-export type UpdateViewingHistoryRequest = {
-  readonly mediaId: string;
-  readonly progress: number;
-};
-
 // ============================================================================
 // Favorites Types
 // ============================================================================
