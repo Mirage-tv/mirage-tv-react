@@ -37,6 +37,7 @@ export const WatchPage = () => {
   const [currentSubtitle, setCurrentSubtitle] = useState<string>("");
   const [subtitleCues, setSubtitleCues] = useState<Array<{ start: number; end: number; text: string }>>([]);
   const [showSubtitles, setShowSubtitles] = useState(false);
+  const [isFakeFullscreen, setIsFakeFullscreen] = useState(false);
 
   const { currentMedia, fetchMediaById } = useMediaStore();
   const { createHistoryEntry } = useViewingHistoryStore();
@@ -296,72 +297,34 @@ export const WatchPage = () => {
     }
   }, [saveProgressAndSync]);
 
-  // Interface for cross-browser fullscreen support
-  interface DocumentWithFullscreen extends Document {
-    webkitFullscreenElement?: Element;
-    mozFullScreenElement?: Element;
-    msFullscreenElement?: Element;
-    webkitExitFullscreen?: () => Promise<void>;
-    mozCancelFullScreen?: () => Promise<void>;
-    msExitFullscreen?: () => Promise<void>;
-  }
-
-  interface HTMLElementWithFullscreen extends HTMLElement {
-    webkitRequestFullscreen?: () => Promise<void>;
-    mozRequestFullScreen?: () => Promise<void>;
-    msRequestFullscreen?: () => Promise<void>;
-  }
-
-  interface HTMLVideoElementWithFullscreen extends HTMLVideoElement {
-    webkitEnterFullscreen?: () => void;
-    webkitExitFullscreen?: () => void;
-    webkitDisplayingFullscreen?: boolean;
-  }
-
-  const toggleFullscreen = useCallback(async () => {
-    const container = videoContainerRef.current as HTMLElementWithFullscreen;
-    const video = videoRef.current as HTMLVideoElementWithFullscreen;
-    const doc = document as DocumentWithFullscreen;
-
-    if (!container || !video) return;
-
-    // iOS Safari : utiliser l'API native de la vidéo
-    if (video.webkitEnterFullscreen) {
-      try {
-        if (video.webkitDisplayingFullscreen) {
-          video.webkitExitFullscreen?.();
-        } else {
-          video.webkitEnterFullscreen();
-        }
-        return;
-      } catch {
-        // Fallback to container fullscreen if video fullscreen fails
-      }
-    }
-
-    // Desktop et Android : fullscreen du container
-    if (!doc.fullscreenElement && !doc.webkitFullscreenElement && !doc.mozFullScreenElement && !doc.msFullscreenElement) {
-      if (container.requestFullscreen) {
-        await container.requestFullscreen();
-      } else if (container.webkitRequestFullscreen) {
-        await container.webkitRequestFullscreen();
-      } else if (container.mozRequestFullScreen) {
-        await container.mozRequestFullScreen();
-      } else if (container.msRequestFullscreen) {
-        await container.msRequestFullscreen();
-      }
-    } else {
-      if (doc.exitFullscreen) {
-        await doc.exitFullscreen();
-      } else if (doc.webkitExitFullscreen) {
-        await doc.webkitExitFullscreen();
-      } else if (doc.mozCancelFullScreen) {
-        await doc.mozCancelFullScreen();
-      } else if (doc.msExitFullscreen) {
-        await doc.msExitFullscreen();
-      }
-    }
+  const toggleFullscreen = useCallback(() => {
+    setIsFakeFullscreen((prev) => !prev);
   }, []);
+
+  // Handler touche Échap pour quitter le faux plein écran
+  useEffect(() => {
+    if (!isFakeFullscreen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsFakeFullscreen(false);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isFakeFullscreen]);
+
+  // Bloquer le scroll du body en faux plein écran
+  useEffect(() => {
+    if (isFakeFullscreen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isFakeFullscreen]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -626,11 +589,16 @@ export const WatchPage = () => {
 
   return (
     <div className="watch-page">
-      <button className="watch-page__btn-back-overlay" onClick={handleBack}>
-        ← Retour
-      </button>
+      {!isFakeFullscreen && (
+        <button className="watch-page__btn-back-overlay" onClick={handleBack}>
+          ← Retour
+        </button>
+      )}
 
-      <div className="watch-page__video-container" ref={videoContainerRef}>
+      <div
+        className={`watch-page__video-container${isFakeFullscreen ? " watch-page__video-container--fake-fullscreen" : ""}`}
+        ref={videoContainerRef}
+      >
         <video
           ref={videoRef}
           className="watch-page__video-player"
@@ -692,7 +660,7 @@ export const WatchPage = () => {
         </div>
       </div>
 
-      {currentMedia && (
+      {currentMedia && !isFakeFullscreen && (
         <div className="watch-page__video-info">
           <h1>{currentMedia.name}</h1>
           <div className="watch-page__video-meta">

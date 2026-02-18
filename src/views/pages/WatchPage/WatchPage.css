@@ -491,3 +491,74 @@ video::-webkit-media-controls-fullscreen-button {
     font-size: 0.75rem;
   }
 }
+
+/* ============================================================================
+   Faux plein écran (pour garder les sous-titres visibles)
+   ============================================================================ */
+
+.watch-page__video-container--fake-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background-color: #000;
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.watch-page__video-container--fake-fullscreen .watch-page__video-player {
+  flex: 1;
+  max-height: calc(100vh - 80px);
+  width: 100%;
+  object-fit: contain;
+}
+
+.watch-page__video-container--fake-fullscreen .watch-page__subtitles {
+  min-height: 80px;
+  background-color: #000;
+  flex-shrink: 0;
+}
+
+.watch-page__video-container--fake-fullscreen .watch-page__subtitle-text {
+  font-size: 1.4rem;
+}
+
+.watch-page__video-container--fake-fullscreen .watch-page__video-controls-overlay {
+  top: 1rem;
+  right: 1rem;
+  z-index: 10000;
+}
+
+/* Mobile en faux plein écran */
+@media (max-width: 768px) {
+  .watch-page__video-container--fake-fullscreen .watch-page__video-player {
+    max-height: calc(100vh - 60px);
+  }
+
+  .watch-page__video-container--fake-fullscreen .watch-page__subtitles {
+    min-height: 60px;
+  }
+
+  .watch-page__video-container--fake-fullscreen .watch-page__subtitle-text {
+    font-size: 1.1rem;
+  }
+}
+
+/* Paysage sur petit écran */
+@media (orientation: landscape) and (max-height: 500px) {
+  .watch-page__video-container--fake-fullscreen .watch-page__video-player {
+    max-height: calc(100vh - 50px);
+  }
+
+  .watch-page__video-container--fake-fullscreen .watch-page__subtitles {
+    min-height: 50px;
+  }
+
+  .watch-page__video-container--fake-fullscreen .watch-page__subtitle-text {
+    font-size: 1rem;
+  }
+}
