@@ -163,26 +163,23 @@ export const WatchPage = () => {
     return () => video.removeEventListener("timeupdate", handleTimeUpdate);
   }, [subtitleCues]);
 
-  // Synchroniser les tracks natifs avec l'état showSubtitles (pour iOS fullscreen)
+  // Désactiver les tracks natifs (on utilise uniquement les sous-titres custom)
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    const syncTracks = () => {
+    const disableTracks = () => {
       const tracks = video.textTracks;
       for (let i = 0; i < tracks.length; i++) {
-        tracks[i].mode = showSubtitles ? "showing" : "disabled";
+        tracks[i].mode = "disabled";
       }
     };
 
-    // Sync immédiat si tracks déjà chargés
-    syncTracks();
+    disableTracks();
+    video.addEventListener("loadedmetadata", disableTracks);
 
-    // Sync aussi au chargement des métadonnées
-    video.addEventListener("loadedmetadata", syncTracks);
-
-    return () => video.removeEventListener("loadedmetadata", syncTracks);
-  }, [showSubtitles]);
+    return () => video.removeEventListener("loadedmetadata", disableTracks);
+  }, []);
 
   const updateLocalProgress = useCallback(() => {
     if (!mediaId) return;
@@ -639,11 +636,11 @@ export const WatchPage = () => {
         <div className="watch-page__video-controls-overlay">
           {videoUrls.subtitles && videoUrls.subtitles.length > 0 && (
             <button
-              className={`watch-page__btn-cc ${showSubtitles ? "active" : ""}`}
+              className={`watch-page__btn-st ${showSubtitles ? "active" : ""}`}
               onClick={() => setShowSubtitles(!showSubtitles)}
               title={showSubtitles ? "Désactiver les sous-titres" : "Activer les sous-titres"}
             >
-              CC
+              ST
             </button>
           )}
           <button className="watch-page__btn-fullscreen" onClick={toggleFullscreen} title="Plein écran">
