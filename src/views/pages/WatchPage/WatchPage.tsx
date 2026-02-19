@@ -636,11 +636,11 @@ export const WatchPage = () => {
         <div className="watch-page__video-controls-overlay">
           {videoUrls.subtitles && videoUrls.subtitles.length > 0 && (
             <button
-              className={`watch-page__btn-st ${showSubtitles ? "active" : ""}`}
+              className={`watch-page__btn-cc ${showSubtitles ? "active" : ""}`}
               onClick={() => setShowSubtitles(!showSubtitles)}
               title={showSubtitles ? "Désactiver les sous-titres" : "Activer les sous-titres"}
             >
-              ST
+              CC
             </button>
           )}
           <button className="watch-page__btn-fullscreen" onClick={toggleFullscreen} title="Plein écran">
