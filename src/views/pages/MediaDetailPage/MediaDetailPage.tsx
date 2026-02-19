@@ -240,7 +240,7 @@ export const MediaDetailPage = () => {
       {/* Similar Content */}
       {similarMedia.length > 0 && (
         <section className="media-detail__similar">
-          <h2 className="media-detail__similar-title">similar content</h2>
+          <h2 className="media-detail__similar-title">Contenus similaires</h2>
           <div className="media-detail__similar-grid">
             {similarMedia.map((media) => (
               <div key={media.id} className="media-detail__similar-card" onClick={() => handleViewDetail(media.id!)}>
