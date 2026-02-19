@@ -168,10 +168,20 @@ export const WatchPage = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    const tracks = video.textTracks;
-    for (let i = 0; i < tracks.length; i++) {
-      tracks[i].mode = showSubtitles ? "showing" : "hidden";
-    }
+    const syncTracks = () => {
+      const tracks = video.textTracks;
+      for (let i = 0; i < tracks.length; i++) {
+        tracks[i].mode = showSubtitles ? "showing" : "disabled";
+      }
+    };
+
+    // Sync immédiat si tracks déjà chargés
+    syncTracks();
+
+    // Sync aussi au chargement des métadonnées
+    video.addEventListener("loadedmetadata", syncTracks);
+
+    return () => video.removeEventListener("loadedmetadata", syncTracks);
   }, [showSubtitles]);
 
   const updateLocalProgress = useCallback(() => {
@@ -620,7 +630,6 @@ export const WatchPage = () => {
               src={sub.url}
               srcLang={sub.language === "Francais" ? "fr" : "en"}
               label={sub.language}
-              default={showSubtitles && index === 0}
             />
           ))}
           Votre navigateur ne supporte pas la lecture vidéo.
