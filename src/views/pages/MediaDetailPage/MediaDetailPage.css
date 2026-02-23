@@ -506,11 +506,14 @@
 
 @media (max-width: 480px) {
   .media-detail__hero {
-    width: calc(100% - 1rem);
-    min-height: 45vh;
+    width: 100%;
+    min-height: 55vh;
+    min-height: 55dvh;
     padding: 1rem;
-    border-radius: 16px;
+    margin-top: 1.5rem;
+    border-radius: 0;
     background-size: cover;
+    background-position: center top;
   }
 
   .media-detail__hero-title {
