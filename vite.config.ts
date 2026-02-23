@@ -3,7 +3,6 @@ import https from "https";
 import type { Connect, Plugin } from "vite";
 import { defineConfig } from "vite";
 
-// Plugin pour proxifier les fichiers VTT (évite les problèmes CORS)
 function vttProxyPlugin(): Plugin {
   return {
     name: "vtt-proxy",

@@ -510,6 +510,7 @@
     min-height: 45vh;
     padding: 1rem;
     border-radius: 16px;
+    background-size: cover;
   }
 
   .media-detail__hero-title {
