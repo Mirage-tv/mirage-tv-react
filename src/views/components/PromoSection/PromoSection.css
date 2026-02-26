@@ -6,7 +6,7 @@
   border-radius: var(--radius-xl);
   overflow: hidden;
   margin: 3rem 2rem;
-  min-height: 400px;
+  min-height: 25rem;
 }
 
 .promo-section__image {
@@ -50,7 +50,7 @@
 }
 
 .promo-section__logo img {
-  height: 28px;
+  height: 1.75rem;
 }
 
 .promo-section__logo span {
@@ -58,7 +58,7 @@
   font-weight: 700;
   text-transform: uppercase;
   color: var(--color-accent-primary);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.03125rem;
 }
 
 .promo-section__title {
@@ -85,7 +85,7 @@
   .promo-section__image {
     position: relative;
     width: 100%;
-    height: 250px;
+    height: 15.625rem;
   }
 
   .promo-section__image::after {

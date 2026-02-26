@@ -14,7 +14,7 @@
 
 .profile-page__container {
   width: 100%;
-  max-width: 500px;
+  max-width: 31.25rem;
 }
 
 .profile-page__title {
@@ -26,7 +26,7 @@
 
 .profile-page__card {
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
+  border-radius: 1rem;
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -36,8 +36,8 @@
 }
 
 .profile-page__avatar {
-  width: 100px;
-  height: 100px;
+  width: 6.25rem;
+  height: 6.25rem;
   border-radius: 50%;
   background: var(--color-accent-primary, #f5a623);
   color: var(--color-bg-dark, #141414);
@@ -59,7 +59,7 @@
 .profile-page__info-item {
   background: rgba(255, 255, 255, 0.03);
   padding: 1rem 1.25rem;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -93,7 +93,7 @@
 .profile-page__btn {
   width: 100%;
   padding: 1rem 1.5rem;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
   border: none;
@@ -149,8 +149,8 @@
   }
 
   .profile-page__avatar {
-    width: 80px;
-    height: 80px;
+    width: 5rem;
+    height: 5rem;
     font-size: 2.5rem;
   }
 }

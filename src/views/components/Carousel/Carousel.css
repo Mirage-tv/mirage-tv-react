@@ -35,7 +35,7 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-  width: 50px;
+  width: 3.125rem;
   height: 100%;
   border: none;
   background: rgba(18, 18, 18, 0.5);

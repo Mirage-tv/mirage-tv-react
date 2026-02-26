@@ -9,12 +9,12 @@
 
 .login-page__container {
   width: 100%;
-  max-width: 450px;
+  max-width: 28.125rem;
   background-color: var(--color-bg-medium);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-lg);
   padding: 3rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.2);
 }
 
 .login-page__title {
@@ -68,7 +68,7 @@
   font-size: var(--text-base);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.0625rem;
   cursor: pointer;
   transition: all 0.2s ease;
   margin-top: 1rem;

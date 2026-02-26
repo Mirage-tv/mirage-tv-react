@@ -12,9 +12,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 2.5%;
-  height: 80px;
+  height: 5rem;
   background-color: rgba(18, 18, 18, 0.6);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(0.5rem);
   transition:
     background-color 0.3s ease,
     backdrop-filter 0.3s ease;
@@ -22,7 +22,7 @@
 
 .navbar--scrolled {
   background-color: rgba(18, 18, 18, 0.8);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(0.625rem);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -42,7 +42,7 @@
   text-decoration: none;
   font-weight: 700;
   font-size: 1.5rem;
-  letter-spacing: -1px;
+  letter-spacing: -0.0625rem;
 }
 
 .navbar__logo img {
@@ -67,7 +67,7 @@
   list-style: none;
   background-color: rgba(26, 26, 26, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50px;
+  border-radius: 3.125rem;
   padding: 0.5rem;
 }
 
@@ -78,7 +78,7 @@
   text-transform: uppercase;
   text-decoration: none !important;
   padding: 0.6rem 1.25rem;
-  border-radius: 50px;
+  border-radius: 3.125rem;
   transition:
     color 0.3s ease,
     background-color 0.3s ease;
@@ -145,13 +145,13 @@
 }
 
 .navbar__action-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .navbar__user-avatar {
-  width: 40px;
-  height: 40px;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 50%;
   background-color: var(--color-accent-primary, #f97316);
   color: var(--color-bg-dark, #0a0a0a);
@@ -160,7 +160,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid var(--color-accent-primary, #f97316);
+  border: 0.125rem solid var(--color-accent-primary, #f97316);
   cursor: pointer;
 }
 
@@ -168,7 +168,7 @@
   background-color: var(--color-accent-primary, #f97316);
   color: var(--color-bg-dark, #0a0a0a);
   border: none;
-  border-radius: 50px;
+  border-radius: 3.125rem;
   padding: 0.75rem 1.5rem;
   font-size: var(--text-sm, 0.875rem);
   font-weight: 700;
@@ -187,8 +187,8 @@
 .navbar__subscribe-btn {
   background-color: transparent;
   color: #f59e0b;
-  border: 2px solid #f59e0b;
-  border-radius: 50px;
+  border: 0.125rem solid #f59e0b;
+  border-radius: 3.125rem;
   padding: 0.6rem 1.25rem;
   font-size: var(--text-sm, 0.875rem);
   font-weight: 700;

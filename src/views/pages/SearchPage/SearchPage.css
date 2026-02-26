@@ -1,12 +1,12 @@
 .search-page {
   min-height: 100vh;
-  padding: 120px 5% 4rem;
+  padding: 7.5rem 5% 4rem;
   background: linear-gradient(180deg, var(--color-bg-dark, #0a0a0a) 0%, var(--color-bg-medium, #121212) 100%);
 }
 
 /* Search Header */
 .search-page__header {
-  max-width: 800px;
+  max-width: 50rem;
   margin: 0 auto 3rem;
 }
 
@@ -46,7 +46,7 @@
   color: var(--color-text-primary, #ffffff);
   background-color: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 50px;
+  border-radius: 3.125rem;
   outline: none;
   transition:
     border-color 0.3s ease,
@@ -75,7 +75,7 @@
   color: var(--color-text-primary, #ffffff);
   background-color: rgba(40, 40, 40, 0.8);
   border: 1px solid rgba(180, 160, 120, 0.4);
-  border-radius: 50px;
+  border-radius: 3.125rem;
   cursor: pointer;
   transition:
     transform 0.2s ease,
@@ -119,7 +119,7 @@
 
 /* Results Container */
 .search-page__results {
-  max-width: 1400px;
+  max-width: 87.5rem;
   margin: 0 auto;
 }
 
@@ -147,14 +147,14 @@
 /* Grid */
 .search-page__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
   gap: 1.5rem;
 }
 
 /* Card */
 .search-page__card {
   position: relative;
-  border-radius: 12px;
+  border-radius: 0.75rem;
   overflow: hidden;
   background-color: rgba(255, 255, 255, 0.05);
   cursor: pointer;
@@ -164,8 +164,8 @@
 }
 
 .search-page__card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+  transform: translateY(-0.25rem);
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.4);
 }
 
 .search-page__card-image {
@@ -207,9 +207,9 @@
 }
 
 .search-page__spinner {
-  width: 48px;
-  height: 48px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
+  width: 3rem;
+  height: 3rem;
+  border: 0.1875rem solid rgba(255, 255, 255, 0.1);
   border-top-color: var(--color-accent-primary, #f97316);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -238,7 +238,7 @@
 
 .search-page__empty-text {
   font-size: 1rem;
-  max-width: 400px;
+  max-width: 25rem;
   margin: 0 auto;
 }
 
@@ -247,14 +247,14 @@
   text-align: center;
   padding: 3rem 2rem;
   background-color: rgba(239, 68, 68, 0.1);
-  border-radius: 12px;
+  border-radius: 0.75rem;
   color: #ef4444;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .search-page {
-    padding: 100px 4% 3rem;
+    padding: 6.25rem 4% 3rem;
   }
 
   .search-page__title {
@@ -262,7 +262,7 @@
   }
 
   .search-page__grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(8.75rem, 1fr));
     gap: 1rem;
   }
 }

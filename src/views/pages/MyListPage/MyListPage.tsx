@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../core/hooks";
-import "./MyListPage.css";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../core/hooks';
+import './MyListPage.css';
 
 interface MediaThumbnail {
   id: string;
@@ -20,15 +20,15 @@ export const MyListPage = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate('/login');
       return;
     }
     const fetchFavorites = async () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch("/api/v1/favorites", {
-          credentials: "include",
+        const response = await fetch('/api/v1/favorites', {
+          credentials: 'include'
         });
         if (!response.ok) {
           throw new Error(`Erreur API: ${response.status}`);
@@ -36,7 +36,7 @@ export const MyListPage = () => {
         const data: MediaThumbnail[] = await response.json();
         setFavorites(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Erreur inconnue lors du chargement des favoris");
+        setError(err instanceof Error ? err.message : 'Erreur inconnue lors du chargement des favoris');
       } finally {
         setLoading(false);
       }
@@ -49,14 +49,14 @@ export const MyListPage = () => {
   const handleToggleFavorite = async (mediaId: string) => {
     setLikeLoading(mediaId);
     try {
-      const response = await fetch("/api/v1/favorites/toggle", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/v1/favorites/toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mediaId }),
-        credentials: "include",
+        credentials: 'include'
       });
       if (!response.ok) {
-        throw new Error("Erreur lors du like");
+        throw new Error('Erreur lors du like');
       }
       const isNowFavorite = await response.json();
       setFavorites((prev) => (isNowFavorite ? prev : prev.filter((m) => m.id !== mediaId)));
@@ -79,7 +79,7 @@ export const MyListPage = () => {
       ) : (
         <div className="mylist-page__grid">
           {favorites.map((media) => (
-            <div key={media.id} className="mylist-page__card">
+            <div key={media.id} className="mylist-page__card" onClick={() => navigate(`/media/${media.id}`)}>
               <div className="mylist-page__thumbnail">
                 <img src={media.thumbnailUrl} alt={media.name} />
                 {media.progress !== undefined && (
@@ -92,12 +92,31 @@ export const MyListPage = () => {
                 <h2 className="mylist-page__name">{media.name}</h2>
                 <button
                   className="mylist-page__favorite"
-                  onClick={() => handleToggleFavorite(media.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleFavorite(media.id);
+                  }}
                   disabled={likeLoading === media.id}
                   aria-label="Retirer des favoris"
                   title="Retirer des favoris"
                 >
-                  {likeLoading === media.id ? "..." : "❤️"}
+                  {likeLoading === media.id ? (
+                    '...'
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  )}
                 </button>
               </div>
             </div>

@@ -13,18 +13,18 @@
 }
 
 .mirage-originals__logo {
-  height: 100px;
+  height: 6.25rem;
   width: auto;
   margin-bottom: 0;
 }
 
 .mirage-originals__badge {
-  margin-top: -30px;
+  margin-top: -1.875rem;
   font-size: 1rem;
   font-weight: 500;
   color: var(--color-text-secondary);
   text-transform: uppercase;
-  letter-spacing: 4px;
+  letter-spacing: 0.25rem;
 }
 
 /* Grid de cartes */
@@ -38,7 +38,7 @@
 /* Carte individuelle */
 .mirage-originals__card {
   position: relative;
-  width: 280px;
+  width: 17.5rem;
   aspect-ratio: 9 / 16;
   border-radius: var(--radius-xl);
   overflow: hidden;
@@ -50,7 +50,7 @@
 
 .mirage-originals__card:hover {
   transform: scale(1.03);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1.25rem 2.5rem rgba(0, 0, 0, 0.4);
 }
 
 .mirage-originals__card-image {
@@ -78,7 +78,7 @@
   color: var(--color-text-primary);
   text-transform: uppercase;
   line-height: 1.2;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.5);
 }
 
 .mirage-originals__card-brand {
@@ -88,7 +88,7 @@
 }
 
 .mirage-originals__card-brand img {
-  height: 16px;
+  height: 1rem;
   width: auto;
 }
 
@@ -101,7 +101,7 @@
 .mirage-originals__card-badge {
   font-size: 0.6rem;
   color: var(--color-text-secondary);
-  letter-spacing: 1px;
+  letter-spacing: 0.0625rem;
 }
 
 /* Responsive */
@@ -115,7 +115,7 @@
   }
 
   .mirage-originals__card {
-    width: 200px;
+    width: 12.5rem;
   }
 
   .mirage-originals__card-title {
@@ -131,6 +131,6 @@
 
   .mirage-originals__card {
     width: 100%;
-    max-width: 300px;
+    max-width: 18.75rem;
   }
 }

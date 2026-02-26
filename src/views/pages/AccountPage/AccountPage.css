@@ -2,27 +2,27 @@
 
 .account-page {
   min-height: 100vh;
-  padding: 100px 20px 60px 20px;
+  padding: 6.25rem 1.25rem 3.75rem 1.25rem;
   background: linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
 }
 
 .account-page__container {
-  max-width: 600px;
+  max-width: 37.5rem;
   margin: 0 auto;
 }
 
 .account-page__back-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   color: var(--color-text-secondary);
   font-size: 0.95rem;
   font-weight: 500;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px 0;
-  margin-bottom: 24px;
+  padding: 0.5rem 0;
+  margin-bottom: 1.5rem;
   transition: color var(--transition-fast);
 }
 
@@ -34,14 +34,14 @@
   font-size: 2rem;
   font-weight: 700;
   color: var(--color-text-primary);
-  margin-bottom: 32px;
+  margin-bottom: 2rem;
 }
 
 /* Messages */
 .account-page__message {
-  padding: 16px 20px;
+  padding: 1rem 1.25rem;
   border-radius: var(--radius-lg);
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
   font-size: 0.95rem;
 }
 
@@ -62,7 +62,7 @@
   background: var(--color-bg-tertiary);
   border: 1px solid var(--color-border-primary);
   border-radius: var(--radius-xl);
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
   overflow: hidden;
   transition: border-color var(--transition-fast);
 }
@@ -83,7 +83,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
+  padding: 1.25rem 1.5rem;
   cursor: pointer;
   transition: background-color var(--transition-fast);
 }
@@ -100,7 +100,7 @@
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-text-primary);
-  margin-bottom: 4px;
+  margin-bottom: 0.25rem;
 }
 
 .account-page__section-title--danger {
@@ -113,7 +113,7 @@
 }
 
 .account-page__edit-btn {
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--color-accent-500);
@@ -142,7 +142,7 @@
 
 /* Forms */
 .account-page__form {
-  padding: 0 24px 24px 24px;
+  padding: 0 1.5rem 1.5rem 1.5rem;
   border-top: 1px solid var(--color-border-primary);
   animation: slideDown 0.2s ease-out;
 }
@@ -150,7 +150,7 @@
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-0.625rem);
   }
   to {
     opacity: 1;
@@ -159,7 +159,7 @@
 }
 
 .account-page__form-group {
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 .account-page__form-group label {
@@ -167,12 +167,12 @@
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--color-text-secondary);
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 }
 
 .account-page__form-group input {
   width: 100%;
-  padding: 14px 16px;
+  padding: 0.875rem 1rem;
   font-size: 1rem;
   color: var(--color-text-primary);
   background: var(--color-bg-primary);
@@ -184,7 +184,7 @@
 .account-page__form-group input:focus {
   outline: none;
   border-color: var(--color-accent-500);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+  box-shadow: 0 0 0 0.1875rem rgba(245, 158, 11, 0.15);
 }
 
 .account-page__form-group input::placeholder {
@@ -198,8 +198,8 @@
 
 .account-page__submit-btn {
   width: 100%;
-  margin-top: 20px;
-  padding: 14px 24px;
+  margin-top: 1.25rem;
+  padding: 0.875rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
   color: #000000;
@@ -211,8 +211,8 @@
 }
 
 .account-page__submit-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+  transform: translateY(-0.125rem);
+  box-shadow: 0 0.5rem 1.25rem rgba(245, 158, 11, 0.4);
 }
 
 .account-page__submit-btn:disabled {
@@ -222,24 +222,24 @@
 
 /* Subscription Content */
 .account-page__subscription-content {
-  padding: 0 24px 24px 24px;
+  padding: 0 1.5rem 1.5rem 1.5rem;
   border-top: 1px solid var(--color-border-primary);
   animation: slideDown 0.2s ease-out;
 }
 
 .account-page__subscription-info {
-  padding-top: 20px;
+  padding-top: 1.25rem;
 }
 
 .account-page__subscription-badge {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
 .account-page__subscription-plan {
-  padding: 6px 14px;
+  padding: 0.375rem 0.875rem;
   font-size: 0.9rem;
   font-weight: 600;
   color: #000000;
@@ -248,7 +248,7 @@
 }
 
 .account-page__subscription-status {
-  padding: 6px 14px;
+  padding: 0.375rem 0.875rem;
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--color-success);
@@ -273,8 +273,8 @@
 }
 
 .account-page__subscription-details {
-  margin-top: 16px;
-  padding: 16px;
+  margin-top: 1rem;
+  padding: 1rem;
   background: var(--color-bg-primary);
   border-radius: var(--radius-md);
 }
@@ -282,7 +282,7 @@
 .account-page__subscription-details p {
   font-size: 0.9rem;
   color: var(--color-text-secondary);
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 }
 
 .account-page__subscription-details p:last-child {
@@ -295,8 +295,8 @@
 
 .account-page__cancel-btn {
   width: 100%;
-  margin-top: 20px;
-  padding: 14px 24px;
+  margin-top: 1.25rem;
+  padding: 0.875rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-error);
@@ -318,18 +318,18 @@
 }
 
 .account-page__no-subscription {
-  padding-top: 20px;
+  padding-top: 1.25rem;
   text-align: center;
 }
 
 .account-page__no-subscription p {
   font-size: 0.95rem;
   color: var(--color-text-secondary);
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
 }
 
 .account-page__subscribe-btn {
-  padding: 14px 32px;
+  padding: 0.875rem 2rem;
   font-size: 1rem;
   font-weight: 600;
   color: #000000;
@@ -341,13 +341,13 @@
 }
 
 .account-page__subscribe-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+  transform: translateY(-0.125rem);
+  box-shadow: 0 0.5rem 1.25rem rgba(245, 158, 11, 0.4);
 }
 
 .account-page__subscription-cancelled-note {
   margin-top: 16px;
-  padding: 12px 16px;
+  padding: 0.75rem 1rem;
   font-size: 0.9rem;
   color: var(--color-warning);
   background: rgba(245, 158, 11, 0.1);
@@ -361,15 +361,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 20px;
+  gap: 0.75rem;
+  padding: 1.25rem;
   color: var(--color-text-secondary);
 }
 
 .account-page__loading-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(245, 158, 11, 0.2);
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 0.125rem solid rgba(245, 158, 11, 0.2);
   border-top-color: var(--color-accent-500);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -389,9 +389,9 @@
 .account-page__warning {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
-  padding: 16px;
-  margin-top: 20px;
+  gap: 1rem;
+  padding: 1rem;
+  margin-top: 1.25rem;
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.2);
   border-radius: var(--radius-md);
@@ -406,7 +406,7 @@
   display: block;
   color: var(--color-error);
   font-size: 0.95rem;
-  margin-bottom: 4px;
+  margin-bottom: 0.25rem;
 }
 
 .account-page__warning p {
@@ -417,8 +417,8 @@
 
 .account-page__delete-btn {
   width: 100%;
-  margin-top: 20px;
-  padding: 14px 24px;
+  margin-top: 1.25rem;
+  padding: 0.875rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-text-primary);
@@ -430,8 +430,8 @@
 }
 
 .account-page__delete-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+  transform: translateY(-0.125rem);
+  box-shadow: 0 0.5rem 1.25rem rgba(239, 68, 68, 0.4);
 }
 
 .account-page__delete-btn:disabled {
@@ -444,36 +444,36 @@
 /* Responsive */
 @media (max-width: 768px) {
   .account-page {
-    padding: 90px 16px 40px 16px;
+    padding: 5.625rem 1rem 2.5rem 1rem;
   }
 
   .account-page__title {
     font-size: 1.5rem;
-    margin-bottom: 24px;
+    margin-bottom: 1.5rem;
   }
 
   .account-page__section-header {
-    padding: 16px 20px;
+    padding: 1rem 1.25rem;
   }
 
   .account-page__form {
-    padding: 0 20px 20px 20px;
+    padding: 0 1.25rem 1.25rem 1.25rem;
   }
 
   .account-page__subscription-content {
-    padding: 0 20px 20px 20px;
+    padding: 0 1.25rem 1.25rem 1.25rem;
   }
 }
 
 @media (max-width: 480px) {
   .account-page {
-    padding: 80px 12px 30px 12px;
+    padding: 5rem 0.75rem 1.875rem 0.75rem;
   }
 
   .account-page__section-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 0.75rem;
   }
 
   .account-page__edit-btn {
