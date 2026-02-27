@@ -1,24 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../core/hooks";
+import { mediaService, favoritesService } from "../../../infrastructure/adapters/api";
+import type { MediaThumbnail } from "../../../core/domain/types";
 import "./MoviesPage.css";
-
-interface MediaThumbnail {
-  id: string;
-  name: string;
-  thumbnailUrl: string;
-  isFavorite: boolean;
-  progress?: number;
-}
-
-interface PageMediaThumbnail {
-  items: MediaThumbnail[];
-  metadata: {
-    page: number;
-    per: number;
-    total: number;
-  };
-}
 
 export const MoviesPage = () => {
   const [movies, setMovies] = useState<MediaThumbnail[]>([]);
@@ -37,13 +22,7 @@ export const MoviesPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/v1/media/movies?page=${page}&per=${per}`, {
-          credentials: "include",
-        });
-        if (!response.ok) {
-          throw new Error(`Erreur API: ${response.status}`);
-        }
-        const data: PageMediaThumbnail = await response.json();
+        const data = await mediaService.getMovies({ page, per });
         setMovies(data.items);
         setTotal(data.metadata.total);
       } catch (err) {
@@ -62,16 +41,7 @@ export const MoviesPage = () => {
     }
     setLikeLoading(mediaId);
     try {
-      const response = await fetch("/api/v1/favorites/toggle", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mediaId }),
-        credentials: "include",
-      });
-      if (!response.ok) {
-        throw new Error("Erreur lors du like");
-      }
-      const isNowFavorite = await response.json();
+      const isNowFavorite = await favoritesService.toggleFavorite({ mediaId });
       setMovies((prev) => prev.map((m) => (m.id === mediaId ? { ...m, isFavorite: isNowFavorite } : m)));
     } catch {
       // Optionnel : afficher une notification d'erreur

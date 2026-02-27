@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../core/hooks";
-import { mediaService } from "../../../infrastructure/adapters/api";
+import { mediaService, favoritesService } from "../../../infrastructure/adapters/api";
 import "../MoviesPage/MoviesPage.css";
 
 interface LocalMediaThumbnail {
@@ -66,16 +66,7 @@ export const CategoryPage = () => {
     }
     setLikeLoading(mediaId);
     try {
-      const response = await fetch("/api/v1/favorites/toggle", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mediaId }),
-        credentials: "include",
-      });
-      if (!response.ok) {
-        throw new Error("Erreur lors du like");
-      }
-      const isNowFavorite = await response.json();
+      const isNowFavorite = await favoritesService.toggleFavorite({ mediaId });
       setMedia((prev) => prev.map((m) => (m.id === mediaId ? { ...m, isFavorite: isNowFavorite } : m)));
     } catch {
       // Optionnel : afficher une notification d'erreur

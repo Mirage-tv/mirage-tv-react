@@ -1,65 +1,27 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../core/hooks';
+import { useFavoritesStore } from '../../../infrastructure/store/favoritesStore';
 import './MyListPage.css';
 
-interface MediaThumbnail {
-  id: string;
-  name: string;
-  thumbnailUrl: string;
-  isFavorite: boolean;
-  progress?: number;
-}
-
 export const MyListPage = () => {
-  const [favorites, setFavorites] = useState<MediaThumbnail[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { favorites, isLoading: loading, error, fetchFavorites, toggleFavorite } = useFavoritesStore();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [likeLoading, setLikeLoading] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
-    const fetchFavorites = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await fetch('/api/v1/favorites', {
-          credentials: 'include'
-        });
-        if (!response.ok) {
-          throw new Error(`Erreur API: ${response.status}`);
-        }
-        const data: MediaThumbnail[] = await response.json();
-        setFavorites(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erreur inconnue lors du chargement des favoris');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchFavorites();
-  }, [isAuthenticated, navigate]);
-
-  const [likeLoading, setLikeLoading] = useState<string | null>(null);
+  }, [isAuthenticated, navigate, fetchFavorites]);
 
   const handleToggleFavorite = async (mediaId: string) => {
     setLikeLoading(mediaId);
     try {
-      const response = await fetch('/api/v1/favorites/toggle', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mediaId }),
-        credentials: 'include'
-      });
-      if (!response.ok) {
-        throw new Error('Erreur lors du like');
-      }
-      const isNowFavorite = await response.json();
-      setFavorites((prev) => (isNowFavorite ? prev : prev.filter((m) => m.id !== mediaId)));
+      await toggleFavorite(mediaId);
     } catch {
       // Optionnel : afficher une notification d'erreur
     } finally {

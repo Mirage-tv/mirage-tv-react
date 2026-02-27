@@ -1,25 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../core/hooks";
+import { mediaService, favoritesService } from "../../../infrastructure/adapters/api";
+import type { SeriePreview } from "../../../core/domain/types";
 import "./ShowsPage.css";
-
-interface SeriePreview {
-  id: string;
-  title: string;
-  posterURL?: string | null;
-  description?: string | null;
-  totalSeasons: number;
-  numberOfmedias: number;
-}
-
-interface PageSeriePreview {
-  items: SeriePreview[];
-  metadata: {
-    page: number;
-    per: number;
-    total: number;
-  };
-}
 
 export const ShowsPage = () => {
   const [shows, setShows] = useState<SeriePreview[]>([]);
@@ -38,13 +22,7 @@ export const ShowsPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/v1/media/shows?page=${page}&per=${per}`, {
-          credentials: "include",
-        });
-        if (!response.ok) {
-          throw new Error(`Erreur API: ${response.status}`);
-        }
-        const data: PageSeriePreview = await response.json();
+        const data = await mediaService.getShows({ page, per });
         setShows(data.items);
         setTotal(data.metadata.total);
       } catch (err) {
@@ -64,16 +42,7 @@ export const ShowsPage = () => {
     }
     setLikeLoading(serieId);
     try {
-      const response = await fetch("/api/v1/favorites/toggle", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mediaId: serieId }),
-        credentials: "include",
-      });
-      if (!response.ok) {
-        throw new Error("Erreur lors du like");
-      }
-      const isNowFavorite = await response.json();
+      const isNowFavorite = await favoritesService.toggleFavorite({ mediaId: serieId });
       setShows((prev) => prev.map((s) => (s.id === serieId ? { ...s, isFavorite: isNowFavorite } : s)));
     } catch {
       // Optionnel : afficher une notification d'erreur
