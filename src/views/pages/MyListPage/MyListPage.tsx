@@ -44,7 +44,7 @@ export const MyListPage = () => {
             <div key={media.id} className="mylist-page__card" onClick={() => navigate(`/media/${media.id}`)}>
               <div className="mylist-page__thumbnail">
                 <img src={media.thumbnailUrl} alt={media.name} />
-                {media.progress !== undefined && (
+                {media.progress != null && (
                   <div className="mylist-page__progress-bar">
                     <div className="mylist-page__progress-fill" style={{ width: `${media.progress * 100}%` }} />
                   </div>
@@ -56,7 +56,7 @@ export const MyListPage = () => {
                   className="mylist-page__favorite"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleToggleFavorite(media.id);
+                    if (media.id) handleToggleFavorite(media.id);
                   }}
                   disabled={likeLoading === media.id}
                   aria-label="Retirer des favoris"

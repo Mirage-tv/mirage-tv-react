@@ -23,7 +23,7 @@ export const MoviesPage = () => {
       setError(null);
       try {
         const data = await mediaService.getMovies({ page, per });
-        setMovies(data.items);
+        setMovies([...data.items]);
         setTotal(data.metadata.total);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Erreur inconnue lors du chargement des films");
@@ -73,7 +73,7 @@ export const MoviesPage = () => {
               >
                 <div className="movies-page__thumbnail">
                   <img src={movie.thumbnailUrl} alt={movie.name} />
-                  {movie.progress !== undefined && (
+                  {movie.progress != null && (
                     <div className="movies-page__progress-bar">
                       <div className="movies-page__progress-fill" style={{ width: `${movie.progress * 100}%` }} />
                     </div>
@@ -85,7 +85,7 @@ export const MoviesPage = () => {
                     className="movies-page__favorite"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleToggleFavorite(movie.id);
+                      if (movie.id) handleToggleFavorite(movie.id);
                     }}
                     disabled={likeLoading === movie.id}
                     aria-label={movie.isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}

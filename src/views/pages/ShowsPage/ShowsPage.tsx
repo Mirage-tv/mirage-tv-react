@@ -23,7 +23,7 @@ export const ShowsPage = () => {
       setError(null);
       try {
         const data = await mediaService.getShows({ page, per });
-        setShows(data.items);
+        setShows([...data.items]);
         setTotal(data.metadata.total);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Erreur inconnue lors du chargement des séries");
@@ -86,12 +86,12 @@ export const ShowsPage = () => {
                   </div>
                   {show.description && <p className="shows-page__desc">{show.description}</p>}
                   {/* Bouton coeur pour like/unlike */}
-                  {"isFavorite" in show ? (
+                  {"isFavorite" in show && show.id ? (
                     <button
                       className="shows-page__favorite"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleToggleFavorite(show.id);
+                        if (show.id) handleToggleFavorite(show.id);
                       }}
                       disabled={likeLoading === show.id}
                       aria-label={show.isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
