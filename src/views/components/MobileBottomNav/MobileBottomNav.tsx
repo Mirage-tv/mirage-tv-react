@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useEmbedded } from '../../../core/context/EmbeddedContext';
 import { useAuth } from '../../../core/hooks';
 import './MobileBottomNav.css';
 
@@ -119,9 +120,10 @@ const SubscribeIcon = () => (
 export const MobileBottomNav = () => {
   const location = useLocation();
   const { isAuthenticated, isSubscriber } = useAuth();
+  const { isEmbedded } = useEmbedded();
 
-  // Show Subscribe button when user is not a subscriber (regardless of auth status)
-  const showSubscribe = !isSubscriber;
+  // Show Subscribe button when user is not a subscriber and not in embedded mode
+  const showSubscribe = !isSubscriber && !isEmbedded;
 
   const navItems: NavItem[] = [
     { path: '/', label: 'Accueil', icon: <HomeIcon /> },

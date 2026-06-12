@@ -1,71 +1,66 @@
-# mirage
+# Mirage - Application Frontend
 
-# React + TypeScript + Vite
+Mirage est une plateforme moderne de streaming et de gestion de médias, conçue avec React et TypeScript, et configurée pour être performante et sécurisée.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Stack Technique
 
-Currently, two official plugins are available:
+- **Framework** : [React 19](https://react.dev/)
+- **Langage** : [TypeScript](https://www.typescriptlang.org/)
+- **Gestionnaire d'état** : [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction) (Stores légers et réutilisables)
+- **Routage** : [React Router DOM v7](https://reactrouter.com/)
+- **Outil de build** : [Vite](https://vite.dev/)
+- **Serveur & Déploiement** : [Cloudflare Wrangler](https://developers.cloudflare.com/workers/wrangler/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Développement Local
 
-## Expanding the ESLint configuration
+### Prérequis
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Assurez-vous d'avoir [Node.js](https://nodejs.org/) installé sur votre machine.
 
-```js
-export default tseslint.config([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
+### Installation
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+1. Installez les dépendances du projet :
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+   ```bash
+   npm install
+   ```
+
+2. Créez un fichier `.env` à la racine si vous devez surcharger les variables d'environnement.
+
+### Lancement du serveur de développement
+
+Pour démarrer l'application localement avec rechargement à chaud (HMR) :
+
+```bash
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+L'application sera accessible par défaut sur `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+## Build et Déploiement
 
-export default tseslint.config([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+### Production Build
+
+Pour compiler l'application et générer les assets optimisés pour la production :
+
+```bash
+npm run build
+```
+
+Les fichiers générés se trouveront dans le répertoire `dist/`.
+
+### Déploiement (Cloudflare)
+
+Pour compiler et déployer directement sur Cloudflare via Wrangler :
+
+```bash
+npm run deploy
+```
+
+## 🔍 Qualité du Code
+
+Pour lancer l'analyse statique du code (linter) :
+
+```bash
+npm run lint
 ```

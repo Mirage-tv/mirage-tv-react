@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { BrowserRouter, useRoutes } from "react-router-dom";
 import "./App.css";
+import { EmbeddedProvider } from "./core/context/EmbeddedContext";
 import { useAuthStore } from "./infrastructure/store/authStore";
 import { routes } from "./routes";
 import { ScrollToTop } from "./views/components/ScrollToTop";
@@ -28,9 +29,11 @@ function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
+      <EmbeddedProvider>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </EmbeddedProvider>
     </BrowserRouter>
   );
 }

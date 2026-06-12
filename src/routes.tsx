@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import type { RouteObject } from "react-router-dom";
+import { EmbeddedGuard } from "./views/components/Routing/EmbeddedGuard/EmbeddedGuard";
 import { Layout } from "./views/components/Layout/Layout";
 import { LoadingFallback } from "./views/components/Routing/Loading/LoadingFallback";
 
@@ -125,42 +126,47 @@ export const routes: RouteObject[] = [
         ),
       },
       {
-        path: "subscribe",
-        element: (
-          <Suspense fallback={<LoadingFallback />}>
-            <SubscribePage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "payment-success",
-        element: (
-          <Suspense fallback={<LoadingFallback />}>
-            <SubscribePage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "subscribe/cancel",
-        element: (
-          <Suspense fallback={<LoadingFallback />}>
-            <SubscribePage />
-          </Suspense>
-        ),
+        element: <EmbeddedGuard />,
+        children: [
+          {
+            path: "subscribe",
+            element: (
+              <Suspense fallback={<LoadingFallback />}>
+                <SubscribePage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "payment-success",
+            element: (
+              <Suspense fallback={<LoadingFallback />}>
+                <SubscribePage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "subscribe/cancel",
+            element: (
+              <Suspense fallback={<LoadingFallback />}>
+                <SubscribePage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "pricing",
+            element: (
+              <Suspense fallback={<LoadingFallback />}>
+                <SubscribePage />
+              </Suspense>
+            ),
+          },
+        ],
       },
       {
         path: "account",
         element: (
           <Suspense fallback={<LoadingFallback />}>
             <AccountPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "pricing",
-        element: (
-          <Suspense fallback={<LoadingFallback />}>
-            <SubscribePage />
           </Suspense>
         ),
       },

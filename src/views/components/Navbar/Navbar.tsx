@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../../assets/logo.png';
+import { useEmbedded } from '../../../core/context/EmbeddedContext';
 import { useAuth } from '../../../core/hooks';
 import './Navbar.css';
 import type { NavbarProps } from './Navbar.model';
@@ -19,6 +20,7 @@ const NavLink = ({ to, label, currentPath }: { to: string; label: string; curren
 export const Navbar = ({ className }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
   const { user, isAuthenticated, isSubscriber } = useAuth();
+  const { isEmbedded } = useEmbedded();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -86,7 +88,7 @@ export const Navbar = ({ className }: NavbarProps) => {
         </button>
 
         {/* Bouton S'abonner pour les utilisateurs non connectés ou sans abonnement */}
-        {(!isAuthenticated || !isSubscriber) && (
+        {!isEmbedded && (!isAuthenticated || !isSubscriber) && (
           <button className="navbar__subscribe-btn" onClick={() => navigate('/subscribe')}>
             S'abonner
           </button>

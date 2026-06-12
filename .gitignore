@@ -28,3 +28,13 @@ dist-ssr
 wrangler.toml
 dist/
 .env.*.local
+
+# AI Assistants and Agent config
+.agent/
+.claude/
+.claude.md
+
+# Documentation non utile au client
+API_INTEGRATION.md
+README_API.md
+README_SETUP.md
