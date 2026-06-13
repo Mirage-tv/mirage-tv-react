@@ -1,4 +1,4 @@
-# Mirage - Application Frontend
+# MirageTV - Application Frontend
 
 Mirage est une plateforme moderne de streaming et de gestion de médias, conçue avec React et TypeScript, et configurée pour être performante et sécurisée.
 
